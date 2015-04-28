@@ -58,8 +58,61 @@ class Writeup(models.Model):
     review = models.TextField()
     miscCosts = models.DecimalField(max_digits = 10, decimal_places = 2)
 
+    def __str__(self):
+        return self.user + " " + self.convention
+
 class Fandom(models.Model):
     name = models.TextField(primary_key = True)
 
+    def __str__(self):
+        return self.name
+
 class Kind(models.Model):
     name = models.TextField(primary_key = True)
+
+    def __str__(self):
+        return self.name
+
+def newUser(username, password, email, startYear):
+    while True:
+        try:
+            cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
+            User.objects.get(cookieID = cookieID)
+        except User.DoesNotExist:
+            k = User(username = username, password = password, email = email, cookieID = cookieID, startYear = startYear)
+            k.full_clean()
+            k.save()
+            return k
+        else:
+            pass
+
+def newWriteup(user, convention, rating, review, miscCosts):
+    k = Writeup(user = user, convention = convention, rating = rating, review = review, miscCosts = miscCosts)
+    k.full_clean()
+    k.save()
+    return k
+
+def newFandom(name):
+    k = Fandom(name = name)
+    k.full_clean()
+    k.save()
+    return k
+
+def newKind(name):
+    k = Kind(name = name)
+    k.full_clean()
+    k.save()
+    return k
+
+def newItem(user, convention, name, fandom, kind, price, cost, num):
+    k = Item(user = user, convention = convention, fandom = fandom, kind = kind, price = price, cost = cost, num = num)
+    k.full_clean()
+    k.save()
+    return k
+
+def newConvention(name, date, numAttenders, location):
+    k = Convention(name = name, date = date, numAttenders = numAttenders, location = location)
+    k.full_clean()
+    k.save()
+    return k
+
