@@ -1,0 +1,29 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Home</title>
+    <script>
+        function logout() {
+            $.ajax({
+                url: "/api/user/logout",
+                type: "POST",
+                contentType: "application/json",
+                data: "{}",
+                success: function(response) {
+                    window.location.href = "/";
+                },
+                error: function(response) {
+                    window.location.href = "/";
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    Root page for if you're logged in
+
+    Hi! you're logged in and your username is {{username}}!
+
+    <a onclick="logout()" href="#">Logout</a>
+{% endblock %}

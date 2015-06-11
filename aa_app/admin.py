@@ -1,7 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from aa_app import models
 
-#from .models import Question
-
-#admin.site.register(Question)
+admin.site.register(models.Convention)
+admin.site.register(models.User)
+admin.site.register(models.Item)
+admin.site.register(models.Fandom)
+admin.site.register(models.Kind)

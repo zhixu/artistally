@@ -1,0 +1,44 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Signup</title>
+    <script>
+        function signup() {
+            val user = $("#userField").val();
+            val pass1 = $("#passField1").val();
+            val pass2 = $("#passField2").val();
+            val email = $("#emailField").val();
+            val year = $("#yearField").val();
+            if (pass1 != pass2) {
+                alert("Your passwords do not match, please try again.");
+            else {
+                $.ajax({
+                    url: "/api/user/newUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: "{'username':'" + user + "','password':'" + pass1 + "','email':'" + email + "','startYear':'" + year + "'}",
+                    success: function(response) {
+                        window.location.href = "/";
+                    },
+                    error: function(response) {
+                        alert("something went wrong (same user? wrong email? etc etc specify this later)");
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <a href="/">Back to home</a>
+
+    Signup page.
+
+    <input type="text" id="userField" placeholder="username">
+    <input type="text" id="passField1" placeholder="password">
+    <input type="text" id="passField2" placeholder="reenter password">
+    <input type="text" id="emailField" placeholder="email">
+    <input type="text" id="yearField" placeholder="year you started doing artist alley">
+
+    <a onclick="signup()" href="#">Sign up!</a>
+{% endblock %}

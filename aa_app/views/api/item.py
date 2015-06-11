@@ -11,7 +11,10 @@ EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
 def newItem(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
-    i = models.newItem(u, int(d["conID"]), d["name"], d["fandom"], d["kind"], Decimal(d["price"]), Decimal(d["cost"]), int(d["numLeft"])
+    convention = models.Convention.objects.get(ID = int(d["conID"]))
+    fandom = models.Fandom.objects.get(name = d["fandom"])
+    kind = models.Kind.objects.get(name = d["kind"])
+    i = models.newItem(u, convention, d["name"], fandom, kind, Decimal(d["price"]), Decimal(d["cost"]), int(d["numLeft"])
     return EMPTY_JSON_200
 
 def setNumSold(request):
@@ -35,5 +38,5 @@ def setName(request):
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     i = models.Item.objects.get(ID = int(d["itemID"]))
     assert i.user == u
-    i.setName(int(d["name"]))
+    i.setName(d["name"])
     return EMPTY_JSON_200

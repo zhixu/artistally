@@ -21,6 +21,8 @@ def login(request):
     return EMPTY_JSON_200
 
 def logout(request):
+    u = models.User.objects.get(cookieID = request.session["cookieID"])
+    u.regenerateCookieID()
     del request.session["cookieID"]
     return EMPTY_JSON_200
 
