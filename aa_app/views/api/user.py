@@ -16,7 +16,7 @@ def newUser(request):
 def login(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(username = d["username"])
-    assert u.password == d["password"]
+    assert u.password == d["password"], "wrong password"
     request.session["cookieID"] = u.cookieID
     return EMPTY_JSON_200
 

@@ -7,8 +7,6 @@
             $.ajax({
                 url: "/api/user/logout",
                 type: "POST",
-                contentType: "application/json",
-                data: "{}",
                 success: function(response) {
                     window.location.href = "/";
                 },
@@ -23,7 +21,11 @@
 {% block body %}
     Root page for if you're logged in
 
+    <br/>
+
     Hi! you're logged in and your username is {{username}}!
+
+    <br/>
 
     <a onclick="logout()" href="#">Logout</a>
 {% endblock %}

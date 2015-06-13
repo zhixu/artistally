@@ -21,7 +21,7 @@ def setNumSold(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     i = models.Item.objects.get(ID = int(d["itemID"]))
-    assert i.user == u
+    assert i.user == u, "not your item"
     i.setNumSold(int(d["numSold"]))
     return EMPTY_JSON_200
 
@@ -29,7 +29,7 @@ def setNumLeft(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     i = models.Item.objects.get(ID = int(d["itemID"]))
-    assert i.user == u
+    assert i.user == u, "not your item"
     i.setNumLeft(int(d["numLeft"]))
     return EMPTY_JSON_200
 
@@ -37,6 +37,6 @@ def setName(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     i = models.Item.objects.get(ID = int(d["itemID"]))
-    assert i.user == u
+    assert i.user == u, "not your item"
     i.setName(d["name"])
     return EMPTY_JSON_200

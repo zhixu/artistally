@@ -4,19 +4,20 @@
     <title>Artistally Login</title>
     <script>
         function login() {
-            val user = $("#userField").val();
-            val pass = $("#passField").val();
+            var jsonDict = new Object();
+            jsonDict.username = $("#userField").val();
+            jsonDict.password = $("#passField").val();
             $.ajax({
-                url: "/api/user/newUser",
+                url: "/api/user/login",
                 type: "POST",
                 contentType: "application/json",
-                data: "{'username':'" + user + "','password':'" + pass + "'}",
+                data: JSON.stringify(jsonDict),
                 success: function(response) {
                     window.location.href = "/";
                 },
                 error: function(response) {
                     alert("something went wrong");
-                }
+                },
             });
         }
     </script>
@@ -25,10 +26,19 @@
 {% block body %}
     <a href="/">Back to home</a>
 
+    <br/>
+
     Login page.
 
-    <input type="text" id="userField" placeholder="username">
-    <input type="text" id="passField" placeholder="password">
+    <br/>
+
+    <input type="text" id="userField" placeholder="username"/>
+
+    <br/>
+
+    <input type="password" id="passField" placeholder="password"/>
+
+    <br/>
 
     <a onclick="login()" href="#">Login!</a>
 {% endblock %}

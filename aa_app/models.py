@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+import random
+
 class Convention(models.Model):
     ID = models.AutoField(primary_key = True)
     name = models.TextField()

@@ -2,14 +2,13 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r"^$", "aa_app.views.root")
+    url(r"^$", "aa_app.views.site.root"),
     url(r"^admin/", include(admin.site.urls)),
-    url(r"^signup$", "aa_app.views.signup",
-    url(r"^login$", "aa_app.views.login",
-
-    url(r'^user/([0-9A-Za-z_\-]+)$', "aa_app.views.user"),
-    url(r'^convention/([0-9]+)$', "aa_app.views.convention"),
-    url(r'^item/([0-9]+)$', "aa_app.views.item"),
+    url(r"^signup$", "aa_app.views.site.signup"),
+    url(r"^login$", "aa_app.views.site.login"),
+    url(r"^user/([0-9A-Za-z_\-]+)$", "aa_app.views.site.user"),
+    url(r"^convention/([0-9]+)$", "aa_app.views.site.convention"),
+    url(r"^item/([0-9]+)$", "aa_app.views.site.item"),
 
     url(r"^api/user/newUser$", "aa_app.views.api.user.newUser"),
     url(r"^api/user/login$", "aa_app.views.api.user.login"),

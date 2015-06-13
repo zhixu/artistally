@@ -19,7 +19,7 @@ def setRating(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     w = models.Writeup.objects.get(ID = int(d["writeupID"]))
-    assert w.user == u
+    assert w.user == u, "not your writeup"
     w.setRating(int(d["rating"]))
     return EMPTY_JSON_200
 
@@ -27,7 +27,7 @@ def setReview(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     w = models.Writeup.objects.get(ID = int(d["writeupID"]))
-    assert w.user == u
+    assert w.user == u, "not your writeup"
     w.setReview(d["review"])
     return EMPTY_JSON_200
 
@@ -35,6 +35,6 @@ def setMiscCosts(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     w = models.Writeup.objects.get(ID = int(d["writeupID"]))
-    assert w.user == u
+    assert w.user == u, "not your writeup"
     w.setMiscCosts(Decimal(d["miscCosts"]))
     return EMPTY_JSON_200
