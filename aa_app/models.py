@@ -67,36 +67,6 @@ class User(models.Model):
         self.full_clean()
         self.save()
 
-class Item(models.Model):
-    ID = models.AutoField(primary_key = True)
-    user = models.ForeignKey(User, related_name = "items")
-    convention = models.ForeignKey(Convention, related_name = "items")
-    name = models.TextField()
-    fandom = models.ForeignKey(Fandom, related_name = "items")
-    kind = models.ForeignKey(Kind, related_name = "items")
-    price = models.DecimalField(max_digits = 10, decimal_places = 2)
-    cost = models.DecimalField(max_digits = 10, decimal_places = 2)
-    numSold = models.PositiveIntegerField()
-    numLeft = models.PositiveIntegerField()
-
-    def __str__(self):
-        return self.name
-
-    def setNumSold(self, newNumSold):
-        self.numSold = newNumSold
-        self.full_clean()
-        self.save()
-
-    def setNumLeft(self, newNumLeft):
-        self.numLeft = newNumLeft
-        self.full_clean()
-        self.save()
-
-    def setName(self, name):
-        self.name = name
-        self.full_clean()
-        self.save()
-
 class Writeup(models.Model):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "writeups")
@@ -141,6 +111,36 @@ class Kind(models.Model):
 
     def __str__(self):
         return self.name
+
+    def setName(self, name):
+        self.name = name
+        self.full_clean()
+        self.save()
+
+class Item(models.Model):
+    ID = models.AutoField(primary_key = True)
+    user = models.ForeignKey(User, related_name = "items")
+    convention = models.ForeignKey(Convention, related_name = "items")
+    name = models.TextField()
+    fandom = models.ForeignKey(Fandom, related_name = "items")
+    kind = models.ForeignKey(Kind, related_name = "items")
+    price = models.DecimalField(max_digits = 10, decimal_places = 2)
+    cost = models.DecimalField(max_digits = 10, decimal_places = 2)
+    numSold = models.PositiveIntegerField()
+    numLeft = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
+
+    def setNumSold(self, newNumSold):
+        self.numSold = newNumSold
+        self.full_clean()
+        self.save()
+
+    def setNumLeft(self, newNumLeft):
+        self.numLeft = newNumLeft
+        self.full_clean()
+        self.save()
 
     def setName(self, name):
         self.name = name
