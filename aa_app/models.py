@@ -1,9 +1,18 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 import random
 
-class Convention(models.Model):
+class ValidatedModel(models.Model):
+    class Meta:
+        abstract = True
+
+    def save(self):
+        self.full_clean()
+        super().save()
+
+class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     name = models.TextField()
     startDate = models.DateField()
@@ -11,65 +20,61 @@ class Convention(models.Model):
     numAttenders = models.PositiveIntegerField()
     location = models.TextField()
 
+    def clean(self):
+        super().clean()
+        if (self.endDate - self.startDate).days < 0:
+            raise ValidationError("endDate cannot be before startDate")
+
     def __str__(self):
         return self.name
 
     def setName(self, newName):
         self.name = newName
-        self.full_clean()
         self.save()
 
     def setNumAttenders(self, newNumAttenders):
         self.numAttenders = newNumAttenders
-        self.full_clean()
         self.save()
 
     def setLocation(self, newLocation):
         self.location = newLocation
-        self.full_clean()
         self.save()
 
     def setStartDate(self, newStartDate):
         self.startDate = newStartDate
-        self.full_clean()
         self.save()
 
     def setEndDate(self, newEndDate):
         self.endDate = newEndDate
-        self.full_clean()
         self.save()
 
-class User(models.Model):
+class User(ValidatedModel):
     username = models.SlugField(primary_key = True, max_length = 50)
     password = models.TextField()
     email = models.EmailField(unique = True, max_length = 254)
     cookieID = models.BigIntegerField(unique = True)
-    startYear = models.PositiveSmallIntegerField()
+    startYear = models.PositiveSmallIntegerField(null = True, blank = True, default = None)
 
     def __str__(self):
         return self.username
 
     def setEmail(self, newEmail):
         self.email = newEmail
-        self.full_clean()
         self.save()
 
     def setPassword(self, newPass):
         self.password = newPass
-        self.full_clean()
         self.save()
 
     def setUsername(self, newUsername):
         self.username = newUsername
-        self.full_clean()
         self.save()
 
     def regenerateCookieID(self):
         self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-        self.full_clean()
         self.save()
 
-class Writeup(models.Model):
+class Writeup(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "writeups")
     convention = models.ForeignKey(Convention, related_name = "writeups")
@@ -84,20 +89,17 @@ class Writeup(models.Model):
 
     def setRating(self, newRating):
         self.rating = newRating
-        self.full_clean()
         self.save()
 
     def setReview(self, newReview):
         self.review = newReview
-        self.full_clean()
         self.save()
 
     def setMiscCosts(self, newMiscCosts):
         self.miscCosts = newMiscCosts
-        self.full_clean()
         self.save()
 
-class Fandom(models.Model):
+class Fandom(ValidatedModel):
     name = models.TextField(primary_key = True)
 
     def __str__(self):
@@ -105,10 +107,9 @@ class Fandom(models.Model):
 
     def setName(self, name):
         self.name = name
-        self.full_clean()
         self.save()
 
-class Kind(models.Model):
+class Kind(ValidatedModel):
     name = models.TextField(primary_key = True)
 
     def __str__(self):
@@ -116,10 +117,9 @@ class Kind(models.Model):
 
     def setName(self, name):
         self.name = name
-        self.full_clean()
         self.save()
 
-class Item(models.Model):
+class Item(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "items")
     convention = models.ForeignKey(Convention, related_name = "items")
@@ -136,52 +136,43 @@ class Item(models.Model):
 
     def setNumSold(self, newNumSold):
         self.numSold = newNumSold
-        self.full_clean()
         self.save()
 
     def setNumLeft(self, newNumLeft):
         self.numLeft = newNumLeft
-        self.full_clean()
         self.save()
 
     def setName(self, name):
         self.name = name
-        self.full_clean()
         self.save()
 
-def newUser(username, password, email, startYear):
+def newUser(username, password, email):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-    k = User(username = username, password = password, email = email, cookieID = cookieID, startYear = startYear)
-    k.full_clean()
+    k = User(username = username, password = password, email = email, cookieID = cookieID)
     k.save()
     return k
 
 def newWriteup(user, convention, rating, review, miscCosts):
     k = Writeup(user = user, convention = convention, rating = rating, review = review, miscCosts = miscCosts)
-    k.full_clean()
     k.save()
     return k
 
 def newFandom(name):
     k = Fandom(name = name)
-    k.full_clean()
     k.save()
     return k
 
 def newKind(name):
     k = Kind(name = name)
-    k.full_clean()
     k.save()
     return k
 
 def newItem(user, convention, name, fandom, kind, price, cost, numSold, numLeft):
     k = Item(user = user, convention = convention, fandom = fandom, kind = kind, price = price, cost = cost, numSold = numSold, numLeft = numLeft)
-    k.full_clean()
     k.save()
     return k
 
 def newConvention(name, startDate, endDate, numAttenders, location):
     k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location)
-    k.full_clean()
     k.save()
     return k

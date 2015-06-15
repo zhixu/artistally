@@ -9,7 +9,7 @@ EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
 
 def newUser(request):
     d = json.loads(bytes.decode(request.body))
-    u = models.newUser(d["username"], d["password"], d["email"], d["startYear"])
+    u = models.newUser(d["username"], d["password"], d["email"])
     request.session["cookieID"] = u.cookieID
     return EMPTY_JSON_200
 

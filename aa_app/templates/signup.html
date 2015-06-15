@@ -8,7 +8,6 @@
             jsonDict.username = $("#userField").val();
             jsonDict.password = $("#passField1").val();
             jsonDict.email = $("#emailField").val();
-            jsonDict.startYear = $("#yearField").val();
             if (jsonDict.password != $("#passField2").val()) {
                 alert("Your passwords do not match, please try again.");
             } else {
@@ -51,10 +50,6 @@
     <br/>
     
     <input type="text" id="emailField" placeholder="email"/>
-
-    <br/>
-    
-    <input type="text" id="yearField" placeholder="year you started doing artist alley"/>
 
     <br/>
     
