@@ -5,32 +5,40 @@ from django.template import Context, loader
 from aa_app import models
 
 def root(request):
-    if "cookieID" in request.session:
+    context = Context({"isUser": "cookieID" in request.session})
+    if context["isUser"]:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context({"isUser": True, "username": u.username})
-        return HttpResponse(loader.get_template("root_user.html").render(context))
-    else:
-        context = Context({"isUser": False})
-        return HttpResponse(loader.get_template("root_nonuser.html").render(context))
+        context["currUser"] = u
+    return HttpResponse(loader.get_template("root.html").render(context))
 
 def signup(request):
-    assert "cookieID" not in request.session
-    context = Context({"isUser": False})
-    return HttpResponse(loader.get_template("signup.html").render(context))
+    if "cookieID" in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/"
+        return resp
+    else:
+        return HttpResponse(loader.get_template("signup.html").render(Context({"isUser": False})))
     
 def login(request):
-    assert "cookieID" not in request.session
-    context = Context({"isUser": False})
-    return HttpResponse(loader.get_template("login.html").render(context))
+    if "cookieID" in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/"
+        return resp
+    else:
+        return HttpResponse(loader.get_template("login.html").render(Context({"isUser": False})))
 
 def user(request, username):
-    context = Context()
-    pass
+    context = Context({"isUser": "cookieID" in request.session})
+    if context["isUser"]:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+    context["pageUser"] = models.User.objects.get(username = username)
+    return HttpResponse(loader.get_template("user.html").render(context))
 
 def convention(request, conID):
-    context = Context()
+    context = Context({"isUser": "cookieID" in request.session})
     pass
 
 def item(request, itemID):
-    context = Context()
+    context = Context({"isUser": "cookieID" in request.session})
     pass

@@ -70,6 +70,10 @@ class User(ValidatedModel):
         self.username = newUsername
         self.save()
 
+    def setStartYear(self, newStartYear):
+        self.startYear = newStartYear
+        self.save()
+
     def regenerateCookieID(self):
         self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
         while models.User.objects.filter(cookieID = self.cookieID):

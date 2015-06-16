@@ -16,6 +16,7 @@ urlpatterns = [
     url(r"^api/user/setEmail$", "aa_app.views.api.user.setEmail"),
     url(r"^api/user/setPassword$", "aa_app.views.api.user.setPassword"),
     url(r"^api/user/setUsername$", "aa_app.views.api.user.setUsername"),
+    url(r"^api/user/setStartYear$", "aa_app.views.api.user.setStartYear"),
     url(r"^api/item/newItem$", "aa_app.views.api.item.newItem"),
     url(r"^api/item/setNumSold$", "aa_app.views.api.item.setNumSold"),
     url(r"^api/item/setNumLeft$", "aa_app.views.api.item.setNumLeft"),

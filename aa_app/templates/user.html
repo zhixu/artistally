@@ -1,0 +1,93 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally User {{pageUser}}</title>
+    <script>
+        function updateProfile() {
+            var jsonDict = new Object();
+            jsonDict.startYear = $("#startYearField").val();
+            jsonDict.email = $("#emailField").val();
+            jsonDict.password = $("#passField1").val();
+            if (jsonDict.password != $("#passField2").val()) {
+                alert("Your passwords do not match, please try again.");
+            }
+            else {
+                if (jsonDict.startYear != {{pageUser.startYear}}) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/user/setStartYear",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("startYear went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.email != "{{pageUser.email}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/user/setEmail",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("email went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.password != "") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/user/setPassword",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("password went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                window.location.reload(true);
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    {% if currUser == pageUser %}
+        {{pageUser}}'s Profile (You!)
+        <br/>
+        you've been doing artist alley since <input type="number" id="startYearField" value="{{pageUser.startYear}}"/>
+        <br/>
+        <input type="password" id="passField1" placeholder="new password?"/>
+        <br/>
+        <input type="password" id="passField2" placeholder="verify new password?"/>
+        <br/>
+        <input type="email" id="emailField" value="{{pageUser.email}}"/>
+        <br/>
+        <a onclick="updateProfile()" href="#">Update</a>
+    {% else %}
+        {{pageUser}}'s Profile
+        <br/>    
+        {% if pageUser.startYear != None %}
+            they've been doing artist alley since {{pageUser.startYear}}
+            <br/>
+        {% endif %}
+    {% endif %}
+{% endblock %}

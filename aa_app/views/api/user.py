@@ -43,3 +43,9 @@ def setUsername(request):
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     u.setUsername(d["username"])
     return EMPTY_JSON_200
+
+def setStartYear(request):
+    d = json.loads(bytes.decode(request.body))
+    u = models.User.objects.get(cookieID = request.session["cookieID"])
+    u.setStartYear(int(d["startYear"]))
+    return EMPTY_JSON_200
