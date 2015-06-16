@@ -39,11 +39,11 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/repaxan/Desktop/artistally/venv"
+VIRTUAL_ENV=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
-PATH="$VIRTUAL_ENV/bin:$PATH"
+PATH="$VIRTUAL_ENV:$PATH"
 export PATH
 
 # unset PYTHONHOME if set

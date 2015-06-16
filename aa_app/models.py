@@ -72,6 +72,8 @@ class User(ValidatedModel):
 
     def regenerateCookieID(self):
         self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
+        while models.User.objects.filter(cookieID = self.cookieID):
+            self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
         self.save()
 
 class Writeup(ValidatedModel):
@@ -148,6 +150,8 @@ class Item(ValidatedModel):
 
 def newUser(username, password, email):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
+    while models.User.objects.filter(cookieID = cookieID):
+        cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
     k = User(username = username, password = password, email = email, cookieID = cookieID)
     k.save()
     return k
