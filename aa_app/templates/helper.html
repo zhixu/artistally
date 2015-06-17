@@ -1,14 +1,72 @@
 <html>
 
 <head>
+    
+    <meta charset="utf-8">
+    
+    <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    
+    <!-- Twitter Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400' rel='stylesheet' type='text/css'>
+    
+    <!-- CSS-->
+    <link rel="stylesheet" type="text/css" href="/static/default.css" />
+    
     {% block head %}
     {% endblock %}
 </head>
 
 <body>
-    {% block body %}
-    {% endblock %}
+    <header>
+        
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">ArtisTally</a>
+                </div><!--/.navbar-header -->
+                <div id="navbar" class="navbar-collapse collapse">
+                    <form class="navbar-form navbar-right" role="search">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Search conventions...">
+                        </div>
+                        <button type="submit" class="btn btn-custom-white">Submit</button>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if isUser %}
+                            <li><a href="#">Hi {{currUser}}</a></li>
+                        {% else %}
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/signup">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+    
+    </header>
+        {% block body %}
+        {% endblock %}
+
+    <footer>
+        <div class="container">
+            <p><a href="#">About</a> | <a href="#">FAQ</a> | <a href="#">Contact</a></p>
+            <p>&copy; {% now "Y" %} ArtisTally</p>
+        </div>
+    </footer>
 </body>
+    
+
 
 </html>

@@ -24,21 +24,24 @@
 {% endblock %}
 
 {% block body %}
+
+<div class="centered">
     <a href="/">Back to home</a>
 
     <br/>
 
-    Login page.
+    <h3>User Login</h3>
 
     <br/>
 
-    <input type="text" id="userField" placeholder="username"/>
+    <input type="text" class="login-reg-input" id="userField" placeholder="username"/>
+    <br/>
+    <input type="password" class="login-reg-input" id="passField" placeholder="password"/>
 
     <br/>
-
-    <input type="password" id="passField" placeholder="password"/>
-
     <br/>
-
-    <a onclick="login()" href="#">Login!</a>
+    <br/>
+    <button onclick="login()" class="btn btn-custom-blue">Login</button>
+    
+</div>
 {% endblock %}
