@@ -2,75 +2,77 @@
 
 {% block head %}
     <title>Artistally User {{pageUser}}</title>
-    <script>
-        function updateProfile() {
-            var jsonDict = new Object();
-            jsonDict.startYear = $("#startYearField").val();
-            jsonDict.email = $("#emailField").val();
-            jsonDict.password = $("#passField1").val();
-            if (jsonDict.password != $("#passField2").val()) {
-                alert("Your passwords do not match, please try again.");
+    {% if isUser and currUser == pageUser %}
+        <script>
+            function updateProfile() {
+                var jsonDict = new Object();
+                jsonDict.startYear = $("#startYearField").val();
+                jsonDict.email = $("#emailField").val();
+                jsonDict.password = $("#passField1").val();
+                if (jsonDict.password != $("#passField2").val()) {
+                    alert("Your passwords do not match, please try again.");
+                }
+                else {
+                    if (jsonDict.startYear != {{pageUser.startYear}}) {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setStartYear",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            success: function(response) {
+                            },
+                            error: function(response) {
+                                alert("setStartYear went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    if (jsonDict.email != "{{pageUser.email}}") {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setEmail",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            success: function(response) {
+                            },
+                            error: function(response) {
+                                alert("setEmail went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    if (jsonDict.password != "") {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setPassword",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            success: function(response) {
+                            },
+                            error: function(response) {
+                                alert("setPassword went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    window.location.reload(true);
+                }
             }
-            else {
-                if (jsonDict.startYear != {{pageUser.startYear}}) {
-                    var ajaxObj = $.ajax({
-                        url: "/api/user/setStartYear",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        async: false,
-                        success: function(response) {
-                        },
-                        error: function(response) {
-                            alert("startYear went wrong");
-                        },
-                    });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
-                }
-                if (jsonDict.email != "{{pageUser.email}}") {
-                    var ajaxObj = $.ajax({
-                        url: "/api/user/setEmail",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        async: false,
-                        success: function(response) {
-                        },
-                        error: function(response) {
-                            alert("email went wrong");
-                        },
-                    });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
-                }
-                if (jsonDict.password != "") {
-                    var ajaxObj = $.ajax({
-                        url: "/api/user/setPassword",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        async: false,
-                        success: function(response) {
-                        },
-                        error: function(response) {
-                            alert("password went wrong");
-                        },
-                    });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
-                }
-                window.location.reload(true);
-            }
-        }
-    </script>
+        </script>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
-    {% if currUser == pageUser %}
+    {% if isUser and currUser == pageUser %}
         {{pageUser}}'s Profile (You!)
         <br/>
         you've been doing artist alley since <input type="number" id="startYearField" value="{{pageUser.startYear}}"/>

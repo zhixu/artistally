@@ -1,12 +1,12 @@
 <html>
 
 <head>    
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
     
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     
-    <!-- Twitter Bootstrap -->
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -14,11 +14,28 @@
     <!-- Google Fonts -->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700,400"/>
     
-    <!-- CSS-->
+    <!-- ArtisTally CSS-->
     <link rel="stylesheet" href="/static/default.css"/>
     
     {% block head %}
     {% endblock %}
+    
+    {% if isUser %}
+        <script>
+            function logout() {
+                $.ajax({
+                    url: "/api/user/logout",
+                    type: "POST",
+                    success: function(response) {
+                        window.location.href = "/";
+                    },
+                    error: function(response) {
+                        alert("logout went wrong");
+                    },
+                });
+            }
+        </script>
+    {% endif %}
 </head>
 
 <body>
@@ -37,13 +54,14 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <form class="navbar-form navbar-right" role="search">
                         <div class="form-group">
-                          <input type="text" class="form-control" placeholder="Search conventions...">
+                          <input type="text" class="form-control" placeholder="Search conventions..."/>
                         </div>
                         <button type="submit" class="btn btn-custom-white">Submit</button>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
                         {% if isUser %}
                             <li><a href="#">Hi {{currUser}}</a></li>
+                            <li><a href="#" onclick="logout()">Logout</a></li>
                         {% else %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/signup">Register</a></li>
@@ -54,8 +72,8 @@
         </nav>
     </header>
 
-        {% block body %}
-        {% endblock %}
+    {% block body %}
+    {% endblock %}
 
     <footer>
         <div class="container">

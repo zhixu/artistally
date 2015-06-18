@@ -1,0 +1,132 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Convention {{convention}}</title>
+    {% if isUser %}
+        <script>
+            function updateConvention() {
+                var jsonDict = new Object();
+                jsonDict.conID = {{convention.ID}};
+                jsonDict.name = $("#nameField").val();
+                jsonDict.startDate = $("#startDateField").val();
+                jsonDict.endDate = $("#endDateField").val();
+                jsonDict.numAttenders = $("#numAttendersField").val();
+                jsonDict.location = $("#locationField").val();
+                if (jsonDict.name != "{{convention.name}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setName",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setName went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.startDate != "{{convention.startDate.isoformat}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setStartDate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setStartDate went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.endDate != "{{convention.endDate.isoformat}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setEndDate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setName went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.numAttenders != {{convention.numAttenders}}) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setNumAttenders",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setNumAttenders went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.location != "{{convention.location}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setLocation",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setLocation went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                window.location.reload(true);
+            }
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if isUser %}
+        <input type="text" id="nameField" value="{{convention.name}}"/>'s Page
+        <br/>
+        has <input type="number" id="numAttendersField" value="{{convention.numAttenders}}"/> attenders
+        <br/>
+        located at <input type="text" id="locationField" value="{{convention.location}}"/>
+        <br/>
+        starts/started on <input type="date" id="startDateField" value="{{convention.startDate.isoformat}}"/>
+        <br/>
+        ends/ended on <input type="date" id="endDateField" value="{{convention.endDate.isoformat}}"/>
+        <br/>
+        <a onclick="updateConvention()" href="#">Update</a>
+    {% else %}
+        {{convention.name}}'s Page
+        <br/>
+        {{convention.numAttenders}} attenders
+        <br/>
+        located at {{convention.location}}
+        <br/>
+        starts/started on {{convention.startDate}}
+        <br/>
+        ends/ended on {{convention.endDate}}
+    {% endif %}
+    <br/>
+    average score/links to reviews etc goes here later
+{% endblock %}

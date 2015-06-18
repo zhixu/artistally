@@ -37,8 +37,12 @@ def user(request, username):
 
 def convention(request, conID):
     context = Context({"isUser": "cookieID" in request.session})
-    pass
+    if context["isUser"]:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+    context["convention"] = models.Convention.objects.get(ID = int(conID))
+    return HttpResponse(loader.get_template("convention.html").render(context))
 
 def item(request, itemID):
     context = Context({"isUser": "cookieID" in request.session})
-    pass
+    return HttpResponse(loader.get_template("item.html").render(context))
