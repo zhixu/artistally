@@ -22,7 +22,7 @@ def login(request):
 
 def logout(request):
     u = models.User.objects.get(cookieID = request.session["cookieID"])
-    u.regenerateCookieID()
+    #u.regenerateCookieID()
     del request.session["cookieID"]
     return EMPTY_JSON_200
 

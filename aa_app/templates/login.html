@@ -3,7 +3,19 @@
 {% block head %}
     <title>Artistally Login</title>
     <script>
+        $(document).ready(function() {
+            KEYUP = function(event) {
+                if (event.keyCode == 13) {
+                    $("#loginButton").click();
+                }
+            };
+
+            $("#passField").keyup(KEYUP);
+        });
+
         function login() {
+            $("#passField").unbind("keyup", KEYUP);
+            $("#loginButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.username = $("#userField").val();
             jsonDict.password = $("#passField").val();
@@ -17,6 +29,10 @@
                 },
                 error: function(response) {
                     alert("something went wrong");
+                    $("#loginButton").attr("disabled", false);
+                    setTimeout(function() {
+                        $("#passField").keyup(KEYUP);
+                    }, 222);
                 },
             });
         }
@@ -24,7 +40,6 @@
 {% endblock %}
 
 {% block body %}
-
 <div class="centered">
     <a href="/">Back to home</a>
 
@@ -41,7 +56,7 @@
     <br/>
     <br/>
     <br/>
-    <button onclick="login()" class="btn btn-custom-blue">Login</button>
+    <button onclick="login()" id="loginButton" class="btn btn-custom-blue">Login</button>
     
 </div>
 {% endblock %}
