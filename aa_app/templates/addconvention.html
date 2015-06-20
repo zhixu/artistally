@@ -1,0 +1,41 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Create Convention</title>
+    <script>
+        function makeConvention() {
+            var jsonDict = new Object();
+            jsonDict.name = $("#nameField").val();
+            jsonDict.startDate = $("#startDateField").val();
+            jsonDict.endDate = $("#endDateField").val();
+            jsonDict.numAttenders = $("#numAttendersField").val();
+            jsonDict.location = $("#locationField").val();
+            $.ajax({
+                url: "/api/convention/newConvention",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/convention/" + response.conID;
+                },
+                error: function(response) {
+                    alert("newConvention went wrong");
+                },
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <input type="text" id="nameField" placeholder="convention name"/>
+    <br/>
+    has <input type="number" id="numAttendersField" value="0"/> attenders
+    <br/>
+    <input type="text" id="locationField" placeholder="location"/>
+    <br/>
+    starts/started on <input type="date" id="startDateField" placeholder="2010-01-01"/>
+    <br/>
+    ends/ended on <input type="date" id="endDateField" placeholder="2010-01-03"/>
+    <br/>
+    <a onclick="makeConvention()" href="#">Submit</a>
+{% endblock %}

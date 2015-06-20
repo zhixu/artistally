@@ -6,6 +6,7 @@ urlpatterns = [
     url(r"^admin/", include(admin.site.urls)),
     url(r"^signup$", "aa_app.views.site.signup"),
     url(r"^login$", "aa_app.views.site.login"),
+    url(r"^addconvention$", "aa_app.views.site.addconvention"),
     url(r"^user/([0-9A-Za-z_\-]+)$", "aa_app.views.site.user"),
     url(r"^convention/([0-9]+)$", "aa_app.views.site.convention"),
     url(r"^item/([0-9]+)$", "aa_app.views.site.item"),

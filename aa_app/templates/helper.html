@@ -60,7 +60,7 @@
                     </form>
                     <ul class="nav navbar-nav navbar-right">
                         {% if isUser %}
-                            <li><a href="#">Hi {{currUser}}</a></li>
+                            <li><a href="/user/{{currUser}}">Hi {{currUser}}</a></li>
                             <li><a href="#" onclick="logout()">Logout</a></li>
                         {% else %}
                             <li><a href="/login">Login</a></li>

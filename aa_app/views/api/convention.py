@@ -10,10 +10,10 @@ EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
 def newConvention(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
-    startDate = datetime.datetime(int(d["startYear"]), int(d["startMonth"]), int(d["startDay"]))
-    endDate = datetime.datetime(int(d["endYear"]), int(d["endMonth"]), int(d["endDay"]))
+    startDate = datetime.datetime.strptime(d["startDate"], '%Y-%m-%d')
+    endDate = datetime.datetime.strptime(d["endDate"], '%Y-%m-%d')
     c = models.newConvention(d["name"], startDate, endDate, int(d["numAttenders"]), d["location"])
-    return EMPTY_JSON_200
+    return HttpResponse(json.dumps({"conID": c.ID}), content_type = "application/json")
 
 def setName(request):
     d = json.loads(bytes.decode(request.body))

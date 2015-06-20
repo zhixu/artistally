@@ -43,6 +43,17 @@ def convention(request, conID):
     context["convention"] = models.Convention.objects.get(ID = int(conID))
     return HttpResponse(loader.get_template("convention.html").render(context))
 
+def addconvention(request):
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        context = Context({"isUser": "cookieID" in request.session})
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+        return HttpResponse(loader.get_template("addconvention.html").render(context))
+        
 def item(request, itemID):
     context = Context({"isUser": "cookieID" in request.session})
     return HttpResponse(loader.get_template("item.html").render(context))

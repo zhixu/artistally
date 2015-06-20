@@ -13,7 +13,7 @@ def newWriteup(request):
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     convention = models.Convention.objects.get(ID = int(d["conID"]))
     w = models.newWriteup(u, convention, int(d["rating"]), d["review"], Decimal(d["miscCosts"]))
-    return EMPTY_JSON_200
+    return HttpResponse(json.dumps({"writeupID": w.ID}), content_type = "application/json")
 
 def setRating(request):
     d = json.loads(bytes.decode(request.body))
