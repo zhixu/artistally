@@ -53,7 +53,47 @@ def addconvention(request):
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context["currUser"] = u
         return HttpResponse(loader.get_template("addconvention.html").render(context))
+
+def addkind(request):
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        context = Context({"isUser": "cookieID" in request.session})
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+        return HttpResponse(loader.get_template("addkind.html").render(context))
+
+def addfandom(request):
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        context = Context({"isUser": "cookieID" in request.session})
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+        return HttpResponse(loader.get_template("addfandom.html").render(context))
+
+def additem(request):
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        context = Context({"isUser": "cookieID" in request.session})
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+        context["cons"] = models.Convention.objects.all()
+        context["kinds"] = models.Kind.objects.all()
+        context["fandoms"] = models.Fandom.objects.all()
+        return HttpResponse(loader.get_template("additem.html").render(context))
         
 def item(request, itemID):
     context = Context({"isUser": "cookieID" in request.session})
+    if context["isUser"]:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+    context["item"] = models.Item.objects.get(ID = int(itemID))
     return HttpResponse(loader.get_template("item.html").render(context))

@@ -1,0 +1,65 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Create Item</title>
+    <script>
+        function makeItem() {
+            var jsonDict = new Object();
+            jsonDict.name = $("#nameField").val();
+            jsonDict.conID = $("#conIDField").val();
+            jsonDict.fandom = $("#fandomField").val();
+            jsonDict.kind = $("#kindField").val();
+            jsonDict.price = $("#priceField").val();
+            jsonDict.cost = $("#costField").val();
+            jsonDict.numSold = $("#numSoldField").val();
+            jsonDict.numLeft = $("#numLeftField").val();
+            $.ajax({
+                url: "/api/item/newItem",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/item/" + response.itemID;
+                },
+                error: function(response) {
+                    alert("newItem went wrong");
+                },
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <input type="text" id="nameField" placeholder="item name"/>
+    <br/>
+    Pick your convention <a href="/addconvention">(not here?)</a>
+    <select id="conIDField">
+        {% for con in cons %}
+            <option value="{{con.ID}}">{{con}}</option>
+        {% endfor %}
+    </select>
+    <br/>
+    Pick your fandom <a href="/addfandom">(not here?)</a>
+    <select id="fandomField">
+        {% for fandom in fandoms %}
+            <option value="{{fandom}}">{{fandom}}</option>
+        {% endfor %}
+    </select>
+    <br/>
+    Pick your kind of item <a href="/addkind">(not here?)</a>
+    <select id="kindField">
+        {% for kind in kinds %}
+            <option value="{{kind}}">{{kind}}</option>
+        {% endfor %}
+    </select>
+    <br/>
+    Each one costs you <input type="number" min="0" step="0.01" id="costField" placeholder="0.01"/>
+    <br/>
+    Each one you're selling for <input type="number" min="0" step="0.01" id="priceField" placeholder="1.00"/>
+    <br/>
+    You sold <input type="number" min="0" id="numSoldField" placeholder="0"/> already
+    <br/>
+    You have <input type="number" min="0" id="numLeftField" placeholder="0"/> left
+    <br/>
+    <a onclick="makeItem()" href="#">Submit</a>
+{% endblock %}

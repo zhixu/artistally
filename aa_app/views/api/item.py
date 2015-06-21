@@ -14,7 +14,7 @@ def newItem(request):
     convention = models.Convention.objects.get(ID = int(d["conID"]))
     fandom = models.Fandom.objects.get(name = d["fandom"])
     kind = models.Kind.objects.get(name = d["kind"])
-    i = models.newItem(u, convention, d["name"], fandom, kind, Decimal(d["price"]), Decimal(d["cost"]), int(d["numLeft"]))
+    i = models.newItem(u, convention, d["name"], fandom, kind, Decimal(d["price"]), Decimal(d["cost"]), int(d["numSold"]), int(d["numLeft"]))
     return HttpResponse(json.dumps({"itemID": i.ID}), content_type = "application/json")
 
 def setNumSold(request):

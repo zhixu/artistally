@@ -1,0 +1,106 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Item {{item}}</title>
+    {% if isUser and currUser == item.user %}
+        <script>
+            function updateItem() {
+                var jsonDict = new Object();
+                jsonDict.itemID = {{item.ID}};
+                jsonDict.name = $("#nameField").val();
+                jsonDict.numSold = $("#numSoldField").val();
+                jsonDict.numLeft = $("#numLeftField").val();
+                if (jsonDict.name != "{{item.name}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setName",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setName went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.numSold != {{item.numSold}}) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setNumSold",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setNumSold went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.numLeft != {{item.numLeft}}) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setNumLeft",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setNumLeft went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                window.location.reload(true);
+            }
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if isUser and currUser == item.user %}
+        Item name <input type="text" id="nameField" value="{{item}}"/>
+        <br/>
+        For this convention: <a href="/convention/{{item.convention.ID}}">{{item.convention}}</a>
+        <br/>
+        For this fandom: {{item.fandom}}
+        <br/>
+        This kind of item: {{item.kind}}
+        <br/>
+        Each one costs you {{item.cost}}
+        <br/>
+        Each one you're selling for {{item.price}}
+        <br/>
+        You sold <input type="number" min="0" id="numSoldField" value="{{item.numSold}}"/> already
+        <br/>
+        You have <input type="number" min="0" id="numLeftField" value="{{item.numLeft}}"/> left
+        <br/>
+        <a onclick="updateItem()" href="#">Submit</a>
+    {% else %}
+        Item name {{item}}
+        <br/>
+        For this convention: <a href="/convention/{{item.convention.ID}}">{{item.convention}}</a>
+        <br/>
+        For this fandom: {{item.fandom}}
+        <br/>
+        This kind of item: {{item.kind}}
+        <br/>
+        Each one costs {{item.user}} {{item.cost}}
+        <br/>
+        Each one {{item.user}} is selling for {{item.price}}
+        <br/>
+        {{item.user}} has sold {{item.numSold}} already
+        <br/>
+        {{item.user}} has {{item.numLeft}} left
+    {% endif %}
+{% endblock %}

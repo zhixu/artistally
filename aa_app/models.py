@@ -176,7 +176,7 @@ def newKind(name):
     return k
 
 def newItem(user, convention, name, fandom, kind, price, cost, numSold, numLeft):
-    k = Item(user = user, convention = convention, fandom = fandom, kind = kind, price = price, cost = cost, numSold = numSold, numLeft = numLeft)
+    k = Item(user = user, convention = convention, name = name, fandom = fandom, kind = kind, price = price, cost = cost, numSold = numSold, numLeft = numLeft)
     k.save()
     return k
 
