@@ -1,11 +1,16 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
     padding-top: 50px;
     font-family: "Open Sans", sans-serif;
     color: #605063;
+    margin-bottom: 100px; /* footer height */
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Open Sans" sans-serif;
     font-weight: 700;
 }
 
@@ -14,7 +19,7 @@ footer {
     color: white;
     text-align: center;
     width: 100%;
-    height: 100px;
+    height: 100px; /* change body margin-bottom accordingly */
     padding: 25px;
     position: absolute;
     bottom:0;
@@ -24,16 +29,17 @@ footer {
     text-align: center;
 }
 
-input.convention-search{
-    -webkit-border-radius: 30px;
-    -moz-border-radius: 30px;
-    border-radius: 30px;
-}
-
 .login-reg-input {
     height:40px;
     font-size:14pt;
 }
+
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    
+}
+
 
 /* ------------------------------- BOOTSTRAP OVERRIDES  ------------------------------- */
 .navbar-default {
@@ -83,6 +89,17 @@ input.convention-search{
 }
 .navbar-default .navbar-link:hover {
   color: #605063;
+}
+
+.navbar-center {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-align: center;
+}
+
+.jumbotron-landing {
+    min-height: 600px;
 }
 
 .btn-custom-white {

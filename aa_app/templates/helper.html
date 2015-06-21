@@ -51,12 +51,12 @@
                     </button>
                     <a class="navbar-brand" href="/">ArtisTally</a>
                 </div><!--/.navbar-header -->
+                
                 <div id="navbar" class="navbar-collapse collapse">
-                    <form class="navbar-form navbar-right" role="search">
+                    <form class="navbar-form navbar-center" role="search">
                         <div class="form-group">
                           <input type="text" class="form-control" placeholder="Search conventions..."/>
                         </div>
-                        <button type="submit" class="btn btn-custom-white">Submit</button>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
                         {% if isUser %}
@@ -64,7 +64,7 @@
                             <li><a href="#" onclick="logout()">Logout</a></li>
                         {% else %}
                             <li><a href="/login">Login</a></li>
-                            <li><a href="/signup">Register</a></li>
+                            <li><a href="/signup">Register</a></li> 
                         {% endif %}
                     </ul>
                 </div><!--/.nav-collapse -->

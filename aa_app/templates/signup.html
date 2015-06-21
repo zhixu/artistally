@@ -29,7 +29,13 @@
 {% endblock %}
 
 {% block body %}
-    Signup page.
+
+<div class="centered">
+    <a href="/">Back to home</a>
+
+    <br/>
+
+    <h3>User Registration</h3>
     <br/>
     <input type="text" class="login-reg-input" id="userField" placeholder="username"/>
     <br/>
@@ -39,5 +45,10 @@
     <br/>
     <input type="email" class="login-reg-input" id="emailField" placeholder="email"/>
     <br/>
-    <a onclick="signup()" href="#">Sign up!</a>
+    <br/>
+    <br/>
+    
+    <button onclick="signup()" class="btn btn-custom-blue">Register</button>
+
+</div>
 {% endblock %}
