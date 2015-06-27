@@ -27,6 +27,13 @@ class Convention(ValidatedModel):
 
     def __str__(self):
         return self.name
+    
+    def avgRating(self):
+        ratings = map(lambda x: x.rating, self.writeups.all())
+        if len(ratings) == 0:
+            return None
+        else:
+            return sum(ratings) / (0.0 + len(ratings))
 
     def setName(self, newName):
         self.name = newName

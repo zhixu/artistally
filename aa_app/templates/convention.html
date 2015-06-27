@@ -128,5 +128,9 @@
         ends/ended on {{convention.endDate}}
     {% endif %}
     <br/>
-    average score/links to reviews etc goes here later
+    {% if convention.avgRating == None %}
+        No one has rated this convention yet
+    {% else %}
+        Convention average rating {{convention.avgRating}} stars
+    {% endif %}
 {% endblock %}
