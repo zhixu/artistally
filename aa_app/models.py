@@ -98,7 +98,7 @@ class Writeup(ValidatedModel):
     editTime = models.DateTimeField(auto_now = True)
 
     def __str__(self):
-        return self.user + " " + self.convention
+        return self.user.__str__() + " writeup for " + self.convention.__str__()
 
     def setRating(self, newRating):
         self.rating = newRating

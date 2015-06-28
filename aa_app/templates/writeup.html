@@ -1,0 +1,86 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Writeup by {{writeup.user}} about {{writeup.convention}}</title>
+    {% if currUser and currUser == writeup.user %}
+        <script>
+            function updateWriteup() {
+                var jsonDict = new Object();
+                jsonDict.writeupID = {{writeup.ID}};
+                jsonDict.rating = $("#ratingField").val();
+                jsonDict.review = $("#reviewField").val();
+                jsonDict.miscCosts = $("#miscCostsField").val();
+                if (jsonDict.rating != {{writeup.rating}}) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/writeup/setRating",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setRating went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.review != "{{writeup.review}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/writeup/setReview",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setReview went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.miscCosts != "{{writeup.miscCosts}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/writeup/setMiscCosts",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setMiscCosts went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                window.location.reload(true);
+            }
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if currUser and currUser == writeup.user %}
+        rated <input type="number" min="0" max="5" id="ratingField" value="{{writeup.rating}}"/> stars
+        <br/>
+        Misc costs (travel etc) <input type="number" min="0" step="0.01" id="miscCostsField" value="{{writeup.miscCosts}}"/>
+        <br/>
+        <textarea rows="5" id="reviewField">{{writeup.review}}</textarea>
+        <br/>
+        <a onclick="updateWriteup()" href="#">Submit</a>
+    {% else %}
+        rated {{writeup.rating}} stars
+        <br/>
+        Misc costs (travel etc) {{writeup.miscCosts}}
+        <br/>
+        review: <textarea rows="5" readonly>{{writeup.review}}</textarea>
+    {% endif %}
+{% endblock %}

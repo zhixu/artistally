@@ -61,6 +61,9 @@ def addwriteup(request, conID = None):
     else:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context = Context({"currUser": u})
+        context["cons"] = models.Convention.objects.all()
+        if conID != None:
+            context["currCon"] = models.Convention.objects.get(ID = conID)
         return HttpResponse(loader.get_template("addwriteup.html").render(context))
 
 def addkind(request):
@@ -105,3 +108,11 @@ def item(request, itemID):
         context["currUser"] = u
     context["item"] = models.Item.objects.get(ID = int(itemID))
     return HttpResponse(loader.get_template("item.html").render(context))
+        
+def writeup(request, writeupID):
+    context = Context()
+    if "cookieID" in request.session:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context["currUser"] = u
+    context["writeup"] = models.Writeup.objects.get(ID = int(writeupID))
+    return HttpResponse(loader.get_template("writeup.html").render(context))

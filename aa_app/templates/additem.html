@@ -35,7 +35,7 @@
     Pick your convention <a href="/addconvention">(not here?)</a>
     <select id="conIDField">
         {% for con in cons %}
-            <option value="{{con.ID}}" {% if currCon and con == currCon %} selected {% endif %}>{{con}}</option>
+            <option value="{{con.ID}}" {% if currCon and con.ID == currCon.ID %} selected {% endif %}>{{con}}</option>
         {% endfor %}
     </select>
     <br/>

@@ -1,0 +1,43 @@
+{% extends "helper.html" %}
+
+{% block head %}
+    <title>Artistally Create Writeup</title>
+    <script>
+        function makeWriteup() {
+            var jsonDict = new Object();
+            jsonDict.rating = $("#ratingField").val();
+            jsonDict.conID = $("#conIDField").val();
+            jsonDict.review = $("#reviewField").val();
+            jsonDict.miscCosts = $("#miscCostsField").val();
+            $.ajax({
+                url: "/api/writeup/newWriteup",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/writeup/" + response.writeupID;
+                },
+                error: function(response) {
+                    alert("newWriteup went wrong");
+                },
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    Pick your convention <a href="/addconvention">(not here?)</a>
+    <select id="conIDField">
+        {% for con in cons %}
+            <option value="{{con.ID}}" {% if currCon and con.ID == currCon.ID %} selected {% endif %}>{{con}}</option>
+        {% endfor %}
+    </select>
+    <br/>
+    <input type="number" min="0" max="5" id="ratingField" placeholder="how many stars 0-5?"/>
+    <br/>
+    Misc costs (travel etc) <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01"/>
+    <br/>
+    <textarea rows="5" id="reviewField" placeholder="review goes here"></textarea>
+    <br/>
+    <a onclick="makeWriteup()" href="#">Submit</a>
+{% endblock %}

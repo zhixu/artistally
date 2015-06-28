@@ -107,7 +107,7 @@
     {% if currUser %}
         <input type="text" id="nameField" value="{{convention.name}}"/>'s Page
         <br/>
-        has <input type="number" id="numAttendersField" value="{{convention.numAttenders}}"/> attenders
+        has <input type="number" min="0" id="numAttendersField" value="{{convention.numAttenders}}"/> attenders
         <br/>
         located at <input type="text" id="locationField" value="{{convention.location}}"/>
         <br/>
@@ -117,7 +117,7 @@
         <br/>
         <a onclick="updateConvention()" href="#">Update</a>
         <br/>
-        <a href="/addwriteup/{{convention.ID}}">Submit a review!</a>
+        <a href="/addwriteup/{{convention.ID}}">Submit a writeup!</a>
         <br/>
         <a href="/additem/{{convention.ID}}">Add an Item!</a>
     {% else %}

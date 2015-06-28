@@ -75,7 +75,7 @@
     {% if currUser and currUser == pageUser %}
         {{pageUser}}'s Profile (You!)
         <br/>
-        you've been doing artist alley since <input type="number" id="startYearField" value="{{pageUser.startYear}}"/>
+        you've been doing artist alley since <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>
         <br/>
         <input type="password" id="passField1" placeholder="new password?"/>
         <br/>
