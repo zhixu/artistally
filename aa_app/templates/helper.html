@@ -20,7 +20,7 @@
     {% block head %}
     {% endblock %}
     
-    {% if isUser %}
+    {% if currUser %}
         <script>
             function logout() {
                 $.ajax({
@@ -59,7 +59,7 @@
                         </div>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
-                        {% if isUser %}
+                        {% if currUser %}
                             <li><a href="/user/{{currUser}}">Hi {{currUser}}</a></li>
                             <li><a href="#" onclick="logout()">Logout</a></li>
                         {% else %}

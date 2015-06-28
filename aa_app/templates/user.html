@@ -2,7 +2,7 @@
 
 {% block head %}
     <title>Artistally User {{pageUser}}</title>
-    {% if isUser and currUser == pageUser %}
+    {% if currUser and currUser == pageUser %}
         <script>
             function updateProfile() {
                 var jsonDict = new Object();
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if isUser and currUser == pageUser %}
+    {% if currUser and currUser == pageUser %}
         {{pageUser}}'s Profile (You!)
         <br/>
         you've been doing artist alley since <input type="number" id="startYearField" value="{{pageUser.startYear}}"/>

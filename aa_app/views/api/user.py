@@ -38,11 +38,11 @@ def setPassword(request):
     u.setPassword(d["password"])
     return EMPTY_JSON_200
 
-def setUsername(request):
-    d = json.loads(bytes.decode(request.body))
-    u = models.User.objects.get(cookieID = request.session["cookieID"])
-    u.setUsername(d["username"])
-    return EMPTY_JSON_200
+#def setUsername(request):
+#    d = json.loads(bytes.decode(request.body))
+#    u = models.User.objects.get(cookieID = request.session["cookieID"])
+#    u.setUsername(d["username"])
+#    return EMPTY_JSON_200
 
 def setStartYear(request):
     d = json.loads(bytes.decode(request.body))

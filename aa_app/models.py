@@ -29,7 +29,7 @@ class Convention(ValidatedModel):
         return self.name
     
     def avgRating(self):
-        ratings = map(lambda x: x.rating, self.writeups.all())
+        ratings = list(map(lambda x: x.rating, self.writeups.all()))
         if len(ratings) == 0:
             return None
         else:
@@ -73,19 +73,19 @@ class User(ValidatedModel):
         self.password = newPass
         self.save()
 
-    def setUsername(self, newUsername):
-        self.username = newUsername
-        self.save()
+#    def setUsername(self, newUsername):
+#        self.username = newUsername
+#        self.save()
 
     def setStartYear(self, newStartYear):
         self.startYear = newStartYear
         self.save()
 
-    def regenerateCookieID(self):
-        self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-        while User.objects.filter(cookieID = self.cookieID):
-            self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-        self.save()
+#    def regenerateCookieID(self):
+#        self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
+#        while User.objects.filter(cookieID = self.cookieID):
+#            self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
+#        self.save()
 
 class Writeup(ValidatedModel):
     ID = models.AutoField(primary_key = True)

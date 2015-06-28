@@ -2,7 +2,7 @@
 
 {% block head %}
     <title>Artistally Item {{item}}</title>
-    {% if isUser and currUser == item.user %}
+    {% if currUser and currUser == item.user %}
         <script>
             function updateItem() {
                 var jsonDict = new Object();
@@ -68,7 +68,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if isUser and currUser == item.user %}
+    {% if currUser and currUser == item.user %}
         Item name <input type="text" id="nameField" value="{{item}}"/>
         <br/>
         For this convention: <a href="/convention/{{item.convention.ID}}">{{item.convention}}</a>

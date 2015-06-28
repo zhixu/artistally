@@ -2,7 +2,7 @@
 
 {% block head %}
     <title>Artistally Convention {{convention}}</title>
-    {% if isUser %}
+    {% if currUser %}
         <script>
             function updateConvention() {
                 var jsonDict = new Object();
@@ -104,7 +104,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if isUser %}
+    {% if currUser %}
         <input type="text" id="nameField" value="{{convention.name}}"/>'s Page
         <br/>
         has <input type="number" id="numAttendersField" value="{{convention.numAttenders}}"/> attenders
@@ -116,6 +116,10 @@
         ends/ended on <input type="date" id="endDateField" value="{{convention.endDate.isoformat}}"/>
         <br/>
         <a onclick="updateConvention()" href="#">Update</a>
+        <br/>
+        <a href="/addwriteup/{{convention.ID}}">Submit a review!</a>
+        <br/>
+        <a href="/additem/{{convention.ID}}">Add an Item!</a>
     {% else %}
         {{convention.name}}'s Page
         <br/>
