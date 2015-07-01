@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 import random
@@ -96,6 +96,11 @@ class Writeup(ValidatedModel):
     miscCosts = models.DecimalField(max_digits = 10, decimal_places = 2)
     writeTime = models.DateTimeField(auto_now_add = True)
     editTime = models.DateTimeField(auto_now = True)
+
+    def clean(self):
+        super().clean()
+        if self.user.writeups.filter(convention = self.convention).exists():
+            raise ValidationError("user already has a writeup for that convention")
 
     def __str__(self):
         return self.user.__str__() + " writeup for " + self.convention.__str__()

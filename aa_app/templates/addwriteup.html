@@ -28,7 +28,7 @@
 {% block body %}
     Pick your convention <a href="/addconvention">(not here?)</a>
     <select id="conIDField">
-        {% for con in cons %}
+        {% for con in cons %}   <!-- change to not include con where already you made a writeup -->
             <option value="{{con.ID}}" {% if currCon and con.ID == currCon.ID %} selected {% endif %}>{{con}}</option>
         {% endfor %}
     </select>
