@@ -117,12 +117,18 @@
         <br/>
         <a onclick="updateConvention()" href="#">Update</a>
         <br/>
+        <br/>
         {% for writeup in currUser.writeups|for_convention:convention %}
             <a href="/writeup/{{writeup.ID}}">View or edit your writeup!</a>
         {% empty %}
             <a href="/addwriteup/{{convention.ID}}">Submit a writeup!</a>
         {% endfor %}
         <br/>
+        <br/>
+        {% for item in currUser.items|for_convention:convention %}
+            <a href="/item/{{item.ID}}">Your item {{item}}</a>
+            <br/>
+        {% endfor %}
         <a href="/additem/{{convention.ID}}">Add an Item!</a>
     {% else %}
         {{convention.name}}'s Page

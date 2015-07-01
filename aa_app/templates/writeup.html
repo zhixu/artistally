@@ -68,6 +68,12 @@
 {% endblock %}
 
 {% block body %}
+    written on {{writeup.writeTime.isoformat}}
+    {% if writeup.editTime.timestamp > writeup.writeTime.timestamp|add:1 %}
+        <br/>
+        last edited on {{writeup.editTime.isoformat}}
+    {% endif %}
+    <br/>
     {% if currUser and currUser == writeup.user %}
         rated <input type="number" min="0" max="5" id="ratingField" value="{{writeup.rating}}"/> stars
         <br/>

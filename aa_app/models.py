@@ -99,7 +99,8 @@ class Writeup(ValidatedModel):
 
     def clean(self):
         super().clean()
-        if self.user.writeups.filter(convention = self.convention).exists():
+        filtered = self.user.writeups.filter(convention = self.convention)
+        if filtered.exists() and filtered.get().ID is not self.ID:
             raise ValidationError("user already has a writeup for that convention")
 
     def __str__(self):
