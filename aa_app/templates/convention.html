@@ -1,7 +1,7 @@
 {% extends "helper.html" %}
 
 {% block head %}
-    <title>Artistally Convention {{convention}}</title>
+    <title>ArtisTally | {{convention}} Overview</title>
     {% if currUser %}
         <script>
             function updateConvention() {
@@ -104,20 +104,72 @@
 {% endblock %}
 
 {% block body %}
+<div class="jumbotron">
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <h1>{{convention.name}}</h1>
+            {{convention.location}} <br>
+            <a href="#">website.com</a>
+        </div>
+        <div class="col-sm-1 col-sm-offset-7">
+            NUMBER reviews
+        </div>
+        <div class="col-sm-1">
+            <button onclick="#" id="loginButton" class="btn btn-custom-blue">Add Review</button>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-3"><h3>Overview</h1></div>
+        <div class="col-md-3">Drop down menu to select year</div>
+    </div>
+    <div class="row">
+        graphs and stuff
+    </div>
+    <div>
+    A total of {{convention.numAttenders}} attendees were at Fanime 2014. On average, each artist makes a total of $MONEYS.
+        <br>
+        <br>
+    Top 3 most popular merchandise items sold:
+        <br>1. Keychains (20%)
+        <br>2. Buttons (14%)
+        <br>3. Prints (8%)
+    Top 3 most popular fandoms for merchandise:
+        <br>1. Naruto (15%)
+        <br>2. Bleach (10%)
+        <br>3. One Piece (4%)
+    </div>
+    
+    <h3>Reviews</h3>
+    
+    {% if convention.avgRating == None %}
+        No one has rated this convention yet. Be the first?
+    
+    {% else %}
+        <div class="row">
+            <div class="col-sm-2">
+                <img src="/static/images/icon-default.png" class="user-icon-large">
+                <br> Username
+            </div>
+            <div class="col-sm-10">
+                5/5 stars on DATE
+                <br>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pharetra, nisi vitae sagittis viverra, justo lorem fermentum enim, feugiat dapibus metus diam vel lorem. Duis in ornare orci. Duis nibh lacus, dignissim a luctus quis, posuere congue est. Donec magna tellus, faucibus ac diam nec, iaculis porta turpis. Aliquam tincidunt non felis sed rhoncus. Proin interdum sit amet nisi nec tempus. Pellentesque varius, nisl ac aliquet placerat, neque nunc tristique mauris, a luctus tellus nisi ac ipsum. Duis condimentum et tortor nec egestas. Nullam felis mauris, efficitur eget iaculis sed, molestie eget felis.
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+
     {% if currUser %}
-        <input type="text" id="nameField" value="{{convention.name}}"/>'s Page
-        <br/>
-        has <input type="number" min="0" id="numAttendersField" value="{{convention.numAttenders}}"/> attenders
-        <br/>
-        located at <input type="text" id="locationField" value="{{convention.location}}"/>
-        <br/>
-        starts/started on <input type="date" id="startDateField" value="{{convention.startDate.isoformat}}"/>
-        <br/>
-        ends/ended on <input type="date" id="endDateField" value="{{convention.endDate.isoformat}}"/>
-        <br/>
-        <a onclick="updateConvention()" href="#">Update</a>
-        <br/>
-        <br/>
+
+    Add review!
+<br>
+
+
         {% for writeup in currUser.writeups|for_convention:convention %}
             <a href="/writeup/{{writeup.ID}}">View or edit your writeup!</a>
         {% empty %}
