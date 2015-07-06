@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg, Sum
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -19,6 +20,19 @@ class Convention(ValidatedModel):
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
     location = models.TextField()
+    
+    def avgRating(self):
+        return self.writeups.aggregate(Avg("rating"))["rating__avg"]
+    
+    def avgUserProfit(self):
+        profit = -self.writeups.aggregate(Sum("miscCosts"))["miscCosts__sum"]
+        for item in self.items.all():
+            profit += item.price * item.numSold
+            profit -= item.cost * item.numSold  # numSild or numLeft?
+        return profit / self.users().count()
+    
+    def users(self):
+        return User.objects.filter(items__convention = self)
 
     def clean(self):
         super().clean()
@@ -27,13 +41,6 @@ class Convention(ValidatedModel):
 
     def __str__(self):
         return self.name
-    
-    def avgRating(self):
-        ratings = list(map(lambda x: x.rating, self.writeups.all()))
-        if len(ratings) == 0:
-            return None
-        else:
-            return sum(ratings) / (0.0 + len(ratings))
 
     def setName(self, newName):
         self.name = newName

@@ -37,10 +37,13 @@ def user(request, username):
 
 def convention(request, conID):
     context = Context()
+    context["convention"] = models.Convention.objects.get(ID = int(conID))
     if "cookieID" in request.session:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context["currUser"] = u
-    context["convention"] = models.Convention.objects.get(ID = int(conID))
+        context["currUserConItems"] = u.items.filter(convention = context["convention"])
+        if u.writeups.filter(convention = context["convention"]).exists():
+            context["currUserConWriteup"] = u.writeups.get(convention = context["convention"])
     return HttpResponse(loader.get_template("convention.html").render(context))
 
 def addconvention(request):
