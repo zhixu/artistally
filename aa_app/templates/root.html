@@ -8,67 +8,57 @@
 
 {% if currUser %}
 
-<div class="jumbotron">
-    <div class=containery>
-        <div class="container centery">
-            <h1>Welcome back, {{currUser}}!</h1>
+<div class="row">
+    <div class="col-sm-3 sidebar">
+        <div class="fixed">
+            {% include "sidebar.html" %}
         </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-sm-3 col-md-2 sidebar">
-        
-        <ul class="nav nav-sidebar">
-            <li><a href="/">Overview</a></li>
-            <li><a href="#">Inventory</a></li>
-            <li><a href="#">Conventions</a></li>
-            <li><a href="#">Reviews</a></li>
-        </ul>
+    <div class="col-sm-9">
+        View data from: <input type="date"> to: <input type="date">
+        <div class="row">
+            <div class="col-sm-4"><h3>5</h3>
+            conventions attended</div>
+            <div class="col-sm-4"><h3>$400.23</h3>
+            net profit</div>
+            <div class="col-sm-4"><h3>234</h3>
+            items sold</div>
+        </div>
+        <br/>
+        graphs and stuff go here
+        <br/>
+        <img src="/static/images/chart.png"/> <img src="/static/images/chart.png"/> <img src="/static/images/chart.png"/>
+        <br/>
+        <img src="/static/images/chart.png"/> <img src="/static/images/chart.png"/>
+        <br/>
+        <img src="/static/images/chart.png"/>
+        <br/>
+        <img src="/static/images/chart.png"/>
     </div>
-    {% block dashboard_content %}
-    {% endblock %}
-    </div>
 </div>
-
-<div class="row">
-    
-</div>
-
 
 {% else %}
 
-    <div class="jumbotron">
-        <div class="container centered">
-            <h1>Find the best venue for you.</h1>
-        </div>
-    </div>
+<div class="jumbotron">
     <div class="container centered">
-        <h3>Designed by an artist for artists.</h3>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <div class="row">
-            <div class="col-md-4">Keep track of sales wherever you go.</div>
-            <div class="col-md-4">View trends at different venues.</div>
-            <div class="col-md-4">Find out what other artists are saying.</div>
-        </div>  
+        <h1>Find the best venue for you.</h1>
     </div>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <div class="jumbotron">
-        <div class="container centered">
-            <h1>Sign up today!</h1>
-        </div>
+</div>
+<div class="container centered">
+    <h3>Designed by an artist for artists.</h3>
+    <div class="row">
+        <div class="col-md-4">Keep track of sales wherever you go.</div>
+        <div class="col-md-4">View trends at different venues.</div>
+        <div class="col-md-4">Find out what other artists are saying.</div>
+    </div>  
+</div>
+<div class="jumbotron">
+    <div class="container centered">
+        <h1>Sign up today!</h1>
+        <button class="btn-custom-white"></button>
     </div>
+</div>
 
 {% endif %}
 

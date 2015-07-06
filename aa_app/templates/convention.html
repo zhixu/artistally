@@ -99,6 +99,26 @@
                 }
                 window.location.reload(true);
             }
+            
+        function makeWriteup() {
+            var jsonDict = new Object();
+            jsonDict.rating = $("#ratingField").val();
+            jsonDict.conID = $("#conIDField").val();
+            jsonDict.review = $("#reviewField").val();
+            jsonDict.miscCosts = $("#miscCostsField").val();
+            $.ajax({
+                url: "/api/writeup/newWriteup",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/writeup/" + response.writeupID;
+                },
+                error: function(response) {
+                    alert("newWriteup went wrong");
+                },
+            });
+        }
         </script>
     {% endif %}
 {% endblock %}
@@ -131,16 +151,16 @@
     </div>
     <div>
     A total of {{convention.numAttenders}} attendees were at Fanime 2014. On average, each artist makes a total of $MONEYS.
-        <br>
-        <br>
+        <br/>
+        <br/>
     Top 3 most popular merchandise items sold:
-        <br>1. Keychains (20%)
-        <br>2. Buttons (14%)
-        <br>3. Prints (8%)
+        <br/>1. Keychains (20%)
+        <br/>2. Buttons (14%)
+        <br/>3. Prints (8%)
     Top 3 most popular fandoms for merchandise:
-        <br>1. Naruto (15%)
-        <br>2. Bleach (10%)
-        <br>3. One Piece (4%)
+        <br/>1. Naruto (15%)
+        <br/>2. Bleach (10%)
+        <br/>3. One Piece (4%)
     </div>
     
     <h3>Reviews</h3>
@@ -152,22 +172,37 @@
         <div class="row">
             <div class="col-sm-2">
                 <img src="/static/images/icon-default.png" class="user-icon-large">
-                <br> Username
+                <br/>Username
             </div>
             <div class="col-sm-10">
                 5/5 stars on DATE
-                <br>
+                <br/>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pharetra, nisi vitae sagittis viverra, justo lorem fermentum enim, feugiat dapibus metus diam vel lorem. Duis in ornare orci. Duis nibh lacus, dignissim a luctus quis, posuere congue est. Donec magna tellus, faucibus ac diam nec, iaculis porta turpis. Aliquam tincidunt non felis sed rhoncus. Proin interdum sit amet nisi nec tempus. Pellentesque varius, nisl ac aliquet placerat, neque nunc tristique mauris, a luctus tellus nisi ac ipsum. Duis condimentum et tortor nec egestas. Nullam felis mauris, efficitur eget iaculis sed, molestie eget felis.
             </div>
         </div>
-    </div>
+        <br/>
+        Read more...
+    
 
 {% endif %}
 
     {% if currUser %}
+    <h3>Write Review</h3>
+    <div class="row">
+        <div class="col-sm-2">
+            <img src="/static/images/icon-default.png" class="user-icon-large">
+            <br/>{{currUser}}
+        </div>
+        <div class="col-sm-10">
+            Pick stars
+            <br/>
+            <textarea rows="5" id="reviewField"></textarea>
+        </div>
+    </div>
+    <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
 
-    Add review!
-<br>
+</div>
+<br/>
 
 
         {% for writeup in currUser.writeups|for_convention:convention %}
