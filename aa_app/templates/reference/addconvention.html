@@ -10,6 +10,7 @@
             jsonDict.endDate = $("#endDateField").val();
             jsonDict.numAttenders = $("#numAttendersField").val();
             jsonDict.location = $("#locationField").val();
+            jsonDict.website = $("#websiteField").val();
             $.ajax({
                 url: "/api/convention/newConvention",
                 type: "POST",
@@ -32,6 +33,8 @@
     has <input type="number" id="numAttendersField" placeholder="0"/> attenders
     <br/>
     <input type="text" id="locationField" placeholder="location"/>
+    <br/>
+    <input type="text" id="websiteField" placeholder="website"/>
     <br/>
     starts/started on <input type="date" id="startDateField" placeholder="2010-01-01"/>
     <br/>

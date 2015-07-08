@@ -49,3 +49,10 @@ def setEndDate(request):
     c = models.Convention.objects.get(ID = (d["conID"]))
     c.setEndDate(datetime.datetime.strptime(d["endDate"], '%Y-%m-%d'))
     return EMPTY_JSON_200
+
+def setWebsite(request):
+    d = json.loads(bytes.decode(request.body))
+    u = models.User.objects.get(cookieID = request.session["cookieID"])
+    c = models.Convention.objects.get(ID = (d["conID"]))
+    c.setWebsite(d["website"])
+    return EMPTY_JSON_200

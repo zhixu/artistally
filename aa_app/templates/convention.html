@@ -12,6 +12,7 @@
                 jsonDict.endDate = $("#endDateField").val();
                 jsonDict.numAttenders = $("#numAttendersField").val();
                 jsonDict.location = $("#locationField").val();
+                jsonDict.website = $("#websiteField").val();
                 if (jsonDict.name != "{{convention.name}}") {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setName",
@@ -97,6 +98,23 @@
                         return false;
                     }
                 }
+                if (jsonDict.website != "{{convention.website}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setWebsite",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        success: function(response) {
+                        },
+                        error: function(response) {
+                            alert("setWebsite went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
                 window.location.reload(true);
             }
             
@@ -124,94 +142,94 @@
 {% endblock %}
 
 {% block body %}
-<div class="jumbotron">
-</div>
+    <div class="jumbotron">
+    </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm-3">
-            <h1>{{convention}}</h1>
-            {{convention.location}}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <h1>{{convention}}</h1>
+                {{convention.location}}
+                <br/>
+                <a href="{{convention.website}}">{{convention.website}}</a>
+            </div>
+            <div class="col-sm-1 col-sm-offset-7">
+                {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
+            </div>
+            <div class="col-sm-1">
+                <button onclick="#" id="loginButton" class="btn btn-custom-blue">Add Review</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3"><h3>Overview</h3></div>
+            <div class="col-md-3">Drop down menu to select year</div>
+        </div>
+        <div class="row">
+            graphs and stuff
+        </div>
+        <div>
+            A total of {{convention.numAttenders}} attendees were at {{convention}}.
+            {% if convention.avgUserProfit != None %}
+                On average, each artist makes a total of ${{convention.avgUserProfit|floatformat:2}}.
+            {% endif %}
             <br/>
-            <a href="#">website.com</a>
+            <br/>Top 3 most popular merchandise items sold:
+            <br/>1. Keychains (20%)
+            <br/>2. Buttons (14%)
+            <br/>3. Prints (8%)
+            <br/>
+            <br/>Top 3 most popular fandoms for merchandise:
+            <br/>1. Naruto (15%)
+            <br/>2. Bleach (10%)
+            <br/>3. One Piece (4%)
         </div>
-        <div class="col-sm-1 col-sm-offset-7">
-            {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
-        </div>
-        <div class="col-sm-1">
-            <button onclick="#" id="loginButton" class="btn btn-custom-blue">Add Review</button>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-3"><h3>Overview</h3></div>
-        <div class="col-md-3">Drop down menu to select year</div>
-    </div>
-    <div class="row">
-        graphs and stuff
-    </div>
-    <div>
-        A total of {{convention.numAttenders}} attendees were at {{convention}}.
-        {% if convention.avgUserProfit != None %}
-            On average, each artist makes a total of ${{convention.avgUserProfit|floatformat:2}}.
+
+        <h3>Reviews</h3>
+
+        {% for writeup in convention.writeups.all %}
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="/static/images/icon-default.png" class="user-icon-large">
+                    <br/>{{writeup.user}}
+                </div>
+                <div class="col-sm-10">
+                    {{writeup.rating}}/5 stars on DATE
+                    <br/>
+                    {{writeup.review}}
+                </div>
+            </div>
+            <br/>
+            <!--Read more...-->
+        {% empty %}
+            No one has reviewed this convention yet.
+        {% endfor %}
+        <br/>
+        {% if currUser %}
+            <h3>Write Review</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="/static/images/icon-default.png" class="user-icon-large"/>
+                    <br/>{{currUser}}
+                </div>
+                <div class="col-sm-10">
+                    Pick stars
+                    <br/>
+                    <textarea rows="5" id="reviewField"></textarea>
+                </div>
+            </div>
+            <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
+        
         {% endif %}
-        <br/>
-        <br/>Top 3 most popular merchandise items sold:
-        <br/>1. Keychains (20%)
-        <br/>2. Buttons (14%)
-        <br/>3. Prints (8%)
-        <br/>
-        <br/>Top 3 most popular fandoms for merchandise:
-        <br/>1. Naruto (15%)
-        <br/>2. Bleach (10%)
-        <br/>3. One Piece (4%)
-    </div>
-    
-    <h3>Reviews</h3>
-    
-    {% for writeup in convention.writeups.all %}
-        <div class="row">
-            <div class="col-sm-2">
-                <img src="/static/images/icon-default.png" class="user-icon-large">
-                <br/>{{writeup.user}}
-            </div>
-            <div class="col-sm-10">
-                {{writeup.rating}}/5 stars on DATE
-                <br/>
-                {{writeup.review}}
-            </div>
+
         </div>
         <br/>
-        <!--Read more...-->
-    {% empty %}
-        No one has reviewed this convention yet.
-    {% endfor %}
-    <br/>
+
+
     {% if currUser %}
-        <h3>Write Review</h3>
-        <div class="row">
-            <div class="col-sm-2">
-                <img src="/static/images/icon-default.png" class="user-icon-large"/>
-                <br/>{{currUser}}
-            </div>
-            <div class="col-sm-10">
-                Pick stars
-                <br/>
-                <textarea rows="5" id="reviewField"></textarea>
-            </div>
-        </div>
-        <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
-
-</div>
-<br/>
-
-
         {% if currUserConWriteup %}
             <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>
-        {% else %}
-            <a href="/addwriteup/{{convention.ID}}">Submit a writeup!</a>
         {% endif %}
-        <br/>
         <br/>
         {% for item in currUserConItems %}
             <a href="/item/{{item.ID}}">Your item {{item}}</a>
@@ -225,6 +243,8 @@
         <br/>
         located at {{convention.location}}
         <br/>
+        website at <a href="{{convention.website}}">{{convention.website}}</a>
+        <br/>
         starts/started on {{convention.startDate}}
         <br/>
         ends/ended on {{convention.endDate}}
@@ -235,4 +255,5 @@
     {% else %}
         Convention average rating {{convention.avgRating}} stars
     {% endif %}
+
 {% endblock %}

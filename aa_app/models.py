@@ -20,6 +20,7 @@ class Convention(ValidatedModel):
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
     location = models.TextField()
+    website = models.URLField(max_length=200)
     
     def avgRating(self):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
@@ -60,6 +61,10 @@ class Convention(ValidatedModel):
 
     def setEndDate(self, newEndDate):
         self.endDate = newEndDate
+        self.save()
+
+    def setWebsite(self, newWebsite):
+        self.website = newWebsite
         self.save()
 
 class User(ValidatedModel):
@@ -200,7 +205,7 @@ def newItem(user, convention, name, fandom, kind, price, cost, numSold, numLeft)
     k.save()
     return k
 
-def newConvention(name, startDate, endDate, numAttenders, location):
-    k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location)
+def newConvention(name, startDate, endDate, numAttenders, location, website):
+    k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location, website = website)
     k.save()
     return k
