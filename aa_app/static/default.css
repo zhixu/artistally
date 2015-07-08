@@ -81,7 +81,6 @@ textarea#reviewField {
     white-space: normal;
 }
 
-
 .login-reg-input {
     height:40px;
     font-size:14pt;
@@ -108,7 +107,7 @@ textarea#reviewField {
 	-moz-border-radius: 10px;
 }
 
-/* ------------------------------- BOOTSTRAP OVERRIDES  ------------------------------- */
+/* ------------------------------- NAVBAR COLORS ------------------------------- */
 .navbar-default {
   background-image: none;
   background-color: #9ccceb;
@@ -130,8 +129,6 @@ textarea#reviewField {
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
   color: #605063;
 }
-
-/* ------ extra stuff ------ */
     
 .navbar-default .navbar-nav > li > .dropdown-menu {
   background-image: none;
@@ -150,11 +147,6 @@ textarea#reviewField {
   background-image: none;
   background-color: #ffffff;
 }
-
-/* ------- extra stuff 2 ------*/
-
-
-/* end extra stuff */
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   color: #605063;
@@ -203,13 +195,20 @@ textarea#reviewField {
   }
 }
 
-.navbar-center {
-    width: 100%;
-    left: 0;
+.navbar-default .navbar-nav > li > a.img-nav-item {
+  padding: 8px;
+}
+
+.searchbox-wrapper {
+    display: inline-block;
+    width: 80%;
     text-align: center;
 }
 
-/*
+.navbar-center {
+    display: inline-block;
+}
+
 .navbar-brand {
     padding: 5px;
     margin: 0;
@@ -219,7 +218,7 @@ textarea#reviewField {
     height: 100%;
     vertical-align: middle;
 }
-*/
+
 .jumbotron-landing {
     min-height: 600px;
 }
