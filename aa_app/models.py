@@ -29,7 +29,7 @@ class Convention(ValidatedModel):
         profit = -self.writeups.aggregate(Sum("miscCosts"))["miscCosts__sum"]
         for item in self.items.all():
             profit += item.price * item.numSold
-            profit -= item.cost * item.numSold  # numSild or numLeft?
+            profit -= item.cost * item.numSold  # numSold or numLeft?
         return profit / self.users().count()
     
     def users(self):

@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
+from django.db.models import Sum
+
+import operator
 
 from aa_app import models
 
@@ -38,6 +41,20 @@ def user(request, username):
 def convention(request, conID):
     context = Context()
     context["convention"] = models.Convention.objects.get(ID = int(conID))
+    itemKindsCounter = {}
+    itemFandomsCounter = {}
+    itemsSoldTotal = context["convention"].items.aggregate(Sum("numSold"))["numSold__sum"]
+    for k in context["convention"].items.all():
+        if k.kind in itemKindsCounter:
+            itemKindsCounter[k.kind] += k.numSold / itemsSoldTotal
+        else:
+            itemKindsCounter[k.kind] = k.numSold / itemsSoldTotal
+        if k.fandom in itemFandomsCounter:
+            itemFandomsCounter[k.fandom] += k.numSold / itemsSoldTotal
+        else:
+            itemFandomsCounter[k.fandom] = k.numSold / itemsSoldTotal
+    context["conTopItemKinds"] = sorted(itemKindsCounter.items(), key = operator.itemgetter(1), reverse = True)
+    context["conTopItemFandoms"] = sorted(itemFandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
     if "cookieID" in request.session:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context["currUser"] = u

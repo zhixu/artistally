@@ -171,18 +171,23 @@
         <div>
             A total of {{convention.numAttenders}} attendees were at {{convention}}.
             {% if convention.avgUserProfit != None %}
+                <br/>
                 On average, each artist makes a total of ${{convention.avgUserProfit|floatformat:2}}.
             {% endif %}
-            <br/>
+            {% if convention.avgRating != None %}
+                <br/>
+                Convention has average rating {{convention.avgRating}} stars.
+            {% endif %}
+            <br/><!-- if only 2 kinds... if only 1 kind -->
             <br/>Top 3 most popular merchandise items sold:
-            <br/>1. Keychains (20%)
-            <br/>2. Buttons (14%)
-            <br/>3. Prints (8%)
+            <br/>1. {{conTopItemKinds.0.0}} ({% widthratio conTopItemKinds.0.1 1 100 %}%)
+            <br/>2. {{conTopItemKinds.1.0}} ({% widthratio conTopItemKinds.1.1 1 100 %}%)
+            <br/>3. {{conTopItemKinds.2.0}} ({% widthratio conTopItemKinds.2.1 1 100 %}%)
             <br/>
             <br/>Top 3 most popular fandoms for merchandise:
-            <br/>1. Naruto (15%)
-            <br/>2. Bleach (10%)
-            <br/>3. One Piece (4%)
+            <br/>1. {{conTopItemFandoms.0.0}} ({% widthratio conTopItemFandoms.0.1 1 100 %}%)
+            <br/>2. {{conTopItemFandoms.1.0}} ({% widthratio conTopItemFandoms.1.1 1 100 %}%)
+            <br/>3. {{conTopItemFandoms.2.0}} ({% widthratio conTopItemFandoms.2.1 1 100 %}%)
         </div>
 
         <h3>Reviews</h3>
@@ -194,7 +199,7 @@
                     <br/>{{writeup.user}}
                 </div>
                 <div class="col-sm-10">
-                    {{writeup.rating}}/5 stars on DATE
+                    {{writeup.rating}}/5 stars on {{writeup.editTime.isoformat}}
                     <br/>
                     {{writeup.review}}
                 </div>
@@ -248,12 +253,6 @@
         starts/started on {{convention.startDate}}
         <br/>
         ends/ended on {{convention.endDate}}
-    {% endif %}
-    <br/>
-    {% if convention.avgRating == None %}
-        No one has rated this convention yet
-    {% else %}
-        Convention average rating {{convention.avgRating}} stars
     {% endif %}
 
 {% endblock %}
