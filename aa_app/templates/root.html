@@ -1,7 +1,7 @@
 {% extends "helper.html" %}
 
 {% block head %}
-    <title>ArtisTally Home</title>
+    <title>ArtisTally | Home</title>
 {% endblock %}
 
 {% block body %}
@@ -16,6 +16,8 @@
     </div>
 
     <div class="col-sm-9">
+        <h1>Welcome back, {{currUser}}!</h1>
+        
         View data from: <input type="date"> to: <input type="date">
         <div class="row">
             <div class="col-sm-4"><h3>5</h3>

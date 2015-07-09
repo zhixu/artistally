@@ -219,6 +219,10 @@ textarea#reviewField {
     vertical-align: middle;
 }
 
+.nav.nav-sidebar {
+    padding: 15px;
+}
+
 .jumbotron-landing {
     min-height: 600px;
 }
