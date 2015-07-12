@@ -13,7 +13,7 @@
                 jsonDict.numAttenders = $("#numAttendersField").val();
                 jsonDict.location = $("#locationField").val();
                 jsonDict.website = $("#websiteField").val();
-                if (jsonDict.name != "{{convention.name}}") {
+                if (jsonDict.name != $("#nameField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setName",
                         type: "POST",
@@ -30,7 +30,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.startDate != "{{convention.startDate.isoformat}}") {
+                if (jsonDict.startDate != $("#startDateField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setStartDate",
                         type: "POST",
@@ -47,7 +47,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.endDate != "{{convention.endDate.isoformat}}") {
+                if (jsonDict.endDate != $("#endDateField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setEndDate",
                         type: "POST",
@@ -64,7 +64,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.numAttenders != {{convention.numAttenders}}) {
+                if (jsonDict.numAttenders != $("#numAttendersField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setNumAttenders",
                         type: "POST",
@@ -81,7 +81,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.location != "{{convention.location}}") {
+                if (jsonDict.location != $("#locationField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setLocation",
                         type: "POST",
@@ -98,7 +98,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.website != "{{convention.website}}") {
+                if (jsonDict.website != $("#websiteField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/convention/setWebsite",
                         type: "POST",
@@ -118,7 +118,7 @@
                 window.location.reload(true);
             }
             
-            function makeWriteup() {
+        function makeWriteup() {
             var jsonDict = new Object();
             jsonDict.rating = $("#ratingField").val();
             jsonDict.conID = $("#conIDField").val();

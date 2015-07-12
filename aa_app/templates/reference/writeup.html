@@ -10,7 +10,7 @@
                 jsonDict.rating = $("#ratingField").val();
                 jsonDict.review = $("#reviewField").val();
                 jsonDict.miscCosts = $("#miscCostsField").val();
-                if (jsonDict.rating != {{writeup.rating}}) {
+                if (jsonDict.rating != $("#ratingField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/writeup/setRating",
                         type: "POST",
@@ -27,7 +27,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.review != "{{writeup.review}}") {
+                if (jsonDict.review != $("#reviewField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/writeup/setReview",
                         type: "POST",
@@ -44,7 +44,7 @@
                         return false;
                     }
                 }
-                if (jsonDict.miscCosts != "{{writeup.miscCosts}}") {
+                if (jsonDict.miscCosts != $("#miscCostsField").prop("defaultValue")) {
                     var ajaxObj = $.ajax({
                         url: "/api/writeup/setMiscCosts",
                         type: "POST",

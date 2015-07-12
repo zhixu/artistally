@@ -64,15 +64,36 @@ def convention(request, conID):
     return HttpResponse(loader.get_template("convention.html").render(context))
 
 def inventory(request):
-    return HttpResponse(loader.get_template("inventory.html").render(Context()))
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context = Context({"currUser": u, "invCon": models.INV_CON})
+        context["currUserConItems"] = u.items.filter(convention = models.INV_CON)
+        return HttpResponse(loader.get_template("inventory.html").render(context))
 
 def myconventions(request):
-    return HttpResponse(loader.get_template("myconventions.html").render(Context()))
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context = Context({"currUser": u})
+        return HttpResponse(loader.get_template("myconventions.html").render(context))
 
 def mywriteups(request):
-    return HttpResponse(loader.get_template("myreviews.html").render(Context()))
+    if "cookieID" not in request.session:
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/login"
+        return resp
+    else:
+        u = models.User.objects.get(cookieID = request.session["cookieID"])
+        context = Context({"currUser": u})
+        return HttpResponse(loader.get_template("myreviews.html").render(context))
     
-
 def addconvention(request):
     if "cookieID" not in request.session:
         resp = HttpResponse(status = 307)
