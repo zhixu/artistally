@@ -92,7 +92,7 @@ def mywriteups(request):
     else:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context = Context({"currUser": u})
-        return HttpResponse(loader.get_template("myreviews.html").render(context))
+        return HttpResponse(loader.get_template("mywriteups.html").render(context))
     
 def addconvention(request):
     if "cookieID" not in request.session:

@@ -88,51 +88,51 @@
     <div class="row">
         <div class="col-sm-3 sidebar">
             <div class="fixed">
-                {% include "sidebar.html" %}
+                {% include "includes/sidebar.html" %}
             </div>
-        </div>
 
-        <div class="col-sm-9">
-            Sort by:
-            <select>
-                <option value="name">Name</option>
-                <option value="fandom">Fandom</option>
-                <option value="kind">Kind</option>
-                <option value="price">Price</option>
-                <option value="cost">Cost</option>
-                <option value="numLeft">Number Left</option>
-            </select>
-            <br/>
+            <div class="col-sm-9">
+                Sort by:
+                <select>
+                    <option value="name">Name</option>
+                    <option value="fandom">Fandom</option>
+                    <option value="kind">Kind</option>
+                    <option value="price">Price</option>
+                    <option value="cost">Cost</option>
+                    <option value="numLeft">Number Left</option>
+                </select>
+                <br/>
 
-            <table>
-                <tr>
-                    <th>Thumbnail</th>
-                    <th>Name</th>
-                    <th>Fandom</th>
-                    <th>Kind</th>
-                    <th>Price</th>
-                    <th>Cost</th>
-                    <th>Left</th>
-                </tr>
-                {% for item in currUserConItems %}
+                <table>
                     <tr>
-                        <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
-                        <td id="{{item.ID}}nameField">{{item.name}}</td>
-                        <td>{{item.fandom}}</td>
-                        <td>{{item.kind}}</td>
-                        <td>${{item.price|floatformat:2}}</td>
-                        <td>${{item.cost|floatformat:2}}</td>
-                        <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                        <th>Thumbnail</th>
+                        <th>Name</th>
+                        <th>Fandom</th>
+                        <th>Kind</th>
+                        <th>Price</th>
+                        <th>Cost</th>
+                        <th>Left</th>
                     </tr>
-                {% endfor %}
-            </table>
+                    {% for item in currUserConItems %}
+                        <tr>
+                            <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
+                            <td id="{{item.ID}}nameField">{{item.name}}</td>
+                            <td>{{item.fandom}}</td>
+                            <td>{{item.kind}}</td>
+                            <td>${{item.price|floatformat:2}}</td>
+                            <td>${{item.cost|floatformat:2}}</td>
+                            <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
 
-            <div>
-                <button onclick="makeEditable()" class="btn btn-custom-blue">Edit Inventory</button>
-            </div>
-            <div>
-                <button onclick="batchUpdate()" class="btn btn-custom-blue">Save Changes</button>
-                <button onclick="location.reload()" class="btn btn-custom-blue">Discard</button>
+                <div>
+                    <button onclick="makeEditable()" class="btn btn-custom-blue">Edit Inventory</button>
+                </div>
+                <div>
+                    <button onclick="batchUpdate()" class="btn btn-custom-blue">Save Changes</button>
+                    <button onclick="location.reload()" class="btn btn-custom-blue">Discard</button>
+                </div>
             </div>
         </div>
     </div>

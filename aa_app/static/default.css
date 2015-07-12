@@ -18,6 +18,11 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
 }
 
+h3.lowercase {
+    text-transform: none;
+    font-weight: 500;
+}
+
 footer {
     background-color: #9ccceb;
     color: white;
@@ -100,7 +105,8 @@ textarea#reviewField {
 }
 
 .splash-icon {
-    width: 100px;
+    height: 75px;
+    margin: 20px 0px;
 }
 
 .user-icon {
@@ -297,3 +303,7 @@ textarea#reviewField {
 .convention-header-wrapper {
     padding-top: 15px;
 }
+
+/* ----------------------------------------------- */
+/* ----------------- STAR RATING ----------------- */
+/* ----------------------------------------------- */
