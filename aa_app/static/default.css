@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    padding-top: 100px;
+    padding-top: 53px;
     font-family: "Open Sans", sans-serif;
     color: #605063;
     margin-bottom: 100px; /* footer height */
@@ -12,6 +12,10 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+    margin-top: 0px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
 }
 
 footer {
@@ -36,6 +40,10 @@ textarea#reviewField {
 
 .centered {
     text-align: center;
+}
+
+.right {
+    text-align: right;   
 }
 
 .fixed {
@@ -91,6 +99,10 @@ textarea#reviewField {
     height: auto !important;
 }
 
+.splash-icon {
+    width: 100px;
+}
+
 .user-icon {
     width: 30px;
     height: 30px;
@@ -107,7 +119,11 @@ textarea#reviewField {
 	-moz-border-radius: 10px;
 }
 
-/* ------------------------------- NAVBAR COLORS ------------------------------- */
+
+/* ------------------------------------------------- */
+/* ----------------- NAVBAR COLORS ----------------- */
+/* ------------------------------------------------- */
+
 .navbar-default {
   background-image: none;
   background-color: #9ccceb;
@@ -201,7 +217,7 @@ textarea#reviewField {
 
 .searchbox-wrapper {
     display: inline-block;
-    width: 80%;
+    width: 78%;
     text-align: center;
 }
 
@@ -221,10 +237,6 @@ textarea#reviewField {
 
 .nav.nav-sidebar {
     padding: 15px;
-}
-
-.jumbotron-landing {
-    min-height: 600px;
 }
 
 .form-custom-white {
@@ -263,4 +275,25 @@ textarea#reviewField {
     overflow: hidden;
     text-shadow: 0 0 3px #FFFFFF;
     color: #FFFFFF;
+}
+
+.jumbotron-convention {
+    height: 315px;
+    background: #000 url("/static/images/banner-sakura.jpg") center center;
+    background-size: cover;
+}
+
+/* -------------------------------------------- */
+/* ----------------- WRAPPERS ----------------- */
+/* -------------------------------------------- */
+.splash-section-wrapper {
+    margin: 50px 0px;   
+}
+
+.section-wrapper {
+    margin: 20px 0px;   
+}
+
+.convention-header-wrapper {
+    padding-top: 15px;
 }

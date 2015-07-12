@@ -63,6 +63,16 @@ def convention(request, conID):
             context["currUserConWriteup"] = u.writeups.get(convention = context["convention"])
     return HttpResponse(loader.get_template("convention.html").render(context))
 
+def inventory(request):
+    return HttpResponse(loader.get_template("inventory.html").render(Context()))
+
+def myconventions(request):
+    return HttpResponse(loader.get_template("myconventions.html").render(Context()))
+
+def mywriteups(request):
+    return HttpResponse(loader.get_template("myreviews.html").render(Context()))
+    
+
 def addconvention(request):
     if "cookieID" not in request.session:
         resp = HttpResponse(status = 307)

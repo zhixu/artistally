@@ -12,7 +12,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     
     <!-- Google Fonts -->
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700,400"/>
+    <!--link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700,400"/ -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Playfair+Display+SC:400,700|Open+Sans:400,700"/>
     
     <!-- ArtisTally CSS-->
     <link rel="stylesheet" href="/static/default.css"/>
@@ -72,10 +73,7 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle img-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="/static/images/icon-default.png" class="user-icon"/><span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dashboard</a></li>
-                                    <li><a href="#">My Inventory</a></li>
-                                    <li><a href="#">My Conventions</a></li>
-                                    <li><a href="#">My Reviews</a></li>
+                                    {% include "links.html" %}
                                     <li><a href="/user/{{currUser}}">Edit Profile</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="#" onclick="logout()">Logout</a></li>

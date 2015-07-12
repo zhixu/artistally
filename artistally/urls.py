@@ -6,6 +6,9 @@ urlpatterns = [
     url(r"^admin/", include(admin.site.urls)),
     url(r"^signup$", "aa_app.views.site.signup"),
     url(r"^login$", "aa_app.views.site.login"),
+    url(r"^inventory$", "aa_app.views.site.inventory"),
+    url(r"^myconventions$", "aa_app.views.site.myconventions"),
+    url(r"^mywriteups$", "aa_app.views.site.mywriteups"),
     url(r"^addconvention$", "aa_app.views.site.addconvention"),
     url(r"^addkind$", "aa_app.views.site.addkind"),
     url(r"^addfandom$", "aa_app.views.site.addfandom"),
@@ -17,7 +20,6 @@ urlpatterns = [
     url(r"^convention/([0-9]+)$", "aa_app.views.site.convention"),
     url(r"^item/([0-9]+)$", "aa_app.views.site.item"),
     url(r"^writeup/([0-9]+)$", "aa_app.views.site.writeup"),
-
     url(r"^api/user/newUser$", "aa_app.views.api.user.newUser"),
     url(r"^api/user/login$", "aa_app.views.api.user.login"),
     url(r"^api/user/logout$", "aa_app.views.api.user.logout"),
