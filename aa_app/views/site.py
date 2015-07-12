@@ -70,7 +70,7 @@ def myconventions(request):
     return HttpResponse(loader.get_template("myconventions.html").render(Context()))
 
 def mywriteups(request):
-    return HttpResponse(loader.get_template("myreviews.html").render(Context()))
+    return HttpResponse(loader.get_template("mywriteups.html").render(Context()))
     
 
 def addconvention(request):
