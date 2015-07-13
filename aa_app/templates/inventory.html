@@ -1,76 +1,139 @@
 {% extends "helper.html" %}
-<title>ArtisTally | My Inventory</title>
 {% block head %}
-
+    <title>ArtisTally | My Inventory</title>
+    <script>
+        function makeItem(fieldID) {
+            var jsonDict = new Object();
+            jsonDict.name = $("#new" + fieldID + "nameField").html();
+            jsonDict.conID = {{invCon.ID}};
+            jsonDict.fandom = $("#new" + fieldID + "fandomField").val();
+            jsonDict.kind = $("#new" + fieldID + "kindField").val();
+            jsonDict.price = $("#new" + fieldID + "priceField").html();
+            jsonDict.cost = $("#new" + fieldID + "costField").html();
+            jsonDict.numSold = 0;
+            jsonDict.numLeft = $("#new" + fieldID + "numLeftField").html();
+            $.ajax({
+                url: "/api/item/newItem",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/item/" + response.itemID;
+                },
+                error: function(response) {
+                    alert("newItem went wrong");
+                },
+            });
+        }
+        
+        function updateItem(itemID) {
+            var jsonDict = new Object();
+            jsonDict.itemID = itemID;
+            jsonDict.name = $("#" + itemID + "nameField").html();
+            jsonDict.numLeft = $("#" + itemID + "numLeftField").html();
+            if (jsonDict.name != $("#" + itemID + "nameField").prop("defaultValue")) {
+                var ajaxObj = $.ajax({
+                    url: "/api/item/setName",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    async: false,
+                    success: function(response) {
+                    },
+                    error: function(response) {
+                        alert("setName went wrong");
+                    },
+                });
+                if (ajaxObj.status != 200) {
+                    return false;
+                }
+            }
+            if (jsonDict.numLeft != $("#" + itemID + "numLeftField").prop("defaultValue")) {
+                var ajaxObj = $.ajax({
+                    url: "/api/item/setNumLeft",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    async: false,
+                    success: function(response) {
+                    },
+                    error: function(response) {
+                        alert("setNumLeft went wrong");
+                    },
+                });
+                if (ajaxObj.status != 200) {
+                    return false;
+                }
+            }
+            window.location.reload(true);
+        }
+        
+        function batchUpdate() {
+            $("td[id$=nameField]").each(function() {
+                if (this.id.lastIndexOf("new", 0) == 0) {
+                    makeItem(this.id.slice(3, this.id.length - 9));
+                } else {
+                    updateItem(this.id.slice(0, this.id.length - 9));
+                }
+            });
+        }
+        
+        function makeEditable() {
+            $("td[id$=Field]").attr("contenteditable", "true");
+        }
+    </script>
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-3 sidebar">
-        <div class="fixed">
-            {% include "includes/sidebar.html" %}
-        </div>
-    </div>
+    <div class="row">
+        <div class="col-sm-3 sidebar">
+            <div class="fixed">
+                {% include "includes/sidebar.html" %}
+            </div>
 
-    <div class="col-sm-9">
-        Sort by:
-        <select>
-            <option value="name">Name</option>
-            <option value="fandom">Fandom</option>
-            <option value="kind">Kind</option>
-            <option value="price">Price</option>
-            <option value="numSold">Number Sold</option>
-            <option value="numLeft">Number Left</option>
-        </select>
-        <br>
-        
-        
-        <table>
-            <tr>
-                <th>Thumbnail</th>
-                <th>Name</th>
-                <th>Fandom</th>
-                <th>Kind</th>
-                <th>Price</th>
-                <th>Sold</th>
-                <th>Total</th>
-            </tr>
-            <tr>
-                <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
-                <td>Haru print</td>
-                <td>Free!</td>
-                <td>Print (L)</td>
-                <td>$12</td>
-                <td>7</td>
-                <td>20</td>
-            </tr>
-            <tr>
-                <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
-                <td>Haru print</td>
-                <td>Free!</td>
-                <td>Print (L)</td>
-                <td>$12</td>
-                <td>7</td>
-                <td>20</td>
-            </tr>
-            <tr>
-                <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
-                <td>Haru print</td>
-                <td>Free!</td>
-                <td>Print (L)</td>
-                <td>$12</td>
-                <td>7</td>
-                <td>20</td>
-            </tr>
-        </table>
-        
-        <div>
-            <button onclick="#" class="btn btn-custom-blue" href="#">Edit Inventory</button>
-        </div>
-        <div>
-            <button onclick="#" class="btn btn-custom-blue" href="#">Save Changes</button>
-            <button onclick="#" class="btn btn-custom-blue" href="#">Discard</button>
+            <div class="col-sm-9">
+                Sort by:
+                <select>
+                    <option value="name">Name</option>
+                    <option value="fandom">Fandom</option>
+                    <option value="kind">Kind</option>
+                    <option value="price">Price</option>
+                    <option value="cost">Cost</option>
+                    <option value="numLeft">Number Left</option>
+                </select>
+                <br/>
+
+                <table>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Name</th>
+                        <th>Fandom</th>
+                        <th>Kind</th>
+                        <th>Price</th>
+                        <th>Cost</th>
+                        <th>Left</th>
+                    </tr>
+                    {% for item in currUserConItems %}
+                        <tr>
+                            <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
+                            <td id="{{item.ID}}nameField">{{item.name}}</td>
+                            <td>{{item.fandom}}</td>
+                            <td>{{item.kind}}</td>
+                            <td>${{item.price|floatformat:2}}</td>
+                            <td>${{item.cost|floatformat:2}}</td>
+                            <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <div>
+                    <button onclick="makeEditable()" class="btn btn-custom-blue">Edit Inventory</button>
+                </div>
+                <div>
+                    <button onclick="batchUpdate()" class="btn btn-custom-blue">Save Changes</button>
+                    <button onclick="location.reload()" class="btn btn-custom-blue">Discard</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

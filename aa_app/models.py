@@ -3,7 +3,7 @@ from django.db.models import Avg, Sum
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-import random
+import datetime, random
 
 class ValidatedModel(models.Model):
     class Meta:
@@ -209,3 +209,10 @@ def newConvention(name, startDate, endDate, numAttenders, location, website):
     k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location, website = website)
     k.save()
     return k
+
+INV_CON = None
+if Convention.objects.filter(name = "INV_CON").exists():
+    INV_CON = Convention.objects.get(name = "INV_CON")
+else:
+    INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
+    

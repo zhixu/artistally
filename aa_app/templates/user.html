@@ -13,7 +13,7 @@
                     alert("Your passwords do not match, please try again.");
                 }
                 else {
-                    if (jsonDict.startYear != {{pageUser.startYear}}) {
+                    if (jsonDict.startYear != $("#startYearField").prop("defaultValue")) {
                         var ajaxObj = $.ajax({
                             url: "/api/user/setStartYear",
                             type: "POST",
@@ -30,7 +30,7 @@
                             return false;
                         }
                     }
-                    if (jsonDict.email != "{{pageUser.email}}") {
+                    if (jsonDict.email != $("#emailField").prop("defaultValue")) {
                         var ajaxObj = $.ajax({
                             url: "/api/user/setEmail",
                             type: "POST",
