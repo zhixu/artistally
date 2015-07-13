@@ -4,6 +4,17 @@
     <title>ArtisTally | {{convention}} Overview</title>
     {% if currUser %}
         <script>
+            $(function populateStarRating() {
+                
+                {% if convention.avgRating %} 
+                var rating = {{convention.avgRating}};
+                console.log(rating);
+                var stars = document.getElementById("star-rating-inner");
+                stars.style.width = rating*20;
+                {% endif %}
+                
+            });
+            
             function updateConvention() {
                 var jsonDict = new Object();
                 jsonDict.conID = {{convention.ID}};
@@ -119,24 +130,24 @@
             }
             
             function makeWriteup() {
-            var jsonDict = new Object();
-            jsonDict.rating = $("#ratingField").val();
-            jsonDict.conID = $("#conIDField").val();
-            jsonDict.review = $("#reviewField").val();
-            jsonDict.miscCosts = $("#miscCostsField").val();
-            $.ajax({
-                url: "/api/writeup/newWriteup",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(jsonDict),
-                success: function(response) {
-                    window.location.href = "/writeup/" + response.writeupID;
-                },
-                error: function(response) {
-                    alert("newWriteup went wrong");
-                },
-            });
-        }
+                var jsonDict = new Object();
+                jsonDict.rating = $('input[name="ratingField"]:checked').val();
+                jsonDict.conID = "{{convention.ID}}";
+                jsonDict.review = $("#reviewField").val();
+                jsonDict.miscCosts = $("#miscCostsField").val();
+                $.ajax({
+                    url: "/api/writeup/newWriteup",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        window.location.href = "#";
+                    },
+                    error: function(response) {
+                        alert("newWriteup went wrong");
+                    },
+                });
+            }
         </script>
     {% endif %}
 {% endblock %}
@@ -156,11 +167,15 @@
             </div>
             <div class="col-sm-6"></div>
             <div class="col-sm-1 centered">
+                <span id="star-rating-outer"><span id="star-rating-inner"></span></span>
                 {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
-                <br/>text
             </div>
             <div class="col-sm-2 centered">
-                <button onclick="#" id="loginButton" class="btn btn-custom-blue">Add Review</button>
+                {% if currUser %}
+                <button onclick="#add-review" class="btn btn-custom-blue">Add Review</button>
+                {% else %}
+                <button onclick="/login" class="btn btn-custom-blue">Add Review</button>
+                {% endif %}
             </div>
         </div>
 
@@ -214,7 +229,7 @@
         </div>
         
         {% if currUser %}
-        <div class="section-wrapper">
+        <div class="section-wrapper" id="add-review">
             <h3>Write Review</h3>
             <div class="row">
                 <div class="col-sm-2">
@@ -222,16 +237,18 @@
                     <br/>{{currUser}}
                 </div>
                 <div class="col-sm-10">
+                    Rating:
+                    
                     <span class="star-rating">
-                    <input type="radio" name="rating" value="1"><i></i>
-                    <input type="radio" name="rating" value="2"><i></i>
-                    <input type="radio" name="rating" value="3"><i></i>
-                    <input type="radio" name="rating" value="4"><i></i>
-                    <input type="radio" name="rating" value="5"><i></i>
+                    <input type="radio" name="ratingField" value="1"><i></i>
+                    <input type="radio" name="ratingField" value="2"><i></i>
+                    <input type="radio" name="ratingField" value="3"><i></i>
+                    <input type="radio" name="ratingField" value="4"><i></i>
+                    <input type="radio" name="ratingField" value="5"><i></i>
                     </span>
-                    <strong class="choice">Choose a rating</strong>
                     <br/>
-                    <textarea rows="6" id="reviewField"></textarea>
+                    <textarea rows="5" id="reviewField"></textarea>
+                    <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01"/>
                 </div>
             </div>
             
@@ -242,13 +259,14 @@
         
         {% endif %}
 
-        </div>
+    </div>
     
 
 
     {% if currUser %}
         {% if currUserConWriteup %}
             <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>
+
         {% endif %}
         <br/>
         {% for item in currUserConItems %}

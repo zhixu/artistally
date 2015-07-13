@@ -8,6 +8,10 @@
 
 {% if currUser %}
 
+<!--<div class="jumbotron-convention">
+    <h1>Welcome back, {{currUser}}!</h1>
+</div>-->
+
 <div class="row">
     <div class="col-sm-3 sidebar">
         <div class="fixed">
@@ -16,8 +20,7 @@
     </div>
 
     <div class="col-sm-9">
-        <h1>Welcome back, {{currUser}}!</h1>
-        
+        <div class="section-wrapper">
         View data from: <input type="date"> to: <input type="date">
         <div class="row">
             <div class="col-sm-4"><h3>5</h3>
@@ -37,6 +40,7 @@
         <img src="/static/images/chart.png"/>
         <br/>
         <img src="/static/images/chart.png"/>
+        </div>
     </div>
 </div>
 
