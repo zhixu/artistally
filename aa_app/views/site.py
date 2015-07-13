@@ -39,6 +39,7 @@ def user(request, username):
     return HttpResponse(loader.get_template("user.html").render(context))
 
 def convention(request, conID):
+    assert conID != models.INV_CON.ID
     context = Context()
     context["convention"] = models.Convention.objects.get(ID = int(conID))
     itemKindsCounter = {}
@@ -46,13 +47,17 @@ def convention(request, conID):
     itemsSoldTotal = context["convention"].items.aggregate(Sum("numSold"))["numSold__sum"]
     for k in context["convention"].items.all():
         if k.kind in itemKindsCounter:
-            itemKindsCounter[k.kind] += k.numSold / itemsSoldTotal
+            itemKindsCounter[k.kind] += k.numSold
         else:
-            itemKindsCounter[k.kind] = k.numSold / itemsSoldTotal
+            itemKindsCounter[k.kind] = k.numSold
         if k.fandom in itemFandomsCounter:
-            itemFandomsCounter[k.fandom] += k.numSold / itemsSoldTotal
+            itemFandomsCounter[k.fandom] += k.numSold
         else:
-            itemFandomsCounter[k.fandom] = k.numSold / itemsSoldTotal
+            itemFandomsCounter[k.fandom] = k.numSold
+    for k in itemKindsCounter:
+        itemKindsCounter[k] /= itemsSoldTotal
+    for k in itemFandomsCounter:
+        itemFandomsCounter[k] /= itemsSoldTotal
     context["conTopItemKinds"] = sorted(itemKindsCounter.items(), key = operator.itemgetter(1), reverse = True)
     context["conTopItemFandoms"] = sorted(itemFandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
     if "cookieID" in request.session:
@@ -71,7 +76,7 @@ def inventory(request):
     else:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context = Context({"currUser": u, "invCon": models.INV_CON})
-        context["currUserConItems"] = u.items.filter(convention = models.INV_CON)
+        context["currUserInvItems"] = u.items.filter(convention = models.INV_CON)
         return HttpResponse(loader.get_template("inventory.html").render(context))
 
 def myconventions(request):
@@ -112,8 +117,9 @@ def addwriteup(request, conID = None):
     else:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context = Context({"currUser": u})
-        context["cons"] = models.Convention.objects.all()
+        context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
         if conID != None:
+            assert conID != models.INV_CON.ID
             context["currCon"] = models.Convention.objects.get(ID = conID)
         return HttpResponse(loader.get_template("addwriteup.html").render(context))
 
@@ -145,10 +151,11 @@ def additem(request, conID = None):
     else:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context = Context({"currUser": u})
-        context["cons"] = models.Convention.objects.all()
+        context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
         context["kinds"] = models.Kind.objects.all()
         context["fandoms"] = models.Fandom.objects.all()
         if conID != None:
+            assert conID != models.INV_CON.ID
             context["currCon"] = models.Convention.objects.get(ID = conID)
         return HttpResponse(loader.get_template("additem.html").render(context))
         

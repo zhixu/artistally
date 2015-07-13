@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Q, Sum
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -33,7 +33,7 @@ class Convention(ValidatedModel):
         return profit / self.users().count()
     
     def users(self):
-        return User.objects.filter(items__convention = self)
+        return User.objects.filter(Q(items__convention = self) | Q(writeups__convention = self))
 
     def clean(self):
         super().clean()
@@ -74,6 +74,9 @@ class User(ValidatedModel):
     cookieID = models.BigIntegerField(unique = True)
     startYear = models.PositiveSmallIntegerField(null = True, blank = True, default = None)
 
+    def conventions(self):
+        return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID)
+    
     def __str__(self):
         return self.username
 
@@ -111,6 +114,8 @@ class Writeup(ValidatedModel):
 
     def clean(self):
         super().clean()
+        if self.convention is INV_CON:
+            raise ValidationError("you can't make a writeup for the INV_CON")
         filtered = self.user.writeups.filter(convention = self.convention)
         if filtered.exists() and filtered.get().ID is not self.ID:
             raise ValidationError("user already has a writeup for that convention")
@@ -161,6 +166,11 @@ class Item(ValidatedModel):
     cost = models.DecimalField(max_digits = 10, decimal_places = 2)
     numSold = models.PositiveIntegerField()
     numLeft = models.PositiveIntegerField()
+    
+    def clean(self):
+        super().clean()
+        if self.convention is INV_CON and self.numSold != 0:
+            raise ValidationError("you can't have a nonzero numSold for the INV_CON")
 
     def __str__(self):
         return self.name
@@ -215,4 +225,3 @@ if Convention.objects.filter(name = "INV_CON").exists():
     INV_CON = Convention.objects.get(name = "INV_CON")
 else:
     INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
-    
