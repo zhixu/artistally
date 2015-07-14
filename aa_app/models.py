@@ -33,7 +33,7 @@ class Convention(ValidatedModel):
         return profit / self.users().count()
     
     def users(self):
-        return User.objects.filter(Q(items__convention = self) | Q(writeups__convention = self))
+        return User.objects.filter(Q(items__convention = self) | Q(writeups__convention = self)).distinct()
 
     def clean(self):
         super().clean()
@@ -75,7 +75,7 @@ class User(ValidatedModel):
     startYear = models.PositiveSmallIntegerField(null = True, blank = True, default = None)
 
     def conventions(self):
-        return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID)
+        return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
     
     def __str__(self):
         return self.username

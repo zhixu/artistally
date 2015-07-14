@@ -12,6 +12,7 @@ def root(request):
     if "cookieID" in request.session:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context["currUser"] = u
+        context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"]
     return HttpResponse(loader.get_template("root.html").render(context))
 
 def signup(request):
