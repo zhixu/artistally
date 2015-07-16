@@ -25,8 +25,8 @@
         <div class="row">
             <div class="col-sm-4"><h3>{{currUser.conventions.count}}</h3>
             conventions attended</div>
-            <div class="col-sm-4"><h3>$400.23</h3>
-            net profit</div>
+            <div class="col-sm-4"><h3>${{currUser.profit|floatformat:2}}</h3>
+            profit</div>
             <div class="col-sm-4"><h3>{{currUserItemsSold}}</h3>
             items sold</div>
         </div>

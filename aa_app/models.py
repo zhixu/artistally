@@ -77,6 +77,13 @@ class User(ValidatedModel):
     def conventions(self):
         return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
     
+    def profit(self):
+        profit = -self.writeups.aggregate(Sum("miscCosts"))["miscCosts__sum"]
+        for item in self.items.all():
+            profit += item.price * item.numSold
+            profit -= item.cost * item.numSold  # numSold or numLeft?
+        return profit
+    
     def __str__(self):
         return self.username
 
