@@ -174,4 +174,5 @@ def writeup(request, writeupID):
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context["currUser"] = u
     context["writeup"] = models.Writeup.objects.get(ID = int(writeupID))
+    context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
     return HttpResponse(loader.get_template("writeup.html").render(context))

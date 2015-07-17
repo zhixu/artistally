@@ -26,7 +26,7 @@ class Convention(ValidatedModel):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
     
     def avgUserProfit(self):
-        profit = -self.writeups.aggregate(Sum("miscCosts"))["miscCosts__sum"]
+        profit = -self.miscCosts.aggregate(Sum("amount"))["amount__sum"]
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold  # numSold or numLeft?
@@ -78,7 +78,7 @@ class User(ValidatedModel):
         return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
     
     def profit(self):
-        profit = -self.writeups.aggregate(Sum("miscCosts"))["miscCosts__sum"]
+        profit = -self.miscCosts.aggregate(Sum("amount"))["amount__sum"]
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold  # numSold or numLeft?
@@ -95,17 +95,13 @@ class User(ValidatedModel):
         self.password = newPass
         self.save()
 
-#    def setUsername(self, newUsername):
-#        self.username = newUsername
-#        self.save()
-
     def setStartYear(self, newStartYear):
         self.startYear = newStartYear
         self.save()
 
 #    def regenerateCookieID(self):
 #        self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-#        while User.objects.filter(cookieID = self.cookieID):
+#        while User.objects.filter(cookieID = self.cookieID).exists():
 #            self.cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
 #        self.save()
 
@@ -115,7 +111,6 @@ class Writeup(ValidatedModel):
     convention = models.ForeignKey(Convention, related_name = "writeups")
     rating = models.PositiveSmallIntegerField(validators = [MaxValueValidator(5)])
     review = models.TextField()
-    miscCosts = models.DecimalField(max_digits = 10, decimal_places = 2)
     writeTime = models.DateTimeField(auto_now_add = True)
     editTime = models.DateTimeField(auto_now = True)
 
@@ -136,10 +131,6 @@ class Writeup(ValidatedModel):
 
     def setReview(self, newReview):
         self.review = newReview
-        self.save()
-
-    def setMiscCosts(self, newMiscCosts):
-        self.miscCosts = newMiscCosts
         self.save()
 
 class Fandom(ValidatedModel):
@@ -178,6 +169,8 @@ class Item(ValidatedModel):
         super().clean()
         if self.convention is INV_CON and self.numSold != 0:
             raise ValidationError("you can't have a nonzero numSold for the INV_CON")
+        if self.price < 0 or self.cost < 0:
+            raise ValidationError("you can't have negative price or cost")
 
     def __str__(self):
         return self.name
@@ -190,20 +183,38 @@ class Item(ValidatedModel):
         self.numLeft = newNumLeft
         self.save()
 
-    def setName(self, name):
-        self.name = name
+    def setName(self, newName):
+        self.name = Name
+        self.save()
+        
+class MiscCost(ValidatedModel):
+    ID = models.AutoField(primary_key = True)
+    user = models.ForeignKey(User, related_name = "miscCosts")
+    convention = models.ForeignKey(Convention, related_name = "miscCosts")
+    amount = models.DecimalField(max_digits = 10, decimal_places = 2)
+    
+    def clean(self):
+        super().clean()
+        if self.amount < 0:
+            raise ValidationError("you can't have negative miscCost amount")
+    
+    def __str__(self):
+        return str(self.amount)
+    
+    def setAmount(self, newAmount):
+        self.amount = newAmount
         self.save()
 
 def newUser(username, password, email):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-    while User.objects.filter(cookieID = cookieID):
+    while User.objects.filter(cookieID = cookieID).exists():
         cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
     k = User(username = username, password = password, email = email, cookieID = cookieID)
     k.save()
     return k
 
-def newWriteup(user, convention, rating, review, miscCosts):
-    k = Writeup(user = user, convention = convention, rating = rating, review = review, miscCosts = miscCosts)
+def newWriteup(user, convention, rating, review):
+    k = Writeup(user = user, convention = convention, rating = rating, review = review)
     k.save()
     return k
 
@@ -214,6 +225,11 @@ def newFandom(name):
 
 def newKind(name):
     k = Kind(name = name)
+    k.save()
+    return k
+
+def newMiscCost(user, convention, amount):
+    k = MiscCost(user = user, convention = convention, amount = amount)
     k.save()
     return k
 

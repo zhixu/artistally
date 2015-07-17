@@ -3,12 +3,28 @@
 {% block head %}
     <title>Artistally Create Writeup</title>
     <script>
+        function makeMiscCost() {
+            var jsonDict = new Object();
+            jsonDict.conID = $("#conIDField").val();
+            jsonDict.amount = $("#miscCostsField").val();
+            $.ajax({
+                url: "/api/miscCost/newMiscCost",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                },
+                error: function(response) {
+                    alert("newMiscCost went wrong");
+                },
+            });
+        }
+        
         function makeWriteup() {
             var jsonDict = new Object();
             jsonDict.rating = $("#ratingField").val();
             jsonDict.conID = $("#conIDField").val();
             jsonDict.review = $("#reviewField").val();
-            jsonDict.miscCosts = $("#miscCostsField").val();
             $.ajax({
                 url: "/api/writeup/newWriteup",
                 type: "POST",
@@ -39,5 +55,5 @@
     <br/>
     <textarea rows="5" id="reviewField" placeholder="review goes here"></textarea>
     <br/>
-    <a onclick="makeWriteup()" href="#">Submit</a>
+    <a onclick="makeMiscCost(); makeWriteup()" href="#">Submit</a>
 {% endblock %}
