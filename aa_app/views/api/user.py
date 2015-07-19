@@ -35,6 +35,7 @@ def setEmail(request):
 def setPassword(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
+    assert u.password == d["oldPassword"], "wrong current password"
     u.setPassword(d["password"])
     return EMPTY_JSON_200
 

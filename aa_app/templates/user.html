@@ -9,6 +9,7 @@
                 jsonDict.startYear = $("#startYearField").val();
                 jsonDict.email = $("#emailField").val();
                 jsonDict.password = $("#passField1").val();
+                jsonDict.oldPassword = $("#oldPassField").val();
                 if (jsonDict.password != $("#passField2").val()) {
                     alert("Your passwords do not match, please try again.");
                 }
@@ -80,6 +81,8 @@
         <input type="password" id="passField1" placeholder="new password?"/>
         <br/>
         <input type="password" id="passField2" placeholder="verify new password?"/>
+        <br/>
+        <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>
         <br/>
         <input type="email" id="emailField" value="{{pageUser.email}}"/>
         <br/>
