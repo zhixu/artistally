@@ -4,17 +4,14 @@
     <title>ArtisTally | {{convention}} Overview</title>
     {% if currUser %}
         <script>
-            $(function populateStarRating() {
-                
-                {% if convention.avgRating %} 
-                var rating = {{convention.avgRating}};
-                console.log(rating);
-                var stars = document.getElementById("star-rating-inner");
-                stars.style.width = rating*20;
-                {% endif %}
-                
-            });
-            
+            {% if convention.avgRating %}
+                $(function populateStarRating() {
+                    var rating = {{convention.avgRating}};
+                    var stars = document.getElementById("star-rating-inner");
+                    stars.style.width = rating * 20;
+                });
+            {% endif %}
+
             function updateConvention() {
                 var jsonDict = new Object();
                 jsonDict.conID = {{convention.ID}};
@@ -128,6 +125,7 @@
                 }
                 window.location.reload(true);
             }
+            
             function makeWriteup() {
                 var jsonDict = new Object();
                 jsonDict.rating = $('input[name="ratingField"]:checked').val();
@@ -228,34 +226,32 @@
         </div>
         
         {% if currUser %}
-        <div class="section-wrapper" id="add-review">
-            <h3>Write Review</h3>
-            <div class="row">
-                <div class="col-sm-2">
-                    <img src="/static/images/icon-default.png" class="user-icon-large centered"/>
-                    <br/>{{currUser}}
+            <div class="section-wrapper" id="add-review">
+                <h3>Write Review</h3>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <img src="/static/images/icon-default.png" class="user-icon-large centered"/>
+                        <br/>{{currUser}}
+                    </div>
+                    <div class="col-sm-10">
+                        Rating:
+                        <span class="star-rating">
+                            <input type="radio" name="ratingField" value="1"><i></i>
+                            <input type="radio" name="ratingField" value="2"><i></i>
+                            <input type="radio" name="ratingField" value="3"><i></i>
+                            <input type="radio" name="ratingField" value="4"><i></i>
+                            <input type="radio" name="ratingField" value="5"><i></i>
+                        </span>
+                        <br/>
+                        <textarea rows="5" id="reviewField"></textarea>
+                        <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01"/>
+                    </div>
                 </div>
-                <div class="col-sm-10">
-                    Rating:
-                    
-                    <span class="star-rating">
-                    <input type="radio" name="ratingField" value="1"><i></i>
-                    <input type="radio" name="ratingField" value="2"><i></i>
-                    <input type="radio" name="ratingField" value="3"><i></i>
-                    <input type="radio" name="ratingField" value="4"><i></i>
-                    <input type="radio" name="ratingField" value="5"><i></i>
-                    </span>
-                    <br/>
-                    <textarea rows="5" id="reviewField"></textarea>
-                    <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01"/>
+
+                <div class="right">
+                    <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
                 </div>
             </div>
-            
-            <div class="right">
-                <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
-            </div>
-        </div>
-        
         {% endif %}
 
     </div>
@@ -265,7 +261,6 @@
     {% if currUser %}
         {% if currUserConWriteup %}
             <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>
-
         {% endif %}
         <br/>
         {% for item in currUserConItems %}

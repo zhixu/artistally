@@ -13,6 +13,7 @@
             jsonDict.cost = $("#costField").val();
             jsonDict.numSold = $("#numSoldField").val();
             jsonDict.numLeft = $("#numLeftField").val();
+            jsonDict.image = $("#imageField").val();
             $.ajax({
                 url: "/api/item/newItem",
                 type: "POST",
@@ -60,6 +61,8 @@
     You sold <input type="number" min="0" id="numSoldField" placeholder="0"/> already
     <br/>
     You have <input type="number" min="0" id="numLeftField" placeholder="0"/> left
+    <br/>
+    <input type="text" id="imageField" placeholder="http://URL/of/image optional"/>
     <br/>
     <a onclick="makeItem()" href="#">Submit</a>
 {% endblock %}

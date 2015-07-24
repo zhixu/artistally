@@ -15,6 +15,8 @@ def newItem(request):
     fandom = models.Fandom.objects.get(name = d["fandom"])
     kind = models.Kind.objects.get(name = d["kind"])
     i = models.newItem(u, convention, d["name"], fandom, kind, Decimal(d["price"]), Decimal(d["cost"]), int(d["numSold"]), int(d["numLeft"]))
+    if "image" in d and d["image"] != "":
+        i.setImage(d["image"])
     return HttpResponse(json.dumps({"itemID": i.ID}), content_type = "application/json")
 
 def setNumSold(request):
@@ -39,4 +41,12 @@ def setName(request):
     i = models.Item.objects.get(ID = int(d["itemID"]))
     assert i.user == u, "not your item"
     i.setName(d["name"])
+    return EMPTY_JSON_200
+
+def setImage(request):
+    d = json.loads(bytes.decode(request.body))
+    u = models.User.objects.get(cookieID = request.session["cookieID"])
+    i = models.Item.objects.get(ID = int(d["itemID"]))
+    assert i.user == u, "not your item"
+    i.setImage(d["image"] if d["image"] != "" else None)
     return EMPTY_JSON_200

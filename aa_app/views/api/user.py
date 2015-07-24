@@ -10,6 +10,10 @@ EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
 def newUser(request):
     d = json.loads(bytes.decode(request.body))
     u = models.newUser(d["username"], d["password"], d["email"])
+    if "startYear" in d and d["startYear"] != "":
+        u.setStartYear(int(d["startYear"]))
+    if "image" in d and d["image"] != "":
+        u.setImage(d["image"])
     request.session["cookieID"] = u.cookieID
     return EMPTY_JSON_200
 
@@ -39,14 +43,14 @@ def setPassword(request):
     u.setPassword(d["password"])
     return EMPTY_JSON_200
 
-#def setUsername(request):
-#    d = json.loads(bytes.decode(request.body))
-#    u = models.User.objects.get(cookieID = request.session["cookieID"])
-#    u.setUsername(d["username"])
-#    return EMPTY_JSON_200
-
 def setStartYear(request):
     d = json.loads(bytes.decode(request.body))
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     u.setStartYear(int(d["startYear"]))
+    return EMPTY_JSON_200
+
+def setImage(request):
+    d = json.loads(bytes.decode(request.body))
+    u = models.User.objects.get(cookieID = request.session["cookieID"])
+    u.setImage(d["image"] if d["image"] != "" else None)
     return EMPTY_JSON_200

@@ -13,6 +13,8 @@ def newConvention(request):
     startDate = datetime.datetime.strptime(d["startDate"], "%Y-%m-%d")
     endDate = datetime.datetime.strptime(d["endDate"], "%Y-%m-%d")
     c = models.newConvention(d["name"], startDate, endDate, int(d["numAttenders"]), d["location"], d["website"])
+    if "image" in d and d["image"] != "":
+        c.setImage(d["image"])
     return HttpResponse(json.dumps({"conID": c.ID}), content_type = "application/json")
 
 def setName(request):
@@ -55,4 +57,11 @@ def setWebsite(request):
     u = models.User.objects.get(cookieID = request.session["cookieID"])
     c = models.Convention.objects.get(ID = (d["conID"]))
     c.setWebsite(d["website"])
+    return EMPTY_JSON_200
+
+def setImage(request):
+    d = json.loads(bytes.decode(request.body))
+    u = models.User.objects.get(cookieID = request.session["cookieID"])
+    c = models.Convention.objects.get(ID = (d["conID"]))
+    c.setImage(d["image"] if d["image"] != "" else None)
     return EMPTY_JSON_200

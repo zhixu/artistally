@@ -1,6 +1,13 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from aa_app import models
+
+if models.Convention.objects.filter(name = "INV_CON").exists():
+    models.INV_CON = models.Convention.objects.get(name = "INV_CON")
+else:
+    models.INV_CON = models.newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
+
 urlpatterns = [
     url(r"^$", "aa_app.views.site.root"),
     url(r"^admin/", include(admin.site.urls)),
@@ -25,12 +32,13 @@ urlpatterns = [
     url(r"^api/user/logout$", "aa_app.views.api.user.logout"),
     url(r"^api/user/setEmail$", "aa_app.views.api.user.setEmail"),
     url(r"^api/user/setPassword$", "aa_app.views.api.user.setPassword"),
-#    url(r"^api/user/setUsername$", "aa_app.views.api.user.setUsername"),
+    url(r"^api/user/setImage$", "aa_app.views.api.user.setImage"),
     url(r"^api/user/setStartYear$", "aa_app.views.api.user.setStartYear"),
     url(r"^api/item/newItem$", "aa_app.views.api.item.newItem"),
     url(r"^api/item/setNumSold$", "aa_app.views.api.item.setNumSold"),
     url(r"^api/item/setNumLeft$", "aa_app.views.api.item.setNumLeft"),
     url(r"^api/item/setName$", "aa_app.views.api.item.setName"),
+    url(r"^api/item/setImage$", "aa_app.views.api.item.setImage"),
     url(r"^api/writeup/newWriteup$", "aa_app.views.api.writeup.newWriteup"),
     url(r"^api/writeup/setRating$", "aa_app.views.api.writeup.setRating"),
     url(r"^api/writeup/setReview$", "aa_app.views.api.writeup.setReview"),
@@ -46,4 +54,5 @@ urlpatterns = [
     url(r"^api/convention/setLocation$", "aa_app.views.api.convention.setLocation"),
     url(r"^api/convention/setStartDate$", "aa_app.views.api.convention.setStartDate"),
     url(r"^api/convention/setEndDate$", "aa_app.views.api.convention.setEndDate"),
+    url(r"^api/convention/setImage$", "aa_app.views.api.convention.setImage"),
 ]

@@ -20,7 +20,8 @@ class Convention(ValidatedModel):
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
     location = models.TextField()
-    website = models.URLField(max_length=200)
+    website = models.URLField(max_length = 200)
+    image = models.URLField(max_length = 200, blank = True, null = True, default = None)
     
     def avgRating(self):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
@@ -67,12 +68,17 @@ class Convention(ValidatedModel):
         self.website = newWebsite
         self.save()
 
+    def setImage(self, newImage):
+        self.image = newImage
+        self.save()
+
 class User(ValidatedModel):
     username = models.SlugField(primary_key = True, max_length = 50)
     password = models.TextField()
     email = models.EmailField(unique = True, max_length = 254)
     cookieID = models.BigIntegerField(unique = True)
     startYear = models.PositiveSmallIntegerField(null = True, blank = True, default = None)
+    image = models.URLField(max_length = 200, blank = True, null = True, default = None)
 
     def conventions(self):
         return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
@@ -97,6 +103,10 @@ class User(ValidatedModel):
 
     def setStartYear(self, newStartYear):
         self.startYear = newStartYear
+        self.save()
+
+    def setImage(self, newImage):
+        self.image = newImage
         self.save()
 
 #    def regenerateCookieID(self):
@@ -164,6 +174,7 @@ class Item(ValidatedModel):
     cost = models.DecimalField(max_digits = 10, decimal_places = 2)
     numSold = models.PositiveIntegerField()
     numLeft = models.PositiveIntegerField()
+    image = models.URLField(max_length = 200, blank = True, null = True, default = None)
     
     def clean(self):
         super().clean()
@@ -185,6 +196,10 @@ class Item(ValidatedModel):
 
     def setName(self, newName):
         self.name = Name
+        self.save()
+
+    def setImage(self, newImage):
+        self.image = newImage
         self.save()
         
 class MiscCost(ValidatedModel):
@@ -238,13 +253,9 @@ def newItem(user, convention, name, fandom, kind, price, cost, numSold, numLeft)
     k.save()
     return k
 
-def newConvention(name, startDate, endDate, numAttenders, location, website):
+def newConvention(name, startDate, endDate, numAttenders, location, website, image):
     k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location, website = website)
     k.save()
     return k
 
-INV_CON = None
-if Convention.objects.filter(name = "INV_CON").exists():
-    INV_CON = Convention.objects.get(name = "INV_CON")
-else:
-    INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
+INV_CON = None      # initialized in artistally/urls.py
