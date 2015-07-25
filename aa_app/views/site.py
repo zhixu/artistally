@@ -12,7 +12,7 @@ def root(request):
     if "cookieID" in request.session:
         u = models.User.objects.get(cookieID = request.session["cookieID"])
         context["currUser"] = u
-        context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"]
+        context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
     return HttpResponse(loader.get_template("root.html").render(context))
 
 def signup(request):
@@ -45,7 +45,7 @@ def convention(request, conID):
     context["convention"] = models.Convention.objects.get(ID = int(conID))
     itemKindsCounter = {}
     itemFandomsCounter = {}
-    itemsSoldTotal = context["convention"].items.aggregate(Sum("numSold"))["numSold__sum"]
+    itemsSoldTotal = context["convention"].items.aggregate(Sum("numSold"))["numSold__sum"] or 0
     for k in context["convention"].items.all():
         if k.kind in itemKindsCounter:
             itemKindsCounter[k.kind] += k.numSold

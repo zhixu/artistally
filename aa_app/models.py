@@ -27,7 +27,7 @@ class Convention(ValidatedModel):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
     
     def avgUserProfit(self):
-        profit = -self.miscCosts.aggregate(Sum("amount"))["amount__sum"]
+        profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold  # numSold or numLeft?
@@ -84,7 +84,7 @@ class User(ValidatedModel):
         return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
     
     def profit(self):
-        profit = -self.miscCosts.aggregate(Sum("amount"))["amount__sum"]
+        profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold  # numSold or numLeft?
