@@ -23,11 +23,13 @@
         <div class="section-wrapper">
         View data from: <input type="date"> to: <input type="date">
         <div class="row">
-            <div class="col-sm-4"><h3>{{currUser.conventions.count}}</h3>
-            conventions attended</div>
-            <div class="col-sm-4"><h3>${{currUser.profit|floatformat:2}}</h3>
+            <div class="col-sm-4">
+                <h3 class="text-right">{{currUser.conventions.count}}</h3>
+                conventions attended
+            </div>
+            <div class="col-sm-4"><h3 class="text-right">${{currUser.profit|floatformat:2}}</h3>
             profit</div>
-            <div class="col-sm-4"><h3>{{currUserItemsSold}}</h3>
+            <div class="col-sm-4"><h3 class="text-right">{{currUserItemsSold}}</h3>
             items sold</div>
         </div>
         <br/>
@@ -54,7 +56,7 @@
     </div>
 </div>
 <div class="container">
-    <div class="splash-section-wrapper centered">
+    <div class="splash-section-wrapper text-center">
     <h3>Designed by an artist for artists.</h3>
     <br/>
     <br/>
