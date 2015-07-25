@@ -253,7 +253,7 @@ def newItem(user, convention, name, fandom, kind, price, cost, numSold, numLeft)
     k.save()
     return k
 
-def newConvention(name, startDate, endDate, numAttenders, location, website, image):
+def newConvention(name, startDate, endDate, numAttenders, location, website):
     k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location, website = website)
     k.save()
     return k
