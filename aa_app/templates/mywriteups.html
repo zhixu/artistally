@@ -1,4 +1,5 @@
-{% extends "helper.html" %}
+{% extends "includes/helper.html" %}
+
 {% block head %}
     <title>ArtisTally | My Reviews</title>
 {% endblock %}
@@ -14,11 +15,10 @@
 
             </div>
         </div>
+    </div>
 
-</div>
 
-
-{% for writeup in currUser.writeups %}
-{% endfor %}
+    {% for writeup in currUser.writeups %}
+    {% endfor %}
 
 {% endblock %}

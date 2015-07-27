@@ -1,24 +1,25 @@
-{% extends "helper.html" %}
+{% extends "includes/helper.html" %}
+
 {% block head %}
-<title>ArtisTally | My Conventions</title>
+    <title>ArtisTally | My Conventions</title>
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-3 sidebar">
-        <div class="fixed">
-            {% include "includes/sidebar.html" %}
-        </div>
+    <div class="row">
+        <div class="col-sm-3 sidebar">
+            <div class="fixed">
+                {% include "includes/sidebar.html" %}
+            </div>
 
-        <div class="col-sm-9">
+            <div class="col-sm-9">
 
+            </div>
         </div>
     </div>
-</div>
 
-{% for con in currUser.conventions %}
-    {{con}}
-    <br/>
-{% endfor %}
+    {% for con in currUser.conventions %}
+        {{con}}
+        <br/>
+    {% endfor %}
 
 {% endblock %}

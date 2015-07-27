@@ -1,9 +1,52 @@
-{% extends "helper.html" %}
+{% extends "includes/helper.html" %}
 
 {% block head %}
     <title>Artistally Item {{item}}</title>
     {% if currUser and currUser == item.user %}
         <script>
+            function uploadFile() {
+                var file = document.getElementById("fileField").files[0];
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var jsonDict = new Object();
+                    jsonDict.file = reader.result.split(",")[1];
+                    $.ajax({
+                        url: "/api/util/uploadFile",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            updateImage(response.url);
+                        },
+                        error: function(response) {
+                            alert("uploadFile went wrong");
+                        },
+                    });
+                }
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            function updateImage(url) {
+                var jsonDict = new Object();
+                jsonDict.image = url;
+                jsonDict.itemID = {{item.ID}};
+                var ajaxObj = $.ajax({
+                    url: "/api/item/setImage",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    async: false,
+                    error: function(response) {
+                        alert("setImage went wrong");
+                    },
+                });
+                if (ajaxObj.status == 200) {
+                    window.location.reload(true);
+                }
+            }
+            
             function updateItem() {
                 var jsonDict = new Object();
                 jsonDict.itemID = {{item.ID}};
@@ -17,8 +60,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setName went wrong");
                         },
@@ -34,8 +75,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setNumSold went wrong");
                         },
@@ -51,8 +90,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setNumLeft went wrong");
                         },
@@ -61,7 +98,7 @@
                         return false;
                     }
                 }
-                window.location.reload(true);
+                uploadFile();
             }
         </script>
     {% endif %}
@@ -70,6 +107,14 @@
 {% block body %}
     {% if currUser and currUser == item.user %}
         Item name <input type="text" id="nameField" value="{{item}}"/>
+        <br/>
+        {% if item.image %}
+            <img src="{{item.image}}"/>
+            <br/>
+        {% endif %}
+        upload or replace the pic?
+        <br/>
+        <input type="file" id="fileField" accept="image/*"/> max 10 MiB
         <br/>
         For this convention: <a href="/convention/{{item.convention.ID}}">{{item.convention}}</a>
         <br/>
@@ -89,6 +134,10 @@
     {% else %}
         Item name {{item}}
         <br/>
+        {% if item.image %}
+            <img src="{{pageUser.image}}"/>
+            <br/>
+        {% endif %}
         For this convention: <a href="/convention/{{item.convention.ID}}">{{item.convention}}</a>
         <br/>
         For this fandom: {{item.fandom}}

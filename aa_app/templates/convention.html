@@ -1,17 +1,60 @@
-{% extends "helper.html" %}
+{% extends "includes/helper.html" %}
 
 {% block head %}
     <title>ArtisTally | {{convention}} Overview</title>
     {% if currUser %}
         <script>
-            {% if convention.avgRating %}
-                $(function populateStarRating() {
+            {% if convention.avgRating != None %}
+                function populateStarRating() {
                     var rating = {{convention.avgRating}};
                     var stars = document.getElementById("star-rating-inner");
                     stars.style.width = rating * 20;
-                });
+                }
             {% endif %}
-
+            
+            function uploadFile() {
+                var file = document.getElementById("fileField").files[0];
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var jsonDict = new Object();
+                    jsonDict.file = reader.result.split(",")[1];
+                    $.ajax({
+                        url: "/api/util/uploadFile",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            updateImage(response.url);
+                        },
+                        error: function(response) {
+                            alert("uploadFile went wrong");
+                        },
+                    });
+                }
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            function updateImage(url) {
+                var jsonDict = new Object();
+                jsonDict.image = url;
+                jsonDict.conID = {{convention.ID}};
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/setImage",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    async: false,
+                    error: function(response) {
+                        alert("setImage went wrong");
+                    },
+                });
+                if (ajaxObj.status == 200) {
+                    window.location.reload(true);
+                }
+            }
+/*
             function updateConvention() {
                 var jsonDict = new Object();
                 jsonDict.conID = {{convention.ID}};
@@ -28,8 +71,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setName went wrong");
                         },
@@ -45,8 +86,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setStartDate went wrong");
                         },
@@ -62,8 +101,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setName went wrong");
                         },
@@ -79,8 +116,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setNumAttenders went wrong");
                         },
@@ -96,8 +131,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setLocation went wrong");
                         },
@@ -113,8 +146,6 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         async: false,
-                        success: function(response) {
-                        },
                         error: function(response) {
                             alert("setWebsite went wrong");
                         },
@@ -123,9 +154,9 @@
                         return false;
                     }
                 }
-                window.location.reload(true);
+                uploadFile();
             }
-            
+            */
             function makeWriteup() {
                 var jsonDict = new Object();
                 jsonDict.rating = $('input[name="ratingField"]:checked').val();
@@ -137,9 +168,6 @@
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
-                    success: function(response) {
-                        window.location.href = "#";
-                    },
                     error: function(response) {
                         alert("newWriteup went wrong");
                     },
@@ -255,8 +283,6 @@
         {% endif %}
 
     </div>
-    
-
 
     {% if currUser %}
         {% if currUserConWriteup %}
@@ -268,6 +294,16 @@
             <br/>
         {% endfor %}
         <a href="/additem/{{convention.ID}}">Add an Item!</a>
+        <br/>
+        {% if convention.image %}
+            <img src="{{convention.image}}"/>
+            <br/>
+        {% endif %}
+        upload or replace the pic?
+        <br/>
+        <input type="file" id="fileField" accept="image/*"/> max 10 MiB
+        <br/>
+        <a onclick="uploadFile()" href="#">Submit</a>
     {% else %}
         {{convention.name}}'s Page
         <br/>
@@ -280,6 +316,11 @@
         starts/started on {{convention.startDate}}
         <br/>
         ends/ended on {{convention.endDate}}
+        <br/>
+        {% if convention.image %}
+            <img src="{{convention.image}}"/>
+            <br/>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

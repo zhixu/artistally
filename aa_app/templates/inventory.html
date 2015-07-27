@@ -1,4 +1,5 @@
-{% extends "helper.html" %}
+{% extends "includes/helper.html" %}
+
 {% block head %}
     <title>ArtisTally | My Inventory</title>
     <script>
@@ -38,8 +39,6 @@
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
                     async: false,
-                    success: function(response) {
-                    },
                     error: function(response) {
                         alert("setName went wrong");
                     },
@@ -55,8 +54,6 @@
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
                     async: false,
-                    success: function(response) {
-                    },
                     error: function(response) {
                         alert("setNumLeft went wrong");
                     },

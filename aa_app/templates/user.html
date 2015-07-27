@@ -1,14 +1,55 @@
-{% extends "helper.html" %}
+{% extends "includes/helper.html" %}
 
 {% block head %}
     <title>Artistally User {{pageUser}}</title>
     {% if currUser and currUser == pageUser %}
         <script>
+            function uploadFile() {
+                var file = document.getElementById("fileField").files[0];
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var jsonDict = new Object();
+                    jsonDict.file = reader.result.split(",")[1];
+                    $.ajax({
+                        url: "/api/util/uploadFile",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            updateImage(response.url);
+                        },
+                        error: function(response) {
+                            alert("uploadFile went wrong");
+                        },
+                    });
+                }
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            function updateImage(url) {
+                var jsonDict = new Object();
+                jsonDict.image = url;
+                var ajaxObj = $.ajax({
+                    url: "/api/user/setImage",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    async: false,
+                    error: function(response) {
+                        alert("setImage went wrong");
+                    },
+                });
+                if (ajaxObj.status == 200) {
+                    window.location.reload(true);
+                }
+            }
+            
             function updateProfile() {
                 var jsonDict = new Object();
                 jsonDict.startYear = $("#startYearField").val();
                 jsonDict.email = $("#emailField").val();
-                jsonDict.image = $("imageField").val();
                 jsonDict.password = $("#passField1").val();
                 jsonDict.oldPassword = $("#oldPassField").val();
                 if (jsonDict.password != $("#passField2").val()) {
@@ -22,27 +63,8 @@
                             contentType: "application/json",
                             data: JSON.stringify(jsonDict),
                             async: false,
-                            success: function(response) {
-                            },
                             error: function(response) {
                                 alert("setStartYear went wrong");
-                            },
-                        });
-                        if (ajaxObj.status != 200) {
-                            return false;
-                        }
-                    }
-                    if (jsonDict.image != $("#imageField").prop("defaultValue")) {
-                        var ajaxObj = $.ajax({
-                            url: "/api/user/setImage",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(jsonDict),
-                            async: false,
-                            success: function(response) {
-                            },
-                            error: function(response) {
-                                alert("setImage went wrong");
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -56,8 +78,6 @@
                             contentType: "application/json",
                             data: JSON.stringify(jsonDict),
                             async: false,
-                            success: function(response) {
-                            },
                             error: function(response) {
                                 alert("setEmail went wrong");
                             },
@@ -73,8 +93,6 @@
                             contentType: "application/json",
                             data: JSON.stringify(jsonDict),
                             async: false,
-                            success: function(response) {
-                            },
                             error: function(response) {
                                 alert("setPassword went wrong");
                             },
@@ -83,7 +101,7 @@
                             return false;
                         }
                     }
-                    window.location.reload(true);
+                    uploadFile();
                 }
             }
         </script>
@@ -96,7 +114,16 @@
         <br/>
         you've been doing artist alley since <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>
         <br/>
-        <input type="text" id="imageField" placeholder="http://URL/of/image optional" value="{{pageUser.image}}"/>
+        your avatar:
+        {% if pageUser.image %}
+            <img src="{{pageUser.image}}"/>
+        {% else %}
+            <img src="/static/images/icon-default.png"/>
+        {% endif %}
+        <br/>
+        upload a new one?
+        <br/>
+        <input type="file" id="fileField" accept="image/*"/> max 10 MiB
         <br/>
         <input type="password" id="passField1" placeholder="new password?"/>
         <br/>
@@ -110,12 +137,15 @@
     {% else %}
         {{pageUser}}'s Profile
         <br/>    
-        {% if pageUser.startYear None %}
+        {% if pageUser.startYear %}
             they've been doing artist alley since {{pageUser.startYear}}
             <br/>
         {% endif %}
+        their user avatar
         {% if pageUser.image %}
-            their user avatar <img src="{{pageUser.image}}"/>
+            <img src="{{pageUser.image}}"/>
+        {% else %}
+            <img src="/static/images/icon-default.png"/>
         {% endif %}
     {% endif %}
 {% endblock %}

@@ -55,4 +55,5 @@ urlpatterns = [
     url(r"^api/convention/setStartDate$", "aa_app.views.api.convention.setStartDate"),
     url(r"^api/convention/setEndDate$", "aa_app.views.api.convention.setEndDate"),
     url(r"^api/convention/setImage$", "aa_app.views.api.convention.setImage"),
+    url(r"^api/util/uploadFile$", "aa_app.views.api.util.uploadFile"),
 ]
