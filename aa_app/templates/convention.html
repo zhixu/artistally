@@ -191,11 +191,11 @@
                 </small>
             </div>
             <div class="col-sm-6"></div>
-            <div class="col-sm-1 centered">
+            <div class="col-sm-1 text-center">
                 <span id="star-rating-outer"><span id="star-rating-inner"></span></span>
                 {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
             </div>
-            <div class="col-sm-2 centered">
+            <div class="col-sm-2 text-center">
                 {% if currUser %}
                 <button onclick="#add-review" class="btn btn-custom-blue">Add Review</button>
                 {% else %}
@@ -258,7 +258,7 @@
                 <h3>Write Review</h3>
                 <div class="row">
                     <div class="col-sm-2">
-                        <img src="/static/images/icon-default.png" class="user-icon-large centered"/>
+                        <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
                         <br/>{{currUser}}
                     </div>
                     <div class="col-sm-10">
