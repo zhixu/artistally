@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.core.validators
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -12,6 +13,21 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='User',
+            fields=[
+                ('password', models.CharField(verbose_name='password', max_length=128)),
+                ('last_login', models.DateTimeField(verbose_name='last login', blank=True, null=True)),
+                ('username', models.SlugField(serialize=False, primary_key=True)),
+                ('email', models.EmailField(unique=True, max_length=254)),
+                ('startYear', models.PositiveSmallIntegerField(default=None, blank=True, null=True)),
+                ('image', models.URLField(default=None, blank=True, null=True)),
+                ('superuser', models.BooleanField(default=False)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
             name='Convention',
             fields=[
                 ('ID', models.AutoField(primary_key=True, serialize=False)),
@@ -20,6 +36,8 @@ class Migration(migrations.Migration):
                 ('endDate', models.DateField()),
                 ('numAttenders', models.PositiveIntegerField()),
                 ('location', models.TextField()),
+                ('website', models.URLField()),
+                ('image', models.URLField(default=None, blank=True, null=True)),
             ],
             options={
                 'abstract': False,
@@ -43,6 +61,7 @@ class Migration(migrations.Migration):
                 ('cost', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('numSold', models.PositiveIntegerField()),
                 ('numLeft', models.PositiveIntegerField()),
+                ('image', models.URLField(default=None, blank=True, null=True)),
                 ('convention', models.ForeignKey(to='aa_app.Convention', related_name='items')),
                 ('fandom', models.ForeignKey(to='aa_app.Fandom', related_name='items')),
             ],
@@ -60,13 +79,12 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='User',
+            name='MiscCost',
             fields=[
-                ('username', models.SlugField(primary_key=True, serialize=False)),
-                ('password', models.TextField()),
-                ('email', models.EmailField(max_length=254, unique=True)),
-                ('cookieID', models.BigIntegerField(unique=True)),
-                ('startYear', models.PositiveSmallIntegerField(null=True, blank=True, default=None)),
+                ('ID', models.AutoField(primary_key=True, serialize=False)),
+                ('amount', models.DecimalField(max_digits=10, decimal_places=2)),
+                ('convention', models.ForeignKey(to='aa_app.Convention', related_name='miscCosts')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='miscCosts')),
             ],
             options={
                 'abstract': False,
@@ -78,11 +96,10 @@ class Migration(migrations.Migration):
                 ('ID', models.AutoField(primary_key=True, serialize=False)),
                 ('rating', models.PositiveSmallIntegerField(validators=[django.core.validators.MaxValueValidator(5)])),
                 ('review', models.TextField()),
-                ('miscCosts', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('writeTime', models.DateTimeField(auto_now_add=True)),
                 ('editTime', models.DateTimeField(auto_now=True)),
                 ('convention', models.ForeignKey(to='aa_app.Convention', related_name='writeups')),
-                ('user', models.ForeignKey(to='aa_app.User', related_name='writeups')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='writeups')),
             ],
             options={
                 'abstract': False,
@@ -96,6 +113,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='item',
             name='user',
-            field=models.ForeignKey(to='aa_app.User', related_name='items'),
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='items'),
         ),
     ]

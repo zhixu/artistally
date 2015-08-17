@@ -102,6 +102,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
+AUTH_USER_MODEL = 'aa_app.User'
+
+
 # HEROKU
 '''
 # Parse database configuration from $DATABASE_URL

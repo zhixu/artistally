@@ -1,47 +1,52 @@
 from django.http import HttpResponse
-from django.shortcuts import render
-from django.template import RequestContext as Context, loader
+from django.shortcuts import render_to_response
+from django.template import RequestContext, loader
 from django.db.models import Sum
+from django.contrib import auth
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import operator
 
 from aa_app import models
 
 def root(request):
-    context = Context(request)
-    if "cookieID" in request.session:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
         context["currUser"] = u
         context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
-    return HttpResponse(loader.get_template("root.html").render(context))
+    return render_to_response("root.html", context)
 
 def signup(request):
-    if "cookieID" in request.session:
+    context = RequestContext(request)
+    if request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/"
         return resp
     else:
-        return HttpResponse(loader.get_template("signup.html").render(Context(request)))
+        return render_to_response("signup.html", context)
     
+@ensure_csrf_cookie
 def login(request):
-    if "cookieID" in request.session:
+    context = RequestContext(request)
+    if request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/"
         return resp
     else:
-        return HttpResponse(loader.get_template("login.html").render(Context(request)))
+        return render_to_response("login.html", context)
 
 def user(request, username):
-    context = Context(request)
-    if "cookieID" in request.session:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
         context["currUser"] = u
     context["pageUser"] = models.User.objects.get(username = username)
-    return HttpResponse(loader.get_template("user.html").render(context))
+    return render_to_response("user.html", context)
 
 def convention(request, conID):
     assert conID != models.INV_CON.ID
-    context = Context(request)
+    context = RequestContext(request)
     context["convention"] = models.Convention.objects.get(ID = int(conID))
     itemKindsCounter = {}
     itemFandomsCounter = {}
@@ -61,118 +66,118 @@ def convention(request, conID):
         itemFandomsCounter[k] /= itemsSoldTotal
     context["conTopItemKinds"] = sorted(itemKindsCounter.items(), key = operator.itemgetter(1), reverse = True)
     context["conTopItemFandoms"] = sorted(itemFandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
-    if "cookieID" in request.session:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
+    if request.user.is_authenticated():
+        u = request.user
         context["currUser"] = u
         context["currUserConItems"] = u.items.filter(convention = context["convention"])
         if u.writeups.filter(convention = context["convention"]).exists():
             context["currUserConWriteup"] = u.writeups.get(convention = context["convention"])
-    return HttpResponse(loader.get_template("convention.html").render(context))
+    return render_to_response("convention.html", context)
 
 def inventory(request):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u, "invCon": models.INV_CON})
+        u = request.user
+        context = RequestContext(request, {"currUser": u, "invCon": models.INV_CON})
         context["currUserInvItems"] = u.items.filter(convention = models.INV_CON)
-        return HttpResponse(loader.get_template("inventory.html").render(context))
+        return render_to_response("inventory.html", context)
 
 def myconventions(request):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
-        return HttpResponse(loader.get_template("myconventions.html").render(context))
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
+        return render_to_response("myconventions.html", context)
 
 def mywriteups(request):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
-        return HttpResponse(loader.get_template("mywriteups.html").render(context))
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
+        return render_to_response("mywriteups.html", context)
     
 def addconvention(request):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
-        return HttpResponse(loader.get_template("addconvention.html").render(context))
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
+        return render_to_response("addconvention.html", context)
 
 def addwriteup(request, conID = None):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
         context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
         if conID != None:
             assert conID != models.INV_CON.ID
             context["currCon"] = models.Convention.objects.get(ID = conID)
-        return HttpResponse(loader.get_template("addwriteup.html").render(context))
+        return render_to_response("addwriteup.html", context)
 
 def addkind(request):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
-        return HttpResponse(loader.get_template("addkind.html").render(context))
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
+        return render_to_response("addkind.html", context)
 
 def addfandom(request):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
-        return HttpResponse(loader.get_template("addfandom.html").render(context))
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
+        return render_to_response("addfandom.html", context)
 
 def additem(request, conID = None):
-    if "cookieID" not in request.session:
+    if not request.user.is_authenticated():
         resp = HttpResponse(status = 307)
         resp["Location"] = "/login"
         return resp
     else:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
-        context = Context(request, {"currUser": u})
+        u = request.user
+        context = RequestContext(request, {"currUser": u})
         context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
         context["kinds"] = models.Kind.objects.all()
         context["fandoms"] = models.Fandom.objects.all()
         if conID != None:
             assert conID != models.INV_CON.ID
             context["currCon"] = models.Convention.objects.get(ID = conID)
-        return HttpResponse(loader.get_template("additem.html").render(context))
+        return render_to_response("additem.html", context)
         
 def item(request, itemID):
-    context = Context(request)
-    if "cookieID" in request.session:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
         context["currUser"] = u
     context["item"] = models.Item.objects.get(ID = int(itemID))
-    return HttpResponse(loader.get_template("item.html").render(context))
+    return render_to_response("item.html", context)
         
 def writeup(request, writeupID):
-    context = Context(request)
-    if "cookieID" in request.session:
-        u = models.User.objects.get(cookieID = request.session["cookieID"])
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
         context["currUser"] = u
     context["writeup"] = models.Writeup.objects.get(ID = int(writeupID))
     context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
-    return HttpResponse(loader.get_template("writeup.html").render(context))
+    return render_to_response("writeup.html", context)

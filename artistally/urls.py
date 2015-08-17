@@ -3,6 +3,8 @@ from django.contrib import admin
 
 from aa_app import models
 
+import datetime
+
 if models.Convention.objects.filter(name = "INV_CON").exists():
     models.INV_CON = models.Convention.objects.get(name = "INV_CON")
 else:

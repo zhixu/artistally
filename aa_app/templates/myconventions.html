@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    {% for con in currUser.conventions %}
+    {% for con in currUser.conventions.all %}
         {{con}}
         <br/>
     {% endfor %}
