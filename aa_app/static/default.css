@@ -43,14 +43,6 @@ textarea#reviewField {
     height: 120px;
 }
 
-.centered {
-    text-align: center;
-}
-
-.right {
-    text-align: right;   
-}
-
 .fixed {
     position: fixed;
     overflow-y: auto;
@@ -97,6 +89,16 @@ textarea#reviewField {
 .login-reg-input {
     height:40px;
     font-size:14pt;
+}
+
+.dash-box {
+    padding: 30px 20px;
+    margin: 20px 20px;
+    border-color: #9ccceb;
+    border-style: solid;
+    border-radius: 5px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
 }
 
 #wrap {
@@ -289,6 +291,15 @@ textarea#reviewField {
     background-size: cover;
 }
 
+.sidebar {
+    height: 100%;
+    background-color: #ccdee0;
+}
+
+.main-container {
+    padding: 10px;   
+}
+
 /* -------------------------------------------- */
 /* ----------------- WRAPPERS ----------------- */
 /* -------------------------------------------- */
@@ -302,6 +313,11 @@ textarea#reviewField {
 
 .convention-header-wrapper {
     padding-top: 15px;
+}
+
+.item-fit {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 /* ----------------------------------------------- */

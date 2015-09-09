@@ -2,24 +2,48 @@
 
 {% block head %}
     <title>ArtisTally | My Inventory</title>
+
+    <!-- EditableGrid -->
+    <script type="text/javascript" src="/static/js/editablegrid.js"></script>
+    <script type="text/javascript" src="/static/js/editablegrid_validators.js"></script> 
+    <script type="text/javascript" src="/static/js/editablegrid_renderers.js"></script>
+    <script type="text/javascript" src="/static/js/editablegrid_editors.js"></script>
+    <script type="text/javascript" src="/static/js/editablegrid_utils.js"></script>
+
+
     <script>
-        function makeItem(fieldID) {
+        function makeItem() {
+            
+            var itemName, itemFandom, itemKind, itemPrice, itemCost, itemNumLeft;
+            
             var jsonDict = new Object();
-            jsonDict.name = $("#new" + fieldID + "nameField").html();
+            jsonDict.name = itemName = $("#new-name").val();
             jsonDict.conID = {{invCon.ID}};
-            jsonDict.fandom = $("#new" + fieldID + "fandomField").val();
-            jsonDict.kind = $("#new" + fieldID + "kindField").val();
-            jsonDict.price = $("#new" + fieldID + "priceField").html();
-            jsonDict.cost = $("#new" + fieldID + "costField").html();
+            jsonDict.fandom = itemFandom = $("#new-fandom").val();
+            jsonDict.kind = itemKind = $("#new-kind").val();
+            jsonDict.price = itemPrice = $("#new-price").val();
+            jsonDict.cost = itemCost = $("#new-cost").val();
             jsonDict.numSold = 0;
-            jsonDict.numLeft = $("#new" + fieldID + "numLeftField").html();
+            jsonDict.numLeft = itemNumLeft = $("#new-numLeft").val();
+        
+            console.log();
+            
             $.ajax({
                 url: "/api/item/newItem",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    window.location.href = "/item/" + response.itemID;
+                    console.log("made item");
+                    $('#inventory tr:last').after("<tr id='{{response.itemID}}'>" +
+                        "<td><img src='/static/images/icon-default.png' class='user-icon'/></td>" +
+                        "<td id='{{response.itemID}}nameField'>" + itemName + "</td>" +
+                        "<td id='{{response.itemID}}fandomField'>" + itemFandom + "</td>" +
+                        "<td id='{{response.itemID}}kindField'>" + itemKind + "</td>" +
+                        "<td id='{{response.itemID}}priceField'>" + itemPrice + "</td>" +
+                        "<td id='{{response.itemID}}costField'>" + itemCost + "</td>" +
+                        "<td id='{{response.itemID}}numLeftField'>" + itemNumLeft + "</td>" +
+                    "</tr>");
                 },
                 error: function(response) {
                     alert("newItem went wrong");
@@ -27,7 +51,85 @@
             });
         }
         
-        function updateItem(itemID) {
+        function updateItem(itemID, colID, newValue) {
+            var name = 1,
+                fandom = 2,
+                kind = 3,
+                price = 4,
+                cost = 5,
+                numLeft = 6;
+            
+            console.log(itemID + " " + colID + " " + newValue);
+            
+            var jsonDict = new Object();
+            jsonDict.itemID = itemID;
+            
+            switch(colID) {
+                case name:
+                    jsonDict.name = newValue;
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setName",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        error: function(response) {
+                            alert("setName went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                    break;
+                case fandom:
+                    break;
+                case kind:
+                    break;
+                case numLeft:
+                    jsonDict.numLeft = newValue;
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setNumLeft",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        error: function(response) {
+                            alert("setNumLeft went wrong");
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                    break;
+            }
+            
+        }
+        
+        window.onload = function() {
+          editableGrid = new EditableGrid("InventoryEditableGrid", 
+                      { sortIconUp: "/static/images/up.png", 
+                       sortIconDown: "/static/images/down.png",
+                      // called when some value has been modified: we display a message
+                       // row.id to get ID
+                      modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, colIdx, newValue); }}); 
+        
+            // we build and load the metadata in Javascript
+            editableGrid.load({ metadata: [
+                { name: "thumbnail", datatype: "string", editable: false },
+                { name: "name", datatype: "string", editable: true },
+                { name: "fandom", datatype: "string", editable: true },
+                { name: "kind", datatype: "string", editable: true },
+                { name: "price", datatype: "double", editable: false },
+                { name: "cost", datatype: "double", editable: false },
+                { name: "remaining", datatype: "integer", editable: true}
+            ]});
+
+            // then we attach to the HTML table and render it
+            editableGrid.attachToHTMLTable("inventory");
+            editableGrid.renderGrid();
+        }
+        
+/*        function updateItem(itemID) {
             var jsonDict = new Object();
             jsonDict.itemID = itemID;
             jsonDict.name = $("#" + itemID + "nameField").html();
@@ -63,44 +165,23 @@
                 }
             }
             window.location.reload(true);
-        }
-        
-        function batchUpdate() {
-            $("td[id$=nameField]").each(function() {
-                if (this.id.lastIndexOf("new", 0) == 0) {
-                    makeItem(this.id.slice(3, this.id.length - 9));
-                } else {
-                    updateItem(this.id.slice(0, this.id.length - 9));
-                }
-            });
-        }
-        
-        function makeEditable() {
-            $("td[id$=Field]").attr("contenteditable", "true");
-        }
+        } */   
     </script>
 {% endblock %}
 
 {% block body %}
     <div class="row">
-        <div class="col-sm-3 sidebar">
+        <div class="col-sm-2 sidebar">
             <div class="fixed">
                 {% include "includes/sidebar.html" %}
             </div>
+        </div>
 
-            <div class="col-sm-9">
-                Sort by:
-                <select>
-                    <option value="name">Name</option>
-                    <option value="fandom">Fandom</option>
-                    <option value="kind">Kind</option>
-                    <option value="price">Price</option>
-                    <option value="cost">Cost</option>
-                    <option value="numLeft">Number Left</option>
-                </select>
-                <br/>
+        <div class="col-sm-10">
+            <h1>Inventory</h1>
 
-                <table>
+            <table class="table table-hover" id="inventory">
+                <thead>
                     <tr>
                         <th>Thumbnail</th>
                         <th>Name</th>
@@ -108,27 +189,73 @@
                         <th>Kind</th>
                         <th>Price</th>
                         <th>Cost</th>
-                        <th>Left</th>
+                        <th>Remaining</th>
+                        <th>Action</th>
                     </tr>
-                    {% for item in currUserInvItems %}
-                        <tr>
-                            <td><img src="/static/images/icon-default.png" class="user-icon"/></td>
-                            <td id="{{item.ID}}nameField">{{item.name}}</td>
-                            <td>{{item.fandom}}</td>
-                            <td>{{item.kind}}</td>
-                            <td>${{item.price|floatformat:2}}</td>
-                            <td>${{item.cost|floatformat:2}}</td>
-                            <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                </thead>
+                <tbody id="inventory-body">
+                {% for item in currUserInvItems %}
+                    <tr id="{{item.ID}}">
+                        <td>Icon</td>
+                        <td id="{{item.ID}}nameField">{{item.name}}</td>
+                        <td>{{item.fandom}}</td>
+                        <td>{{item.kind}}</td>
+                        <td>{{item.price|floatformat:2}}</td>
+                        <td>{{item.cost|floatformat:2}}</td>
+                        <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                        <td><i class="fa fa-trash"></i></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-                <div>
-                    <button onclick="makeEditable()" class="btn btn-custom-blue">Edit Inventory</button>
-                </div>
-                <div>
-                    <button onclick="batchUpdate()" class="btn btn-custom-blue">Save Changes</button>
-                    <button onclick="location.reload()" class="btn btn-custom-blue">Discard</button>
+            <div>
+                <button onclick="#" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</button>
+                <div class="form-horizontal">
+                    <label class="control-label">Preview Image:</label>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="new-name">Name:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="Name" id="new-name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="new-fandom">Fandom:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="Fandom" id="new-fandom">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="new-kind">Kind:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="Kind" id="new-kind">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="new-price">Price:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="Price" id="new-price">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="new-cost">Cost:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="Cost" id="new-cost">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="new-numLeft">Remaining:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="Remaining" id="new-numLeft">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" onclick="makeItem()" class="btn btn-custom-blue">Add</button>
                 </div>
             </div>
         </div>

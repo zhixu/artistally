@@ -244,7 +244,7 @@ class Item(ValidatedModel):
         self.save()
 
     def setName(self, newName):
-        self.name = Name
+        self.name = newName
         self.save()
 
     def setImage(self, newImage):
