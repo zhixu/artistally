@@ -250,6 +250,22 @@ class Item(ValidatedModel):
     def setImage(self, newImage):
         self.image = newImage
         self.save()
+        
+    def setPrice(self, newPrice):
+        self.price = self.newPrice
+        self.save()
+    
+    def setCost(self, newCost):
+        self.cost = self.newCost
+        self.save()
+    
+    def setFandom(self, newFandom):
+        self.fandom = self.newFandom
+        self.save()
+    
+    def setKind(self, newKind):
+        self.kind = self.newKind
+        self.save()
     
     # UTIL
     def clean(self):
