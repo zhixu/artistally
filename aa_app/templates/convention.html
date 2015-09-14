@@ -2,16 +2,17 @@
 
 {% block head %}
     <title>ArtisTally | {{convention}} Overview</title>
-    {% if currUser %}
+    
         <script>
-            {% if convention.avgRating != None %}
-                function populateStarRating() {
-                    var rating = {{convention.avgRating}};
-                    var stars = document.getElementById("star-rating-inner");
-                    stars.style.width = rating * 20;
-                }
-            {% endif %}
+            $( document ).ready(function() {
+                {% if convention.avgRating != None %}
+                        var rating = {{convention.avgRating}};
+                        var percent = (rating/5)*100;
+                        $("#average-rating").width(percent + "%"); // need the percentage
+                {% endif %}
+            });
             
+            {% if currUser %}
             function uploadFile() {
                 var file = document.getElementById("fileField").files[0];
                 var reader = new FileReader();
@@ -54,6 +55,8 @@
                     window.location.reload(true);
                 }
             }
+                                
+            
 /*
             function updateConvention() {
                 var jsonDict = new Object();
@@ -173,39 +176,47 @@
                     },
                 });
             }
+            {% endif %}
         </script>
-    {% endif %}
+    
 {% endblock %}
 
 {% block body %}
-    <div class="jumbotron-convention">
-    </div>
-
     <div class="container">
-        <div class="row convention-header-wrapper">
-            <div class="col-sm-3">
-                <h1>{{convention}}</h1>
-                <small>{{convention.location}}
-                <br/>
-                <a href="{{convention.website}}">{{convention.website}}</a>
-                </small>
+        <div class="jumbotron-convention">
+        </div>
+        <div class="con-header">
+            <div class="cell main-info">
+                <h2>{{convention}}</h2>
+                {{convention.location}} | <a href="{{convention.website}}">{{convention.website}}</a>
             </div>
-            <div class="col-sm-6"></div>
-            <div class="col-sm-1 text-center">
-                <span id="star-rating-outer"><span id="star-rating-inner"></span></span>
-                {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
+            {% if currUser %}
+            <div class="cell text-center">
+                <div class="containery">
+                    <div class="centery">
+                        {% if currUserConWriteup %}
+        <!--                <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>-->
+                        <button onclick="#" class="btn btn-custom-blue">Edit Review</button>
+                        {% else %}
+                        <button onclick="#add-review" class="btn btn-custom-blue">Add Review</button>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-2 text-center">
-                {% if currUser %}
-                <button onclick="#add-review" class="btn btn-custom-blue">Add Review</button>
-                {% else %}
-                <button onclick="/login" class="btn btn-custom-blue">Add Review</button>
-                {% endif %}
+            {% endif %}
+            <div class="cell text-center">
+                <div class="containery">
+                    <div class="centery">
+                        <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:0%"></span></div>
+                        {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="section-wrapper">
             <h3>Overview</h3>
+            <br/>
             View data from: <input type="date"> to: <input type="date">
             
             <br/>A total of {{convention.numAttenders}} attendees were at {{convention}}.
@@ -232,17 +243,22 @@
 
         <div class="section-wrapper">
         <h3>Reviews</h3>
+            <br/>
 
         {% for writeup in convention.writeups.all %}
-            <div class="row">
-                <div class="col-sm-2">
+            <div class="review-entry">
+                <div class="side cell">
                     <img src="/static/images/icon-default.png" class="user-icon-large">
-                    <br/>{{writeup.user}}
+                    <br/><b>{{writeup.user}}</b>
+                    <br/>{{writeup.editTime.isoformat}}
                 </div>
-                <div class="col-sm-10">
-                    {{writeup.rating}}/5 stars on {{writeup.editTime.isoformat}}
+                <div class="main cell">
+                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                        
                     <br/>
-                    {{writeup.review}}
+                    <div class="text-blurb">
+                        {{writeup.review}}
+                    </div>
                 </div>
             </div>
             <br/>
@@ -284,7 +300,7 @@
 
     </div>
 
-    {% if currUser %}
+<!--    {% if currUser %}
         {% if currUserConWriteup %}
             <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>
         {% endif %}
@@ -323,4 +339,4 @@
         {% endif %}
     {% endif %}
 
-{% endblock %}
+{% endblock %}-->

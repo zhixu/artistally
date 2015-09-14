@@ -19,6 +19,6 @@ def newKind(request):
 def setName(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    k = models.Kind.objects.get(name = (d["oldName"]))
+    k = models.Kind.objects.get(name__iexact = (d["oldName"]))
     k.setName(d["name"])
     return EMPTY_JSON_200

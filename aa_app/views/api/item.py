@@ -14,8 +14,8 @@ def newItem(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
     convention = models.Convention.objects.get(ID = int(d["conID"]))
-    fandom = models.Fandom.objects.get(name = d["fandom"])
-    kind = models.Kind.objects.get(name = d["kind"])
+    fandom = models.Fandom.objects.get(name__iexact = d["fandom"])
+    kind = models.Kind.objects.get(name__iexact = d["kind"])
     i = models.newItem(u, convention, d["name"], fandom, kind, Decimal(d["price"]), Decimal(d["cost"]), int(d["numSold"]), int(d["numLeft"]))
     if "image" in d and d["image"] != "":
         i.setImage(d["image"])
@@ -90,7 +90,7 @@ def setFandom(request):
     u = request.user
     i = models.Item.objects.get(ID = int(d["itemID"]))
     assert i.user == u, "not your item"
-    i.setFandom(models.Fandom.objects.get(name = d["fandom"]))
+    i.setFandom(models.Fandom.objects.get(name__iexact = d["fandom"]))
     return EMPTY_JSON_200
 
 @login_required
@@ -99,5 +99,5 @@ def setKind(request):
     u = request.user
     i = models.Item.objects.get(ID = int(d["itemID"]))
     assert i.user == u, "not your item"
-    i.setKind(models.Fandom.objects.get(name = d["kind"]))
+    i.setKind(models.Fandom.objects.get(name__iexact = d["kind"]))
     return EMPTY_JSON_200

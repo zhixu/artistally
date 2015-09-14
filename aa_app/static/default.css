@@ -38,11 +38,6 @@ textarea {
     resize: none;   
 }
 
-textarea#reviewField {
-    width: 100%;
-    height: 120px;
-}
-
 .fixed {
     position: fixed;
     overflow-y: auto;
@@ -120,8 +115,8 @@ textarea#reviewField {
 }
 
 .user-icon-large {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -289,11 +284,11 @@ textarea#reviewField {
     height: 315px;
     background: #000 url("/static/images/banner-sakura.jpg") center center;
     background-size: cover;
+    border: 1px solid #ccc;
 }
 
 .sidebar {
     height: 100%;
-    background-color: #ccdee0;
 }
 
 .main-container {
@@ -304,16 +299,24 @@ textarea#reviewField {
 /* ----------------- WRAPPERS ----------------- */
 /* -------------------------------------------- */
 .splash-section-wrapper {
-    margin: 50px 0px;   
+    margin: 50px 0px;
+}
+
+.sidebar-wrapper {
+    padding-top: 20px;
+}
+
+.maincontent-wrapper {
+    padding: 40px 20px;
 }
 
 .section-wrapper {
-    margin: 20px 0px;   
+    margin: 20px 0px;  
+    padding: 10px;
+    border: 1px solid #ccc;
 }
 
-.convention-header-wrapper {
-    padding-top: 15px;
-}
+
 
 .item-fit {
     max-width: 100%;
@@ -323,15 +326,32 @@ textarea#reviewField {
 /* ----------------------------------------------- */
 /* ----------------- STAR RATING ----------------- */
 /* ----------------------------------------------- */
+.star-ratings-outer {
+  background: url("/static/images/stars.png") repeat-x;
+  font-size: 0;
+  height: 21px;
+  line-height: 0;
+  overflow: hidden;
+  text-indent: -999em;
+  width: 110px;
+}
+.star-ratings-inner {
+    background: url("/static/images/stars.png") repeat-x;
+    background-position: 0 100%;
+    float: left;
+    height: 21px;
+    display:block;
+}
+
 .star-rating {
   font-size: 0;
   white-space: nowrap;
   display: inline-block;
-  width: 100px;
-  height: 20px;
+  width: 55px;
+  height: 21px;
   overflow: hidden;
   position: relative;
-  background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjREREREREIiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+  background: url("/static/images/stars.png");
   background-size: contain;
 }
 .star-rating i {
@@ -342,7 +362,8 @@ textarea#reviewField {
   height: 100%;
   width: 20%;
   z-index: 1;
-  background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjRkZERjg4IiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+  background: url("/static/images/stars.png");
+    background-position: 0 100%;
   background-size: contain;
 }
 .star-rating input {
@@ -383,16 +404,67 @@ textarea#reviewField {
   display: block;
 }
 
-#star-rating-outer {
-    display: block;
-    background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjREREREREIiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
-    height: 20px;
-    width: 100px;
+/* ----------------------------------------------- */
+/* --------------- CONVENTION PAGE --------------- */
+/* ----------------------------------------------- */
+.con-header {
+    width: 100%;
+    position: relative;
+    border: 1px solid #ccc;
+    border-top: none;
+    display: inline-block;
+    height: 76px;
 }
 
-#star-rating-inner {
-    display: block;
-    background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjRkZERjg4IiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
-    height: 20px;
-    width: 0px;
+.con-header .cell {
+    padding: 10px;
+    border-left: 1px solid #ccc;
+    margin: 0 auto;
+    float: right;
+    height: 100%;
+}
+
+.con-header .main-info {
+    float: left !important;
+    border: none !important;
+}
+
+.review-entry {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+    padding: 20px 10px;
+    display: inline-block;
+}
+
+.review-entry .cell {
+    padding: 10px;
+    float: left;
+    margin: 0 auto;
+}
+
+.review-entry .side {
+    width: 20%;
+}
+
+.review-entry .main {
+    width: 80%;
+}
+
+.text-blurb {
+    height: 100%;
+    overflow: hidden;
+}
+
+textarea#reviewField {
+    width: 100%;
+    height: 120px;
+}
+
+/* ----------------------------------------------- */
+/* --------------- INVENTORY PAGE ---------------- */
+/* ----------------------------------------------- */
+#item-form {
+    display: none;
 }

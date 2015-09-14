@@ -19,6 +19,6 @@ def newFandom(request):
 def setName(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    f = models.Fandom.objects.get(name = (d["oldName"]))
+    f = models.Fandom.objects.get(name__iexact = (d["oldName"]))
     f.setName(d["name"])
     return EMPTY_JSON_200

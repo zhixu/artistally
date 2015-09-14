@@ -34,16 +34,18 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    console.log("made item");
-                    $('#inventory tr:last').after("<tr id='{{response.itemID}}'>" +
-                        "<td><img src='/static/images/icon-default.png' class='user-icon'/></td>" +
-                        "<td id='{{response.itemID}}nameField'>" + itemName + "</td>" +
-                        "<td id='{{response.itemID}}fandomField'>" + itemFandom + "</td>" +
-                        "<td id='{{response.itemID}}kindField'>" + itemKind + "</td>" +
-                        "<td id='{{response.itemID}}priceField'>" + itemPrice + "</td>" +
-                        "<td id='{{response.itemID}}costField'>" + itemCost + "</td>" +
-                        "<td id='{{response.itemID}}numLeftField'>" + itemNumLeft + "</td>" +
+                    console.log("made item " + response.itemID);
+                    $('#inventory tr:last').after("<tr id='" + response.itemID + "'>" +
+                        "<td>Icon</td>" +
+                        "<td id='" + response.itemID + "nameField'>" + itemName + "</td>" +
+                        "<td id='" + response.itemID + "fandomField'>" + itemFandom + "</td>" +
+                        "<td id='" + response.itemID + "kindField'>" + itemKind + "</td>" +
+                        "<td id='" + response.itemID + "priceField'>" + itemPrice + "</td>" +
+                        "<td id='" + response.itemID + "costField'>" + itemCost + "</td>" +
+                        "<td id='" + response.itemID + "numLeftField'>" + itemNumLeft + "</td>" +
+                        "<td><a onclick='deleteItem(" + response.itemID + ")' style='cursor:pointer'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
+                    editableGrid.refreshGrid();
                 },
                 error: function(response) {
                     alert("newItem went wrong");
@@ -51,15 +53,13 @@
             });
         }
         
-        function updateItem(itemID, colID, newValue) {
+        function updateItem(itemID, rowID, colID, newValue, oldValue) {
             var name = 1,
                 fandom = 2,
                 kind = 3,
                 price = 4,
                 cost = 5,
                 numLeft = 6;
-            
-            console.log(itemID + " " + colID + " " + newValue);
             
             var jsonDict = new Object();
             jsonDict.itemID = itemID;
@@ -75,6 +75,7 @@
                         async: false,
                         error: function(response) {
                             alert("setName went wrong");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -82,8 +83,72 @@
                     }
                     break;
                 case fandom:
+                    jsonDict.fandom = newValue;
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setFandom",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        error: function(response) {
+                            alert("setFandom went wrong");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
                     break;
                 case kind:
+                    jsonDict.kind = newValue;
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setKind",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        error: function(response) {
+                            alert("setKind went wrong");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                    break;
+                case price:
+                    jsonDict.price = newValue;
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setPrice",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        error: function(response) {
+                            alert("setPrice went wrong");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                    break;
+                case cost:
+                    jsonDict.cost = newValue;
+                    var ajaxObj = $.ajax({
+                        url: "/api/item/setCost",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        async: false,
+                        error: function(response) {
+                            alert("setCost went wrong");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
                     break;
                 case numLeft:
                     jsonDict.numLeft = newValue;
@@ -95,6 +160,7 @@
                         async: false,
                         error: function(response) {
                             alert("setNumLeft went wrong");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -105,13 +171,44 @@
             
         }
         
+        function deleteItem(itemID) {
+            console.log(itemID);
+            var confirmation = confirm("Are you sure you want to delete this?");
+            if (confirmation == true) {
+                var jsonDict = new Object();
+                jsonDict.itemID = itemID;
+                var ajaxObj = $.ajax({
+                    url: "/api/item/deleteItem",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    async: false,
+                    success: function(response) {
+                        $("#"+itemID + "nameField").closest('tr').remove(); 
+                        // Editable Grid shuffles everything inside the tr but not the tr itself... so the IDs don't match up
+                    },
+                    error: function(response) {
+                        alert("deleteItem went wrong");
+                    },
+                });
+            }
+        }
+        
+        function toggleItemForm() {
+            if ($("#item-form").css('display') == 'none') {
+                $("#item-form").show("slow", function() {});
+            } else {
+                $("#item-form").hide("slow", function() {});
+            }
+        }
+        
         window.onload = function() {
           editableGrid = new EditableGrid("InventoryEditableGrid", 
                       { sortIconUp: "/static/images/up.png", 
                        sortIconDown: "/static/images/down.png",
                       // called when some value has been modified: we display a message
                        // row.id to get ID
-                      modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, colIdx, newValue); }}); 
+                      modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, rowIdx, colIdx, newValue, oldValue); }}); 
         
             // we build and load the metadata in Javascript
             editableGrid.load({ metadata: [
@@ -119,53 +216,16 @@
                 { name: "name", datatype: "string", editable: true },
                 { name: "fandom", datatype: "string", editable: true },
                 { name: "kind", datatype: "string", editable: true },
-                { name: "price", datatype: "double", editable: false },
-                { name: "cost", datatype: "double", editable: false },
+                { name: "price", datatype: "double", editable: true },
+                { name: "cost", datatype: "double", editable: true },
                 { name: "remaining", datatype: "integer", editable: true}
             ]});
 
             // then we attach to the HTML table and render it
             editableGrid.attachToHTMLTable("inventory");
+            //editableGrid.setPageSize(5);
             editableGrid.renderGrid();
         }
-        
-/*        function updateItem(itemID) {
-            var jsonDict = new Object();
-            jsonDict.itemID = itemID;
-            jsonDict.name = $("#" + itemID + "nameField").html();
-            jsonDict.numLeft = $("#" + itemID + "numLeftField").html();
-            if (jsonDict.name != $("#" + itemID + "nameField").prop("defaultValue")) {
-                var ajaxObj = $.ajax({
-                    url: "/api/item/setName",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonDict),
-                    async: false,
-                    error: function(response) {
-                        alert("setName went wrong");
-                    },
-                });
-                if (ajaxObj.status != 200) {
-                    return false;
-                }
-            }
-            if (jsonDict.numLeft != $("#" + itemID + "numLeftField").prop("defaultValue")) {
-                var ajaxObj = $.ajax({
-                    url: "/api/item/setNumLeft",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonDict),
-                    async: false,
-                    error: function(response) {
-                        alert("setNumLeft went wrong");
-                    },
-                });
-                if (ajaxObj.status != 200) {
-                    return false;
-                }
-            }
-            window.location.reload(true);
-        } */   
     </script>
 {% endblock %}
 
@@ -177,8 +237,9 @@
             </div>
         </div>
 
-        <div class="col-sm-10">
-            <h1>Inventory</h1>
+        <div class="col-sm-10 maincontent-wrapper">
+            <div id="inventory-page">
+            <h1 id="temporarytest">Inventory</h1>
 
             <table class="table table-hover" id="inventory">
                 <thead>
@@ -198,20 +259,21 @@
                     <tr id="{{item.ID}}">
                         <td>Icon</td>
                         <td id="{{item.ID}}nameField">{{item.name}}</td>
-                        <td>{{item.fandom}}</td>
-                        <td>{{item.kind}}</td>
-                        <td>{{item.price|floatformat:2}}</td>
-                        <td>{{item.cost|floatformat:2}}</td>
+                        <td id="{{item.ID}}fandomField">{{item.fandom}}</td>
+                        <td id="{{item.ID}}kindField">{{item.kind}}</td>
+                        <td id="{{item.ID}}priceField">{{item.price|floatformat:2}}</td>
+                        <td id="{{item.ID}}costField">{{item.cost|floatformat:2}}</td>
                         <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
-                        <td><i class="fa fa-trash"></i></td>
+                        <td><a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            </div>
 
             <div>
-                <button onclick="#" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</button>
-                <div class="form-horizontal">
+                <button onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</button>
+                <div id="item-form">
                     <label class="control-label">Preview Image:</label>
                     <div class="row">
                         <div class="col-sm-6">

@@ -1,5 +1,13 @@
-<ul class="nav nav-sidebar">
-    <li><img src="/static/images/icon-default.png" class="user-icon-large"></li>
-    <br><br><br>
-    {% include "includes/links.html" %}
-</ul>
+<div class="sidebar-wrapper">
+    <div class="containery">
+        <div class="centery">
+            <img src="/static/images/icon-default.png" class="user-icon-large">
+            <br/><br/>{{currUser}}
+        
+        </div>
+    </div>
+    <ul class="nav nav-sidebar">
+        <br><br><br>
+        {% include "includes/links.html" %}
+    </ul>
+</div>

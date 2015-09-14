@@ -252,19 +252,19 @@ class Item(ValidatedModel):
         self.save()
         
     def setPrice(self, newPrice):
-        self.price = self.newPrice
+        self.price = newPrice
         self.save()
     
     def setCost(self, newCost):
-        self.cost = self.newCost
+        self.cost = newCost
         self.save()
     
     def setFandom(self, newFandom):
-        self.fandom = self.newFandom
+        self.fandom = newFandom
         self.save()
     
     def setKind(self, newKind):
-        self.kind = self.newKind
+        self.kind = newKind
         self.save()
     
     # UTIL
