@@ -292,6 +292,8 @@ class MiscCost(ValidatedModel):
     # UTIL
     def clean(self):
         super().clean()
+        if self.convention is INV_CON:
+            raise ValidationError("you can't make a miscCost for the INV_CON")
         if self.amount < 0:
             raise ValidationError("you can't have negative miscCost amount")
     
