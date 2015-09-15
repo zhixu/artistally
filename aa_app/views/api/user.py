@@ -17,7 +17,6 @@ def newUser(request):
         u.setStartYear(int(d["startYear"]))
     if "image" in d and d["image"] != "":
         u.setImage(d["image"])
-    request.session["cookieID"] = u.cookieID
     return EMPTY_JSON_200
 
 @user_passes_test(lambda u: u.is_anonymous())
