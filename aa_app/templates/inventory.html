@@ -3,17 +3,10 @@
 {% block head %}
     <title>ArtisTally | My Inventory</title>
 
-    <!-- EditableGrid -->
-    <script type="text/javascript" src="/static/js/editablegrid.js"></script>
-    <script type="text/javascript" src="/static/js/editablegrid_validators.js"></script> 
-    <script type="text/javascript" src="/static/js/editablegrid_renderers.js"></script>
-    <script type="text/javascript" src="/static/js/editablegrid_editors.js"></script>
-    <script type="text/javascript" src="/static/js/editablegrid_utils.js"></script>
-
+    <script type="text/javascript" src="/static/js/editablegrid/all_min.js"></script>
 
     <script>
         function makeItem() {
-            
             var itemName, itemFandom, itemKind, itemPrice, itemCost, itemNumLeft;
             
             var jsonDict = new Object();
@@ -25,8 +18,6 @@
             jsonDict.cost = itemCost = $("#new-cost").val();
             jsonDict.numSold = 0;
             jsonDict.numLeft = itemNumLeft = $("#new-numLeft").val();
-        
-            console.log();
             
             $.ajax({
                 url: "/api/item/newItem",
@@ -34,7 +25,6 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    console.log("made item " + response.itemID);
                     $('#inventory tr:last').after("<tr id='" + response.itemID + "'>" +
                         "<td>Icon</td>" +
                         "<td id='" + response.itemID + "nameField'>" + itemName + "</td>" +
@@ -72,15 +62,11 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
-                        async: false,
                         error: function(response) {
                             alert("setName went wrong");
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
                     break;
                 case fandom:
                     jsonDict.fandom = newValue;
@@ -89,15 +75,11 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
-                        async: false,
                         error: function(response) {
                             alert("setFandom went wrong");
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
                     break;
                 case kind:
                     jsonDict.kind = newValue;
@@ -106,15 +88,11 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
-                        async: false,
                         error: function(response) {
                             alert("setKind went wrong");
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
                     break;
                 case price:
                     jsonDict.price = newValue;
@@ -123,15 +101,11 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
-                        async: false,
                         error: function(response) {
                             alert("setPrice went wrong");
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
                     break;
                 case cost:
                     jsonDict.cost = newValue;
@@ -140,15 +114,11 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
-                        async: false,
                         error: function(response) {
                             alert("setCost went wrong");
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
                     break;
                 case numLeft:
                     jsonDict.numLeft = newValue;
@@ -157,24 +127,17 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
-                        async: false,
                         error: function(response) {
                             alert("setNumLeft went wrong");
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
-                    if (ajaxObj.status != 200) {
-                        return false;
-                    }
                     break;
             }
-            
         }
         
         function deleteItem(itemID) {
-            console.log(itemID);
-            var confirmation = confirm("Are you sure you want to delete this?");
-            if (confirmation == true) {
+            if (confirm("Are you sure you want to delete this?")) {
                 var jsonDict = new Object();
                 jsonDict.itemID = itemID;
                 var ajaxObj = $.ajax({
@@ -182,9 +145,8 @@
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
-                    async: false,
                     success: function(response) {
-                        $("#"+itemID + "nameField").closest('tr').remove(); 
+                        $("#" + itemID + "nameField").closest("tr").remove(); 
                         // Editable Grid shuffles everything inside the tr but not the tr itself... so the IDs don't match up
                     },
                     error: function(response) {
@@ -195,7 +157,7 @@
         }
         
         function toggleItemForm() {
-            if ($("#item-form").css('display') == 'none') {
+            if ($("#item-form").css("display") == "none") {
                 $("#item-form").show("slow", function() {});
             } else {
                 $("#item-form").hide("slow", function() {});
@@ -203,12 +165,12 @@
         }
         
         window.onload = function() {
-          editableGrid = new EditableGrid("InventoryEditableGrid", 
-                      { sortIconUp: "/static/images/up.png", 
-                       sortIconDown: "/static/images/down.png",
-                      // called when some value has been modified: we display a message
-                       // row.id to get ID
-                      modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, rowIdx, colIdx, newValue, oldValue); }}); 
+            editableGrid = new EditableGrid("InventoryEditableGrid", 
+                { sortIconUp: "/static/images/up.png", 
+                sortIconDown: "/static/images/down.png",
+                // called when some value has been modified: we display a message
+                // row.id to get ID
+                modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, rowIdx, colIdx, newValue, oldValue); }});
         
             // we build and load the metadata in Javascript
             editableGrid.load({ metadata: [
@@ -218,7 +180,7 @@
                 { name: "kind", datatype: "string", editable: true },
                 { name: "price", datatype: "double", editable: true },
                 { name: "cost", datatype: "double", editable: true },
-                { name: "remaining", datatype: "integer", editable: true}
+                { name: "remaining", datatype: "integer", editable: true }
             ]});
 
             // then we attach to the HTML table and render it
