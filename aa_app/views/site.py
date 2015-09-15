@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext, loader
 from django.db.models import Sum
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 import operator
@@ -74,96 +75,64 @@ def convention(request, conID):
             context["currUserConWriteup"] = u.writeups.get(convention = context["convention"])
     return render_to_response("convention.html", context)
 
+@login_required
 def inventory(request):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u, "invCon": models.INV_CON})
-        context["currUserInvItems"] = u.items.filter(convention = models.INV_CON)
-        return render_to_response("inventory.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u, "invCon": models.INV_CON})
+    context["currUserInvItems"] = u.items.filter(convention = models.INV_CON)
+    return render_to_response("inventory.html", context)
 
+@login_required
 def myconventions(request):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        return render_to_response("myconventions.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    return render_to_response("myconventions.html", context)
 
+@login_required
 def mywriteups(request):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        return render_to_response("mywriteups.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    return render_to_response("mywriteups.html", context)
     
+@login_required
 def addconvention(request):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        return render_to_response("addconvention.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    return render_to_response("addconvention.html", context)
 
+@login_required
 def addwriteup(request, conID = None):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
-        if conID != None:
-            assert conID != models.INV_CON.ID
-            context["currCon"] = models.Convention.objects.get(ID = conID)
-        return render_to_response("addwriteup.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
+    if conID != None:
+        assert conID != models.INV_CON.ID
+        context["currCon"] = models.Convention.objects.get(ID = conID)
+    return render_to_response("addwriteup.html", context)
 
+@login_required
 def addkind(request):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        return render_to_response("addkind.html", context)
-
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    return render_to_response("addkind.html", context)
+    
+@login_required
 def addfandom(request):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        return render_to_response("addfandom.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    return render_to_response("addfandom.html", context)
 
+@login_required
 def additem(request, conID = None):
-    if not request.user.is_authenticated():
-        resp = HttpResponse(status = 307)
-        resp["Location"] = "/login"
-        return resp
-    else:
-        u = request.user
-        context = RequestContext(request, {"currUser": u})
-        context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
-        context["kinds"] = models.Kind.objects.all()
-        context["fandoms"] = models.Fandom.objects.all()
-        if conID != None:
-            assert conID != models.INV_CON.ID
-            context["currCon"] = models.Convention.objects.get(ID = conID)
-        return render_to_response("additem.html", context)
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
+    context["kinds"] = models.Kind.objects.all()
+    context["fandoms"] = models.Fandom.objects.all()
+    if conID != None:
+        assert conID != models.INV_CON.ID
+        context["currCon"] = models.Convention.objects.get(ID = conID)
+    return render_to_response("additem.html", context)
         
 def item(request, itemID):
     context = RequestContext(request)

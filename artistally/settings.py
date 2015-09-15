@@ -15,20 +15,14 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0o$su8)219l4x6v6^)=c%hqnp)0(-e@$5v$js8bg-oplcj!7kb'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
-# Application definition
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -103,7 +97,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-AUTH_USER_MODEL = 'aa_app.User'
+AUTH_USER_MODEL = "aa_app.User"
+
+LOGIN_URL = "/login"
+
+LOGOUT_URL = "/logout"
 
 
 # HEROKU
@@ -114,9 +112,6 @@ DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
 import os
