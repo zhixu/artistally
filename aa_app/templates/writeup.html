@@ -4,6 +4,12 @@
     <title>Artistally Writeup by {{writeup.user}} about {{writeup.convention}}</title>
     {% if currUser and currUser == writeup.user %}
         <script>
+            $(function() {
+             //check correct review radio button
+                $("#r" + {{writeup.rating}}).attr("checked", true);
+                console.log({{writeup.rating}});
+            });
+            
             function updateMiscCost() {
                 var jsonDict = new Object();
                 jsonDict.miscCostID = {{miscCost.ID}};
@@ -80,6 +86,48 @@
 {% endblock %}
 
 {% block body %}
+
+<div class="container">
+    <!--=============== HEADER =============-->
+    <div class="jumbotron-convention">
+    </div>
+    
+    <h1 class="text-center">Edit your review for <b>{{convention}}</b></h1>
+    
+
+    <!-- ========== ENTRY ============ -->
+    {% if currUser and currUser == writeup.user %}
+    <div class="review-entry">
+        <div class="side cell">
+            <img src="/static/images/icon-default.png" class="user-icon-large">
+            <br/><b>{{currUser}}</b>
+            <br/>{{writeup.editTime|date:"M d, Y"}}
+            {% if writeup.editTime.timestamp > writeup.writeTime.timestamp|add:1 %}
+        <br/> Last edit {{writeup.editTime|date:"M d, Y"}}
+        {% endif %}
+        </div>
+        <div class="main cell">
+             Rating:
+            <span class="star-rating">
+                <input type="radio" name="ratingField" id="r1" value="1"><i></i>
+                <input type="radio" name="ratingField" id="r2" value="2"><i></i>
+                <input type="radio" name="ratingField" id="r3" value="3"><i></i>
+                <input type="radio" name="ratingField" id="r4" value="4"><i></i>
+                <input type="radio" name="ratingField" id="r5" value="5"><i></i>
+            </span>
+            <br/>
+            <textarea rows="5" id="reviewField">{{writeup.review}}</textarea>
+            <button onclick="makeWriteup()" class="btn btn-custom-blue">Update</button>
+        </div>
+    </div>
+    {% else %}
+    
+    <!-- ============ 404 page ============-->
+    
+    {% endif %}
+<!--
+    
+    
     written on {{writeup.writeTime.isoformat}}
     {% if writeup.editTime.timestamp > writeup.writeTime.timestamp|add:1 %}
         <br/>
@@ -101,4 +149,6 @@
         <br/>
         review: <textarea rows="5" readonly>{{writeup.review}}</textarea>
     {% endif %}
+</div>
 {% endblock %}
+-->

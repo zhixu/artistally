@@ -188,7 +188,7 @@
         <div class="con-header">
             <div class="cell main-info">
                 <h2>{{convention}}</h2>
-                {{convention.location}} | <a href="{{convention.website}}">{{convention.website}}</a>
+                {{convention.location}} | {{convention.startDate}} - {{convention.endDate}} | <a href="{{convention.website}}">{{convention.website}}</a>
             </div>
             {% if currUser %}
             <div class="cell text-center">
@@ -250,28 +250,36 @@
                 <div class="side cell">
                     <img src="/static/images/icon-default.png" class="user-icon-large">
                     <br/><b>{{writeup.user}}</b>
-                    <br/>{{writeup.editTime.isoformat}}
+                    <br/>{{writeup.editTime|date:"M d, Y"}}
                 </div>
                 <div class="main cell">
-                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
-                        
-                    <br/>
+                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div> 
+                    {% if writeup.user == currUser %}
+                    <span><button onclick="#" class="btn btn-custom-blue">Edit Review</button></span>
+                    {% endif %}
                     <div class="text-blurb">
                         {{writeup.review}}
+                        <p class="read-more"><a href="#" class="button">Read More</a></p>
                     </div>
                 </div>
             </div>
             <br/>
-            <!--Read more...-->
         {% empty %}
             No one has reviewed this convention yet.
         {% endfor %}
-            
+            <h1><a href="#">Read all reviews...</a></h1>
         </div>
         
         {% if currUser %}
+            {% if currUserConWriteup %}
             <div class="section-wrapper" id="add-review">
                 <h3>Write Review</h3>
+                
+        <!--                <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>-->
+                <button onclick="#" class="btn btn-custom-blue">Edit Review</button>
+                {% else %}
+
+                
                 <div class="row">
                     <div class="col-sm-2">
                         <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
@@ -296,11 +304,12 @@
                     <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
                 </div>
             </div>
+            {% endif %}
         {% endif %}
 
     </div>
 
-<!--    {% if currUser %}
+  <!--  {% if currUser %}
         {% if currUserConWriteup %}
             <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>
         {% endif %}
@@ -337,6 +346,6 @@
             <img src="{{convention.image}}"/>
             <br/>
         {% endif %}
-    {% endif %}
+    {% endif %}-->
 
-{% endblock %}-->
+{% endblock %}

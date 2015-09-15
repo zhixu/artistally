@@ -40,6 +40,39 @@
 {% endblock %}
 
 {% block body %}
+
+<div class="container">
+    <div class="jumbotron-convention">
+    </div>
+    <div class="con-header">
+        <div class="cell main-info">
+            <h2>{{convention}}</h2>
+            {{convention.location}} | {{convention.startDate}} - {{convention.endDate}} | <a href="{{convention.website}}">{{convention.website}}</a>
+        </div>
+        {% if currUser %}
+        <div class="cell text-center">
+            <div class="containery">
+                <div class="centery">
+                    {% if currUserConWriteup %}
+    <!--                <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>-->
+                    <button onclick="#" class="btn btn-custom-blue">Edit Review</button>
+                    {% else %}
+                    <button onclick="#add-review" class="btn btn-custom-blue">Add Review</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="cell text-center">
+            <div class="containery">
+                <div class="centery">
+                    <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:0%"></span></div>
+                    {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
+                </div>
+            </div>
+        </div>
+    </div>
+
     Pick your convention <a href="/addconvention">(not here?)</a>
     <select id="conIDField">
         {% for con in cons %}   <!-- change to not include con where already you made a writeup -->
@@ -54,4 +87,5 @@
     <textarea rows="5" id="reviewField" placeholder="review goes here"></textarea>
     <br/>
     <a onclick="makeMiscCost(); makeWriteup()" href="#">Submit</a>
+</div>
 {% endblock %}

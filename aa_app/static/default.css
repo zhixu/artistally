@@ -14,7 +14,8 @@ body {
 h1, h2, h3, h4, h5, h6 {
     margin-top: 0px;
     margin-bottom: 4px;
-    text-transform: uppercase;
+    font-family: "Playfair Display", serif;
+/*    text-transform: uppercase;*/
     font-weight: 700;
 }
 
@@ -79,11 +80,6 @@ textarea {
     display: inline-block;
     vertical-align: middle;
     white-space: normal;
-}
-
-.login-reg-input {
-    height:40px;
-    font-size:14pt;
 }
 
 .dash-box {
@@ -242,6 +238,15 @@ textarea {
     padding: 15px;
 }
 
+/* BOOTSTRAP OVERRIDES */
+/*
+.input-group-addon {
+    background-color: #605063;   
+}
+*/
+
+/* BUTTONS */
+
 .form-custom-white {
     background: white;
     border: 2px solid white;
@@ -258,16 +263,28 @@ textarea {
     color: white;
     border-radius: 30px; 
     -moz-border-radius: 30px; 
-    -webkit-border-radius: 30px; 
+    -webkit-border-radius: 30px;
 }
 
 .btn-custom-blue {
     background: #ccdee0;
     color: #605063;
-    border-radius: 10px; 
+    border-bottom: 4px solid #ccc;
+    border-radius: 10px;
     -moz-border-radius: 10px; 
     -webkit-border-radius: 10px; 
 }
+
+.btn .wide {
+    width: 100%;
+}
+
+
+/* ------------------------------------------------- */
+/* --------------------- FORMS --------------------- */
+/* ------------------------------------------------- */
+
+
 
 .jumbotron {
     position: relative;
@@ -316,6 +333,15 @@ textarea {
     border: 1px solid #ccc;
 }
 
+.reg-form-wrapper {
+    width: 400px;
+    padding: 40px 30px;
+    border: 1px solid #ccc;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+}
+
 
 
 .item-fit {
@@ -347,12 +373,12 @@ textarea {
   font-size: 0;
   white-space: nowrap;
   display: inline-block;
-  width: 55px;
+  width: 110px;
   height: 21px;
   overflow: hidden;
   position: relative;
   background: url("/static/images/stars.png");
-  background-size: contain;
+/*  background-size: contain;*/
 }
 .star-rating i {
   opacity: 0;
@@ -364,7 +390,7 @@ textarea {
   z-index: 1;
   background: url("/static/images/stars.png");
     background-position: 0 100%;
-  background-size: contain;
+/*  background-size: contain;*/
 }
 .star-rating input {
   -moz-appearance: none;
@@ -450,16 +476,17 @@ textarea {
 
 .review-entry .main {
     width: 80%;
+    height: 300px;
 }
 
 .text-blurb {
-    height: 100%;
+    height: 150px;
     overflow: hidden;
 }
 
 textarea#reviewField {
     width: 100%;
-    height: 120px;
+    height: 100%;
 }
 
 /* ----------------------------------------------- */

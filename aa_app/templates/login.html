@@ -41,15 +41,28 @@
 {% block body %}
 <div class="containery">
     <div class="centered centery">
-        <h3>User Login</h3>
+    <div class="reg-form-wrapper">
+        <sup><a href="\">&laquo; Go back home</a></sup>
         <br/>
-        <input type="text" class="login-reg-input" id="userField" placeholder="username"/>
+        <h3>Sign in to your account</h3>
         <br/>
-        <input type="password" class="login-reg-input" id="passField" placeholder="password"/>
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon"/>
+        </div>
         <br/>
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon" id="password-addon"><i class="fa fa-key"></i></span>
+            <input type="password" class="form-control" id="passField" placeholder="Password" aria-describedby="password-addon"/>
+        </div>
+        
         <br/>
+        <br/><button onclick="login()" id="loginButton" class="btn btn-custom-blue wide">Login</button>
         <br/>
-        <button onclick="login()" id="loginButton" class="btn btn-custom-blue">Login</button>
+        <br/><sub><a href="#">Forgot Password?</a></sub>
+        <br/>
+        <br/><sub><a href="/signup">Create a new account</a></sub>
+    </div>
     </div>
 </div>
 {% endblock %}
