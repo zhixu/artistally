@@ -110,42 +110,59 @@
 
 {% block body %}
     {% if currUser and currUser == pageUser %}
-        {{pageUser}}'s Profile (You!)
-        <br/>
-        you've been doing artist alley since <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>
-        <br/>
-        your avatar:
-        {% if pageUser.image %}
-            <img src="{{pageUser.image}}"/>
-        {% else %}
-            <img src="/static/images/icon-default.png"/>
-        {% endif %}
-        <br/>
-        upload a new one?
-        <br/>
-        <input type="file" id="fileField" accept="image/*"/> max 10 MiB
-        <br/>
-        <input type="password" id="passField1" placeholder="new password?"/>
-        <br/>
-        <input type="password" id="passField2" placeholder="verify new password?"/>
-        <br/>
-        <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>
-        <br/>
-        <input type="email" id="emailField" placeholder="email address" value="{{pageUser.email}}"/>
-        <br/>
-        <a onclick="updateProfile()" href="#">Update</a>
-    {% else %}
-        {{pageUser}}'s Profile
-        <br/>    
-        {% if pageUser.startYear %}
-            they've been doing artist alley since {{pageUser.startYear}}
+
+<div class="containery">
+    <div class="centery">
+        <div class="reg-form-wrapper">
+            <h1 class="text-center">Edit Profile</h1>
+            
+            {% if pageUser.image %}
+            <img src="{{pageUser.image}}" class="user-icon-large"/>
+            {% else %}
+            <img src="/static/images/icon-default.png" class="user-icon-large"/>
+            {% endif %}
             <br/>
-        {% endif %}
-        their user avatar
-        {% if pageUser.image %}
-            <img src="{{pageUser.image}}"/>
-        {% else %}
-            <img src="/static/images/icon-default.png"/>
-        {% endif %}
+            upload a new one?
+            <br/>
+            <input type="file" id="fileField" accept="image/*"/> max 10 MiB
+
+            Username: {{pageUser}}
+            <br/>
+            you've been doing artist alley since <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>
+            <br/>
+
+            <br/>
+
+            <br/>
+            <input type="password" id="passField1" placeholder="new password?"/>
+            <br/>
+            <input type="password" id="passField2" placeholder="verify new password?"/>
+            <br/>
+            <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>
+            <br/>
+            <input type="email" id="emailField" placeholder="email address" value="{{pageUser.email}}"/>
+            <br/>
+            <br/>
+            <button onclick="updateProfile()" class="btn btn-custom-blue wide">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="container">
+    {{pageUser}}'s Profile
+    <br/>    
+    {% if pageUser.startYear %}
+        they've been doing artist alley since {{pageUser.startYear}}
+        <br/>
     {% endif %}
+    their user avatar
+    {% if pageUser.image %}
+        <img src="{{pageUser.image}}"/>
+    {% else %}
+        <img src="/static/images/icon-default.png"/>
+
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

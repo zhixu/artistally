@@ -9,6 +9,7 @@ body {
     color: #605063;
     margin-bottom: 100px; /* footer height */
     overflow-x: hidden;
+    background: url("/static/images/geometry.png") repeat;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -335,14 +336,13 @@ textarea {
 
 .reg-form-wrapper {
     width: 400px;
-    padding: 40px 30px;
+    padding: 20px 30px;
     border: 1px solid #ccc;
     border-radius: 10px; 
     -moz-border-radius: 10px; 
-    -webkit-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+    background-color: #ffffff;
 }
-
-
 
 .item-fit {
     max-width: 100%;
