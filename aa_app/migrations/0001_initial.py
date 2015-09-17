@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import django.core.validators
 from django.conf import settings
+import django.core.validators
 
 
 class Migration(migrations.Migration):
@@ -15,13 +15,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('password', models.CharField(verbose_name='password', max_length=128)),
-                ('last_login', models.DateTimeField(verbose_name='last login', blank=True, null=True)),
-                ('username', models.SlugField(serialize=False, primary_key=True)),
-                ('email', models.EmailField(unique=True, max_length=254)),
-                ('startYear', models.PositiveSmallIntegerField(default=None, blank=True, null=True)),
-                ('image', models.URLField(default=None, blank=True, null=True)),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(null=True, verbose_name='last login', blank=True)),
+                ('username', models.SlugField(primary_key=True, serialize=False)),
+                ('email', models.EmailField(max_length=254, unique=True)),
+                ('startYear', models.PositiveSmallIntegerField(default=None, null=True, blank=True)),
+                ('image', models.URLField(default=None, blank=True)),
                 ('superuser', models.BooleanField(default=False)),
+                ('description', models.TextField(default=None, blank=True)),
+                ('website1', models.URLField(default=None, blank=True)),
+                ('website2', models.URLField(default=None, blank=True)),
+                ('website3', models.URLField(default=None, blank=True)),
             ],
             options={
                 'abstract': False,
@@ -37,7 +41,7 @@ class Migration(migrations.Migration):
                 ('numAttenders', models.PositiveIntegerField()),
                 ('location', models.TextField()),
                 ('website', models.URLField()),
-                ('image', models.URLField(default=None, blank=True, null=True)),
+                ('image', models.URLField(default=None, blank=True)),
             ],
             options={
                 'abstract': False,
@@ -61,7 +65,7 @@ class Migration(migrations.Migration):
                 ('cost', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('numSold', models.PositiveIntegerField()),
                 ('numLeft', models.PositiveIntegerField()),
-                ('image', models.URLField(default=None, blank=True, null=True)),
+                ('image', models.URLField(default=None, blank=True)),
                 ('convention', models.ForeignKey(to='aa_app.Convention', related_name='items')),
                 ('fandom', models.ForeignKey(to='aa_app.Fandom', related_name='items')),
             ],

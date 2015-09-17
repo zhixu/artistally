@@ -15,8 +15,16 @@ def newUser(request):
     u = models.newUser(d["username"], d["password"], d["email"])
     if "startYear" in d and d["startYear"] != "":
         u.setStartYear(int(d["startYear"]))
-    if "image" in d and d["image"] != "":
+    if "image" in d:
         u.setImage(d["image"])
+    if "description" in d:
+        u.setDescription(d["description"])
+    if "website1" in d:
+        u.setWebsite1(d["website1"])
+    if "website2" in d:
+        u.setWebsite2(d["website2"])
+    if "website3" in d:
+        u.setWebsite3(d["website3"])
     return EMPTY_JSON_200
 
 @user_passes_test(lambda u: u.is_anonymous())
@@ -58,5 +66,33 @@ def setStartYear(request):
 def setImage(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    u.setImage(d["image"] if d["image"] != "" else None)
+    u.setImage(d["image"])
+    return EMPTY_JSON_200
+
+@login_required
+def setDescription(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    u.setImage(d["description"])
+    return EMPTY_JSON_200
+
+@login_required
+def setWebsite1(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    u.setImage(d["website1"])
+    return EMPTY_JSON_200
+
+@login_required
+def setWebsite2(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    u.setImage(d["website2"])
+    return EMPTY_JSON_200
+
+@login_required
+def setWebsite3(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    u.setImage(d["website3"])
     return EMPTY_JSON_200

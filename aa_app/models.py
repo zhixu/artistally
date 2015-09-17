@@ -33,8 +33,12 @@ class User(AbstractBaseUser):
     username = models.SlugField(primary_key = True, max_length = 50)
     email = models.EmailField(unique = True, max_length = 254)
     startYear = models.PositiveSmallIntegerField(null = True, blank = True, default = None)
-    image = models.URLField(max_length = 200, blank = True, null = True, default = None)
+    image = models.URLField(max_length = 200, blank = True, default = "")
     superuser = models.BooleanField(default = False)
+    description = models.TextField(blank = True, default = "")
+    website1 = models.URLField(max_length = 200, blank = True, default = "")
+    website2 = models.URLField(max_length = 200, blank = True, default = "")
+    website3 = models.URLField(max_length = 200, blank = True, default = "")
 
     @property
     def conventions(self):
@@ -63,6 +67,22 @@ class User(AbstractBaseUser):
 
     def setImage(self, newImage):
         self.image = newImage
+        self.save()
+        
+    def setDescription(self, newDescription):
+        self.description = newDescription
+        self.save()
+        
+    def setWebsite1(self, newWebsite1):
+        self.website1(newWebsite1)
+        self.save()
+        
+    def setWebsite2(self, newWebsite2):
+        self.website2(newWebsite2)
+        self.save()
+        
+    def setWebsite3(self, newWebsite3):
+        self.website3(newWebsite3)
         self.save()
         
     def setSuperuser(self, newSuperuser):
@@ -111,7 +131,7 @@ class Convention(ValidatedModel):
     numAttenders = models.PositiveIntegerField()
     location = models.TextField()
     website = models.URLField(max_length = 200)
-    image = models.URLField(max_length = 200, blank = True, null = True, default = None)
+    image = models.URLField(max_length = 200, blank = True, default = "")
     
     @property
     def avgRating(self):
@@ -232,7 +252,7 @@ class Item(ValidatedModel):
     cost = models.DecimalField(max_digits = 10, decimal_places = 2)
     numSold = models.PositiveIntegerField()
     numLeft = models.PositiveIntegerField()
-    image = models.URLField(max_length = 200, blank = True, null = True, default = None)
+    image = models.URLField(max_length = 200, blank = True, default = "")
 
     # SETTERS
     def setNumSold(self, newNumSold):
