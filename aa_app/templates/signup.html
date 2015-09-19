@@ -3,13 +3,43 @@
 {% block head %}
     <title>Artistally Signup</title>
     <script>
+        $(function() {
+            KEYUP = function(event) {
+                if (event.keyCode == 13) {
+                    $("#registerButton").click();
+                }
+            }
+            $("#emailField").keyup(KEYUP);
+        });
+        
+        function login() {
+            var jsonDict = new Object();
+            jsonDict.username = $("#userField").val();
+            jsonDict.password = $("#passField1").val();
+            $.ajax({
+                url: "/api/user/login",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/";
+                },
+                error: function(response) {
+                    alert("login went wrong");
+                },
+            });
+        }
+        
         function signup() {
+            $("#emailField").unbind("keyup", KEYUP);
+            $("#registerButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.username = $("#userField").val();
             jsonDict.password = $("#passField1").val();
             jsonDict.email = $("#emailField").val();
             if (jsonDict.password != $("#passField2").val()) {
                 alert("Your passwords do not match, please try again.");
+                $("#registerButton").attr("disabled", false);
             } else {
                 $.ajax({
                     url: "/api/user/newUser",
@@ -17,10 +47,15 @@
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
                     success: function(response) {
-                        window.location.href = "/";
+                        login();
+                        //window.location.href = "/";
                     },
                     error: function(response) {
                         alert("newUser went wrong");
+                        $("#registerButton").attr("disabled", false);
+                        setTimeout(function() {
+                            $("#emailField").keyup(KEYUP);
+                        }, 222);
                     },
                 });
             }
@@ -62,7 +97,7 @@
 <!--            <input type="email" class="login-reg-input" id="emailField" placeholder="email"/>-->
             <br/>
             <br/>
-            <button onclick="signup()" class="btn btn-custom-blue wide">Register</button>
+            <a onclick="signup()" id="registerButton" class="btn btn-custom-blue wide">Register</a>
             <br/>
             <br/><sub><a href="/login">Login with existing account</a></sub>
         </div>

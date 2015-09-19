@@ -171,6 +171,9 @@
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        location.reload();
+                    },
                     error: function(response) {
                         alert("newWriteup went wrong");
                     },
@@ -196,9 +199,9 @@
                     <div class="centery">
                         {% if currUserConWriteup %}
         <!--                <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>-->
-                        <button onclick="#" class="btn btn-custom-blue">Edit Review</button>
+                        <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                         {% else %}
-                        <button onclick="#add-review" class="btn btn-custom-blue">Add Review</button>
+                        <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
                         {% endif %}
                     </div>
                 </div>
@@ -249,14 +252,14 @@
             <div class="review-entry">
                 <div class="side cell">
                     <img src="/static/images/icon-default.png" class="user-icon-large">
-                    <br/><b>{{writeup.user}}</b>
+                    <br/><a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
                     <br/>{{writeup.editTime|date:"M d, Y"}}
+                    {% if writeup.user == currUser %}
+                    <span><a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a></span>
+                    {% endif %}
                 </div>
                 <div class="main cell">
-                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div> 
-                    {% if writeup.user == currUser %}
-                    <span><button onclick="#" class="btn btn-custom-blue">Edit Review</button></span>
-                    {% endif %}
+                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
                     <div class="text-blurb">
                         {{writeup.review}}
                         <p class="read-more"><a href="#" class="button">Read More</a></p>
@@ -271,15 +274,15 @@
         </div>
         
         {% if currUser %}
+        <div class="section-wrapper" id="add-review">
             {% if currUserConWriteup %}
-            <div class="section-wrapper" id="add-review">
-                <h3>Write Review</h3>
+            
+                
                 
         <!--                <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>-->
-                <button onclick="#" class="btn btn-custom-blue">Edit Review</button>
-                {% else %}
-
-                
+            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+            {% else %}
+                <h3>Write Review</h3>
                 <div class="row">
                     <div class="col-sm-2">
                         <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
@@ -295,16 +298,17 @@
                             <input type="radio" name="ratingField" value="5"><i></i>
                         </span>
                         <br/>
-                        <textarea rows="5" id="reviewField"></textarea>
-                        <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01"/>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="5" id="reviewField"></textarea>
+                        </div>
                     </div>
                 </div>
 
                 <div class="right">
                     <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
                 </div>
-            </div>
             {% endif %}
+            </div>
         {% endif %}
 
     </div>

@@ -122,29 +122,50 @@
             <img src="/static/images/icon-default.png" class="user-icon-large"/>
             {% endif %}
             <br/>
-            upload a new one?
+            <br/>
+            Upload new profile picture:
             <br/>
             <input type="file" id="fileField" accept="image/*"/> max 10 MiB
-
+            <br/>
+            <br/>
             Username: {{pageUser}}
             <br/>
-            you've been doing artist alley since <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>
+            Years of Artist Alley experience:
+            <div class="input-group">
+                <input type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
+            </div>    
+<!--            <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>-->
             <br/>
 
             <br/>
 
             <br/>
-            <input type="password" id="passField1" placeholder="new password?"/>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
+                <input type="password" class="form-control" id="passField1" placeholder="New password" aria-describedby="password1-addon"/>
+            </div>
+<!--            <input type="password" id="passField1" placeholder="new password?"/>-->
             <br/>
-            <input type="password" id="passField2" placeholder="verify new password?"/>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
+                <input type="password" class="form-control" id="passField2" placeholder="Re-enter new password" aria-describedby="password2-addon"/>
+            </div>
+<!--            <input type="password" id="passField2" placeholder="verify new password?"/>-->
             <br/>
-            <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>
+             <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
+                <input type="password" class="form-control" id="oldPassField" placeholder="Current password" aria-describedby="oldpassword-addon"/>
+            </div>
+<!--            <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>-->
             <br/>
-            <input type="email" id="emailField" placeholder="email address" value="{{pageUser.email}}"/>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                <input type="email" class="form-control" id="emailField" placeholder="New email" aria-describedby="login-addon"/>
+            </div>
+<!--            <input type="email" id="emailField" placeholder="email address" value="{{pageUser.email}}"/>-->
             <br/>
             <br/>
             <button onclick="updateProfile()" class="btn btn-custom-blue wide">Update</button>
-            </div>
         </div>
     </div>
 </div>
