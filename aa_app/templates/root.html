@@ -20,104 +20,102 @@
             </div>
 
             <div class="col-sm-10 maincontent-wrapper">
-                    <h1>Dashboard</h1>
-            
-                        View data from: <input type="date"> to: <input type="date">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <div class="dash-box">
-                                    <i class="fa fa-building fa-4x pull-left"></i>
-                                    <div class="text-right">
-                                        <h3>{{currUser.conventions.count}}</h3>
-                                        conventions
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="dash-box">
-                                    <i class="fa fa-money fa-4x pull-left"></i>
-                                    <div class="text-right">
-                                        <h3>${{currUser.profit|floatformat:2}}</h3>
-                                        profit
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="dash-box">
-                                    <i class="fa fa-cube fa-4x pull-left"></i>
-                                    <div class="text-right">
-                                        <h3>{{currUserItemsSold}}</h3>
-                                        items sold
-                                    </div>
-                                </div>
+                <h1>Dashboard</h1>
+
+                View data from: <input type="date"> to: <input type="date">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="dash-box">
+                            <i class="fa fa-building fa-4x pull-left"></i>
+                            <div class="text-right">
+                                <h3>{{currUser.conventions.count}}</h3>
+                                conventions
                             </div>
                         </div>
-                        <br/>
-                        graphs and stuff go here
-                        <br/>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="dash-box">
+                            <i class="fa fa-money fa-4x pull-left"></i>
+                            <div class="text-right">
+                                <h3>${{currUser.profit|floatformat:2}}</h3>
+                                profit
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="dash-box">
+                            <i class="fa fa-cube fa-4x pull-left"></i>
+                            <div class="text-right">
+                                <h3>{{currUserItemsSold}}</h3>
+                                items sold
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <br/>
+                graphs and stuff go here
+                <br/>
             </div>
         </div>
 
     {% else %}
 
+        <div class="container">
+            <div class="containery">
+                <div class="centery">
+                    <h2>Be informed.</h2>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="splash-section-wrapper text-center">
+            <h3>Designed by an artist for artists.</h3>
+            <br/>
+            <br/>
+            <br/>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <span class="fa-stack fa-4x splash-icon">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-mobile-phone fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h5>Keep track of sales wherever you go.</h5>
+                        <br/>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="fa-stack fa-4x splash-icon">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-line-chart fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h5>View sales trends at each venue.</h5>
+                        <br/>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="fa-stack fa-4x splash-icon">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h5>Find out what other artists think.</h5>
+                        <br/>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron">
             <div class="container">
-        <div class="containery">
-            <div class="centery">
-                <h2>Be informed.</h2>
+                <div class="containery">
+                    <div class="centery">
+                        <h1>Sign up today!</h1>
+                        <br/>
+                        <br/>
+                        <button class="btn-custom-white" ><h3 class="lowercase">Sign Up</h3></button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="container">
-    <div class="splash-section-wrapper text-center">
-    <h3>Designed by an artist for artists.</h3>
-    <br/>
-    <br/>
-    <br/>
-    <div class="row">
-        <div class="col-sm-4">
-            <span class="fa-stack fa-4x splash-icon">
-                <i class="fa fa-circle fa-stack-2x"></i>
-                <i class="fa fa-mobile-phone fa-stack-1x fa-inverse"></i>
-            </span>
-            <h5>Keep track of sales wherever you go.</h5>
-            <br/>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
-        </div>
-        <div class="col-sm-4">
-            <span class="fa-stack fa-4x splash-icon">
-                <i class="fa fa-circle fa-stack-2x"></i>
-                <i class="fa fa-line-chart fa-stack-1x fa-inverse"></i>
-            </span>
-            <h5>View sales trends at each venue.</h5>
-            <br/>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
-        </div>
-        <div class="col-sm-4">
-            <span class="fa-stack fa-4x splash-icon">
-                <i class="fa fa-circle fa-stack-2x"></i>
-                <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
-            </span>
-            <h5>Find out what other artists think.</h5>
-            <br/>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
-        </div>
-    </div> 
-    </div>
-</div>
-<div class="jumbotron">
-    <div class="container">
-        <div class="containery">
-            <div class="centery">
-                <h1>Sign up today!</h1>
-                <br/>
-                <br/>
-                <button class="btn-custom-white" ><h3 class="lowercase">Sign Up</h3></button>
-            </div>
-        </div>
-    </div>
-</div>
 
     {% endif %}
 

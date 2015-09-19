@@ -11,7 +11,7 @@
             }
             $("#emailField").keyup(KEYUP);
         });
-        
+
         function login() {
             var jsonDict = new Object();
             jsonDict.username = $("#userField").val();
@@ -48,7 +48,6 @@
                     data: JSON.stringify(jsonDict),
                     success: function(response) {
                         login();
-                        //window.location.href = "/";
                     },
                     error: function(response) {
                         alert("newUser went wrong");
@@ -64,43 +63,38 @@
 {% endblock %}
 
 {% block body %}
-
-<div class="containery">
-    <div class="centered centery">
-        <div class="reg-form-wrapper">
-            <sub><a href="\">&laquo; Go back home</a></sub>
-            <br/>
-            <h3>User Registration</h3>
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon"/>
+    <div class="containery">
+        <div class="centered centery">
+            <div class="reg-form-wrapper">
+                <sub><a href="/">&laquo; Go back home</a></sub>
+                <br/>
+                <h3>User Registration</h3>
+                <br/>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon"/>
+                </div>
+                <br/>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
+                    <input type="password" class="form-control" id="passField1" placeholder="Password" aria-describedby="password1-addon"/>
+                </div>
+                <br/>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
+                    <input type="password" class="form-control" id="passField2" placeholder="Re-enter password" aria-describedby="password2-addon"/>
+                </div>
+                <br/>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                    <input type="email" class="form-control" id="emailField" placeholder="Email" aria-describedby="login-addon"/>
+                </div>
+                <br/>
+                <br/>
+                <a onclick="signup()" id="registerButton" class="btn btn-custom-blue wide">Register</a>
+                <br/>
+                <br/><sub><a href="/login">Login with existing account</a></sub>
             </div>
-<!--            <input type="text" class="login-reg-input" id="userField" placeholder="username"/>-->
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
-                <input type="password" class="form-control" id="passField1" placeholder="Password" aria-describedby="password1-addon"/>
-            </div>
-<!--            <input type="password" class="login-reg-input" id="passField1" placeholder="password"/>-->
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
-                <input type="password" class="form-control" id="passField2" placeholder="Re-enter password" aria-describedby="password2-addon"/>
-            </div>
-<!--            <input type="password" class="login-reg-input" id="passField2" placeholder="reenter password"/>-->
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
-                <input type="email" class="form-control" id="emailField" placeholder="Email" aria-describedby="login-addon"/>
-            </div>
-<!--            <input type="email" class="login-reg-input" id="emailField" placeholder="email"/>-->
-            <br/>
-            <br/>
-            <a onclick="signup()" id="registerButton" class="btn btn-custom-blue wide">Register</a>
-            <br/>
-            <br/><sub><a href="/login">Login with existing account</a></sub>
         </div>
     </div>
-</div>
 {% endblock %}
