@@ -42,6 +42,10 @@ textarea {
     height: 100%;
 }
 
+th, td {
+    text-align: right;   
+}
+
 .fixed {
     position: fixed;
     overflow-y: auto;
@@ -357,13 +361,8 @@ color:red
 }
 
 .reg-form-wrapper {
-    width: 400px;
-    padding: 20px 30px;
-    border: 1px solid #ccc;
-    border-radius: 10px; 
-    -moz-border-radius: 10px; 
-    -webkit-border-radius: 10px;
-    background-color: #ffffff;
+    margin-left: 35%;
+    margin-right: 35%;
 }
 
 .item-fit {

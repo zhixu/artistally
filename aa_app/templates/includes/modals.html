@@ -1,0 +1,52 @@
+<!-- Button trigger modal -->
+<!--<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>-->
+
+<!-- ============ AddFandom Modal ============-->
+<div class="modal fade" id="fandomModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Fandom</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="nameField">Fandom Name</label>
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" id="fandomField" placeholder="Digimon, Sailor Moon, etc..."/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-custom-blue" onclick="makeFandom()" id="fandomSubmit">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ AddKind Modal ============-->
+<div class="modal fade" id="kindModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Kind</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="nameField">Kind</label>
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" id="kindField" placeholder="Print, button, charm, etc..."/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-custom-blue" onclick="makeKind()" id="kindSubmit">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
