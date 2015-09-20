@@ -104,6 +104,15 @@
                     uploadFile();
                 }
             }
+            
+            function chooseFile() {
+                $("#fileField").click();
+            }
+            
+            function showFileChosenMessage() {
+                $("#fileChosenMessage").removeClass("hidden");
+            }
+            
         </script>
     {% endif %}
 {% endblock %}
@@ -111,30 +120,34 @@
 {% block body %}
     {% if currUser and currUser == pageUser %}
 
-<div class="containery">
-    <div class="centery">
-        <div class="reg-form-wrapper">
-            <h1 class="text-center">Edit Profile</h1>
-            
-            {% if pageUser.image %}
-            <img src="{{pageUser.image}}" class="user-icon-large"/>
-            {% else %}
-            <img src="/static/images/icon-default.png" class="user-icon-large"/>
-            {% endif %}
-            <br/>
-            <br/>
-            Upload new profile picture:
-            <br/>
-            <input type="file" id="fileField" accept="image/*"/> max 10 MiB
-            <br/>
-            <br/>
-            Username: {{pageUser}}
-            <br/>
-            Years of Artist Alley experience:
-            <div class="input-group">
-                <input type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
+<div class="convention-form-wrapper form-wrapper">
+    <h1 class="text-center title-wrapper">Edit Profile</h1>
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="text-center">
+                {% if pageUser.image %}
+                <img src="{{pageUser.image}}" class="user-icon-large"/>
+                {% else %}
+                <img src="/static/images/icon-default.png" class="user-icon-large"/>
+                {% endif %}
+                <br/>
+                {{pageUser}}
+                <br/>
+                <br/>
+                <input class="hidden" type="file" id="fileField" accept="image/*"/ onchange="showFileChosenMessage()">
+                <p class="hidden" id="fileChosenMessage">File has been chosen.</p>
+                <a onclick="chooseFile()" class="btn btn-custom-blue">Upload New Picture</a>
+                <br/>
+                Max 10 MiB
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-group">
+                <label for="startYearField">Years in Artist Alley:</label>
+                <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
             </div>    
-<!--            <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>-->
+        <!--            <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>-->
             <br/>
 
             <br/>
@@ -144,30 +157,29 @@
                 <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
                 <input type="password" class="form-control" id="passField1" placeholder="New password" aria-describedby="password1-addon"/>
             </div>
-<!--            <input type="password" id="passField1" placeholder="new password?"/>-->
+        <!--            <input type="password" id="passField1" placeholder="new password?"/>-->
             <br/>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
                 <input type="password" class="form-control" id="passField2" placeholder="Re-enter new password" aria-describedby="password2-addon"/>
             </div>
-<!--            <input type="password" id="passField2" placeholder="verify new password?"/>-->
+        <!--            <input type="password" id="passField2" placeholder="verify new password?"/>-->
             <br/>
              <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
                 <input type="password" class="form-control" id="oldPassField" placeholder="Current password" aria-describedby="oldpassword-addon"/>
             </div>
-<!--            <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>-->
+        <!--            <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>-->
             <br/>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
                 <input type="email" class="form-control" id="emailField" placeholder="New email" aria-describedby="login-addon"/>
             </div>
-<!--            <input type="email" id="emailField" placeholder="email address" value="{{pageUser.email}}"/>-->
-            <br/>
-            <br/>
-            <button onclick="updateProfile()" class="btn btn-custom-blue wide">Update</button>
         </div>
     </div>
+    <br/>
+    <br/>
+    <p class="text-right"><a onclick="updateProfile()" class="btn btn-custom-blue wide">Update Profile</a></p>
 </div>
 {% else %}
 <div class="container">
@@ -182,7 +194,6 @@
         <img src="{{pageUser.image}}"/>
     {% else %}
         <img src="/static/images/icon-default.png"/>
-
     {% endif %}
 </div>
 {% endif %}

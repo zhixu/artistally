@@ -46,6 +46,11 @@ th, td {
     text-align: right;   
 }
 
+.hidden {
+    height: 0px;
+    overflow: hidden;
+}
+
 .fixed {
     position: fixed;
     overflow-y: auto;
@@ -327,6 +332,10 @@ color:red
 /* -------------------------------------------- */
 /* ----------------- WRAPPERS ----------------- */
 /* -------------------------------------------- */
+.title-wrapper {
+    margin-bottom: 30px;   
+}
+
 .splash-section-wrapper {
     margin: 50px 0px;
 }
