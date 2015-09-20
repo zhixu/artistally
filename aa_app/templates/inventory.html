@@ -6,6 +6,40 @@
     <script type="text/javascript" src="/static/js/editablegrid/all_min.js"></script>
 
     <script>
+        function findFandom() {
+            var jsonDict = new Object();
+            jsonDict.query = "test"
+            $.ajax({
+                url: "/api/search/findFandom",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    console.log(response)
+                },
+                error: function(response) {
+                    alert("findFandom went wrong");
+                },
+            });
+        }
+        
+        function findKind() {
+            var jsonDict = new Object();
+            jsonDict.query = "test"
+            $.ajax({
+                url: "/api/search/findKind",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    console.log(response)
+                },
+                error: function(response) {
+                    alert("findKind went wrong");
+                },
+            });
+        }
+        
         function makeItem() {
             var itemName, itemFandom, itemKind, itemPrice, itemCost, itemNumLeft;
             
