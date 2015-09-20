@@ -30,6 +30,7 @@ urlpatterns = [
     url(r"^convention/([0-9]+)$", "aa_app.views.site.convention"),
     url(r"^item/([0-9]+)$", "aa_app.views.site.item"),
     url(r"^writeup/([0-9]+)$", "aa_app.views.site.writeup"),
+    url(r"^search/(.+)$", "aa_app.views.site.search"),
     url(r"^api/user/newUser$", "aa_app.views.api.user.newUser"),
     url(r"^api/user/login$", "aa_app.views.api.user.login"),
     url(r"^api/user/logout$", "aa_app.views.api.user.logout"),
@@ -68,6 +69,6 @@ urlpatterns = [
     url(r"^api/convention/setEndDate$", "aa_app.views.api.convention.setEndDate"),
     url(r"^api/convention/setImage$", "aa_app.views.api.convention.setImage"),
     url(r"^api/util/uploadFile$", "aa_app.views.api.util.uploadFile"),
-    url(r"^api/util/findFandom$", "aa_app.views.api.search.findFandom"),
-    url(r"^api/util/findKind$", "aa_app.views.api.search.findKind"),
+    url(r"^api/util/findFandom$", "aa_app.views.api.util.findFandom"),
+    url(r"^api/util/findKind$", "aa_app.views.api.util.findKind"),
 ]

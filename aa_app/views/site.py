@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -150,3 +150,12 @@ def writeup(request, writeupID):
     context["writeup"] = models.Writeup.objects.get(ID = int(writeupID))
     context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
     return render_to_response("writeup.html", context)
+
+def search(request, query):
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
+        context["currUser"] = u
+    context["cons"] = models.Convention.objects.filter(Q(name__icontains = query) | Q(location__icontains = query) | Q(website__icontains = query)).exclude(ID = models.INV_CON.ID).distinct()
+    return render_to_response("search.html", context)
+    

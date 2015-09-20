@@ -1,0 +1,12 @@
+{% extends "includes/helper.html" %}
+
+{% block head %}
+    <title>ArtisTally | Search Conventions</title>
+{% endblock %}
+
+{% block body %}
+    {% for con in cons %}
+        {{con}}
+        <br/>
+    {% endfor %}
+{% endblock %}
