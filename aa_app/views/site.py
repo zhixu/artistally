@@ -46,7 +46,7 @@ def user(request, username):
     return render_to_response("user.html", context)
 
 def convention(request, conID):
-    assert conID != models.INV_CON.ID
+    assert int(conID) != models.INV_CON.ID, "you can't visit the INV_CON"
     context = RequestContext(request)
     context["convention"] = models.Convention.objects.get(ID = int(conID))
     itemKindsCounter = {}
@@ -106,8 +106,8 @@ def addwriteup(request, conID = None):
     context = RequestContext(request, {"currUser": u})
     context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
     if conID != None:
-        assert conID != models.INV_CON.ID
-        context["currCon"] = models.Convention.objects.get(ID = conID)
+        assert int(conID) != models.INV_CON.ID, "you can't make a writeup for the INV_CON"
+        context["currCon"] = models.Convention.objects.get(ID = int(conID))
     return render_to_response("addwriteup.html", context)
 
 @login_required
@@ -130,8 +130,8 @@ def additem(request, conID = None):
     context["kinds"] = models.Kind.objects.all()
     context["fandoms"] = models.Fandom.objects.all()
     if conID != None:
-        assert conID != models.INV_CON.ID
-        context["currCon"] = models.Convention.objects.get(ID = conID)
+        assert int(conID) != models.INV_CON.ID, "you can't make an item for the INV_CON"
+        context["currCon"] = models.Convention.objects.get(ID = int(conID))
     return render_to_response("additem.html", context)
         
 def item(request, itemID):

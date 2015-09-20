@@ -121,6 +121,11 @@ textarea {
 	-moz-border-radius: 10px;
 }
 
+.required:before{
+ content:"* " ;
+color:red    
+}
+
 
 /* ------------------------------------------------- */
 /* ----------------- NAVBAR COLORS ----------------- */
@@ -337,13 +342,18 @@ textarea {
 }
 
 .form-wrapper {
-    padding: 20px 30px;
+    padding: 30px 50px;
     border: 1px solid #ccc;
     margin: 100px 0px;
     border-radius: 10px; 
     -moz-border-radius: 10px; 
     -webkit-border-radius: 10px;
     background-color: #ffffff;
+}
+
+.convention-form-wrapper {
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .reg-form-wrapper {
@@ -355,8 +365,6 @@ textarea {
     -webkit-border-radius: 10px;
     background-color: #ffffff;
 }
-
-
 
 .item-fit {
     max-width: 100%;

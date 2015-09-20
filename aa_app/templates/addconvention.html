@@ -3,7 +3,18 @@
 {% block head %}
     <title>Artistally Create Convention</title>
     <script>
+        $(function() {
+            KEYUP = function(event) {
+                if (event.keyCode == 13) {
+                    $("#submitButton").click();
+                }
+            }
+            $("#imageField").keyup(KEYUP);
+        });
+        
         function makeConvention() {
+            $("#imageField").unbind("keyup", KEYUP);
+            $("#submitButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.name = $("#nameField").val();
             jsonDict.startDate = $("#startDateField").val();
@@ -22,6 +33,7 @@
                 },
                 error: function(response) {
                     alert("newConvention went wrong");
+                    $("#submitButton").attr("disabled", false);
                 },
             });
         }
@@ -30,10 +42,84 @@
 
 {% block body %}
 <div class="container">
-    <div class="form-wrapper">
+    <div class="convention-form-wrapper form-wrapper">
         <h1 class="text-center">Add New Convention</h1>
-        
+        <p class="text-center">Please enter convention info for the latest year.
+            <br/>We will review and approve your information as soon as possible.</p>
+        <br/>
+        <br/>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="nameField" class="required">Convention Name</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="name-addon"><i class="fa fa-building"></i></span>
+                    <input type="text" class="form-control" id="nameField" placeholder="Name" aria-describedby="name-addon"/>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="numAttendersField" class="required">Number of Attendees</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="numAttenders-addon"><i class="fa fa-user"></i></span>
+                    <input type="number" class="form-control" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="locationField" class="required">Location</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="location-addon"><i class="fa fa-map-marker"></i></span>
+                    <input type="text" class="form-control" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon"/>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="websiteField" class="required">Website</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="website-addon"><i class="fa fa-link"></i></span>
+                    <input type="url" class="form-control" id="websiteField" placeholder="http://www.artistal.ly" aria-describedby="website-addon"/>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="startDateField" class="required">Start Date</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="startDate-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="date" class="form-control" id="startDateField" value="2000-01-01" min="1980-01-01" aria-describedby="startDate-addon"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="endDateField" class="required">End Date</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="endDate-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="date" class="form-control" id="endDateField" value="2000-01-01" min="1980-01-01" aria-describedby="endDate-addon"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="imageField">Banner Image URL</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="image-addon"><i class="fa fa-link"></i></span>
+                    <input type="url" class="form-control" id="imageField" placeholder="Banner image" aria-describedby="image-addon"/>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <sub class="required text-center">Required</sub>
+        <br/>
+        <p class="text-center"><a onclick="makeConvention()" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
     </div>
+<!--        <div class="input-group input-group-lg">
+            <span class="input-group-addon" id="-addon"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" id="Field" placeholder="" aria-describedby="-addon"/>
+        </div>-->
+        
 </div>
     <!--<input type="text" id="nameField" placeholder="convention name"/>
     <br/>
