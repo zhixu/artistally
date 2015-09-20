@@ -110,29 +110,29 @@ def addwriteup(request, conID = None):
         context["currCon"] = models.Convention.objects.get(ID = int(conID))
     return render_to_response("addwriteup.html", context)
 
-@login_required
-def addkind(request):
-    u = request.user
-    context = RequestContext(request, {"currUser": u})
-    return render_to_response("addkind.html", context)
+#@login_required
+#def addkind(request):
+#    u = request.user
+#    context = RequestContext(request, {"currUser": u})
+#    return render_to_response("addkind.html", context)
     
-@login_required
-def addfandom(request):
-    u = request.user
-    context = RequestContext(request, {"currUser": u})
-    return render_to_response("addfandom.html", context)
+#@login_required
+#def addfandom(request):
+#    u = request.user
+#    context = RequestContext(request, {"currUser": u})
+#    return render_to_response("addfandom.html", context)
 
-@login_required
-def additem(request, conID = None):
-    u = request.user
-    context = RequestContext(request, {"currUser": u})
-    context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
-    context["kinds"] = models.Kind.objects.all()
-    context["fandoms"] = models.Fandom.objects.all()
-    if conID != None:
-        assert int(conID) != models.INV_CON.ID, "you can't make an item for the INV_CON"
-        context["currCon"] = models.Convention.objects.get(ID = int(conID))
-    return render_to_response("additem.html", context)
+#@login_required
+#def additem(request, conID = None):
+#    u = request.user
+#    context = RequestContext(request, {"currUser": u})
+#    context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
+#    context["kinds"] = models.Kind.objects.all()
+#    context["fandoms"] = models.Fandom.objects.all()
+#    if conID != None:
+#        assert int(conID) != models.INV_CON.ID, "you can't make an item for the INV_CON"
+#        context["currCon"] = models.Convention.objects.get(ID = int(conID))
+#    return render_to_response("additem.html", context)
         
 def item(request, itemID):
     context = RequestContext(request)

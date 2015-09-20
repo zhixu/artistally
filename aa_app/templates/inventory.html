@@ -190,8 +190,6 @@
         }
         
         function makeFandom() {
-           /* $("#nameField").unbind("keyup", KEYUP);
-            $("#submitButton").attr("disabled", true);*/
             var jsonDict = new Object();
             jsonDict.name = $("#fandomField").val();
             console.log(jsonDict.name);
@@ -205,17 +203,11 @@
                 },
                 error: function(response) {
                     alert("newKind went wrong");
-                    /*$("#submitButton").attr("disabled", false);
-                    setTimeout(function() {
-                        $("#nameField").keyup(KEYUP);
-                    }, 222);*/
                 },
             });
         }
         
         function makeKind() {
-/*            $("#nameField").unbind("keyup", KEYUP);
-            $("#submitButton").attr("disabled", true);*/
             var jsonDict = new Object();
             jsonDict.name = $("#kindField").val();
             console.log(jsonDict.name);
@@ -229,10 +221,6 @@
                 },
                 error: function(response) {
                     alert("newKind went wrong");
-                    /*$("#submitButton").attr("disabled", false);
-                    setTimeout(function() {
-                        $("#nameField").keyup(KEYUP);
-                    }, 222);*/
                 },
             });
         }
