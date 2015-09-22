@@ -75,15 +75,15 @@ class User(AbstractBaseUser):
         self.save()
         
     def setWebsite1(self, newWebsite1):
-        self.website1(newWebsite1)
+        self.website1 = newWebsite1
         self.save()
         
     def setWebsite2(self, newWebsite2):
-        self.website2(newWebsite2)
+        self.website2 = newWebsite2
         self.save()
         
     def setWebsite3(self, newWebsite3):
-        self.website3(newWebsite3)
+        self.website3 = newWebsite3
         self.save()
         
     def setSuperuser(self, newSuperuser):
