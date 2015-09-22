@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
@@ -7,7 +7,7 @@ from aa_app import models
 from decimal import Decimal
 import json
 
-EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
+EMPTY_JSON_200 = JsonResponse({})
 
 @login_required
 def newWriteup(request):
@@ -15,7 +15,7 @@ def newWriteup(request):
     u = request.user
     c = models.Convention.objects.get(ID = int(d["conID"]))
     w = models.newWriteup(u, c, int(d["rating"]), d["review"])
-    return HttpResponse(json.dumps({"writeupID": w.ID}), content_type = "application/json")
+    return JsonResponse({"writeupID": w.ID})
 
 @login_required
 def setRating(request):

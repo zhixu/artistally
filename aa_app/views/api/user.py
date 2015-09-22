@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,7 +7,7 @@ from aa_app import models
 
 import json
 
-EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
+EMPTY_JSON_200 = JsonResponse({})
 
 @user_passes_test(lambda u: u.is_anonymous())
 def newUser(request):

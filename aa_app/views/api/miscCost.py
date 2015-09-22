@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
@@ -7,7 +7,7 @@ from aa_app import models
 from decimal import Decimal
 import json
 
-EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
+EMPTY_JSON_200 = JsonResponse({})
 
 @login_required
 def newMiscCost(request):

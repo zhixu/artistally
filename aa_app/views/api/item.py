@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
@@ -7,7 +7,7 @@ from aa_app import models
 from decimal import Decimal
 import json
 
-EMPTY_JSON_200 = HttpResponse(json.dumps({}), content_type = "application/json")
+EMPTY_JSON_200 = JsonResponse({})
 
 @login_required
 def newItem(request):
@@ -19,7 +19,7 @@ def newItem(request):
     i = models.newItem(u, convention, d["name"], fandom, kind, Decimal(d["price"]), Decimal(d["cost"]), int(d["numSold"]), int(d["numLeft"]))
     if "image" in d:
         i.setImage(d["image"])
-    return HttpResponse(json.dumps({"itemID": i.ID}), content_type = "application/json")
+    return JsonResponse({"itemID": i.ID})
 
 @login_required
 def deleteItem(request):
