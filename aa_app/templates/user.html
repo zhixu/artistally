@@ -52,6 +52,7 @@
                 jsonDict.email = $("#emailField").val();
                 jsonDict.password = $("#passField1").val();
                 jsonDict.oldPassword = $("#oldPassField").val();
+                
                 if (jsonDict.password != $("#passField2").val()) {
                     alert("Your passwords do not match, please try again.");
                 }
@@ -122,7 +123,6 @@
 
 <div class="convention-form-wrapper form-wrapper">
     <h1 class="text-center title-wrapper">Edit Profile</h1>
-
     <div class="row">
         <div class="col-sm-3">
             <div class="text-center">
@@ -144,36 +144,113 @@
         </div>
         <div class="col-sm-9">
             <div class="form-group">
-                <label for="startYearField">Years in Artist Alley:</label>
-                <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
-            </div>    
-        <!--            <input type="number" min="1950" max="{% now "Y" %}" id="startYearField" value="{{pageUser.startYear}}"/>-->
-            <br/>
-
-            <br/>
-
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
-                <input type="password" class="form-control" id="passField1" placeholder="New password" aria-describedby="password1-addon"/>
+                <label for="oldPassField">Current Password:</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
+                    <input type="password" class="form-control" id="oldPassField" aria-describedby="oldpassword-addon"/>
+                </div>
             </div>
-        <!--            <input type="password" id="passField1" placeholder="new password?"/>-->
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
-                <input type="password" class="form-control" id="passField2" placeholder="Re-enter new password" aria-describedby="password2-addon"/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="passField1">New Password:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
+                            <input type="password" class="form-control" id="passField1" aria-describedby="password1-addon"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="passField2">Re-enter New Password:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
+                            <input type="password" class="form-control" id="passField2" aria-describedby="password2-addon"/>
+                        </div>
+                    </div>
+                </div>
             </div>
-        <!--            <input type="password" id="passField2" placeholder="verify new password?"/>-->
-            <br/>
-             <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
-                <input type="password" class="form-control" id="oldPassField" placeholder="Current password" aria-describedby="oldpassword-addon"/>
+            <div class="form-group">
+                <label for="emailField">New Email:</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                    <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
+                </div>
             </div>
-        <!--            <input type="password" id="oldPassField" placeholder="put your current pw here if you're changing it"/>-->
-            <br/>
-            <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
-                <input type="email" class="form-control" id="emailField" placeholder="New email" aria-describedby="login-addon"/>
+            <hr/>
+            <div class="form-group">
+                <label for="startYearField">Year Starting Artist Alley:</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                    <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="urldesc1">Website Description:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="urldesc1-addon"><i class="fa fa-terminal"></i></span>
+                            <input class="form-control" type="text" placeholder="Tumblr, DeviantArt, etc..." class="form-control" id="urldesc1"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="url1">URL:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="url1-addon"><i class="fa fa-link"></i></span>
+                            <input class="form-control" type="text" placeholder="http://www.artistally.com/" class="form-control" id="url1"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="urldesc2">Website Description:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="urldesc2-addon"><i class="fa fa-terminal"></i></span>
+                            <input class="form-control" type="text" placeholder="Tumblr, DeviantArt, etc..." class="form-control" id="urldesc2"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="url2">URL:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="url2-addon"><i class="fa fa-link"></i></span>
+                            <input class="form-control" type="text" placeholder="http://www.artistally.com/" class="form-control" id="url2"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="urldesc3">Website Description:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="urldesc3-addon"><i class="fa fa-terminal"></i></span>
+                            <input class="form-control" type="text" placeholder="Tumblr, DeviantArt, etc..." class="form-control" id="urldesc3"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="url3">URL:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>
+                            <input class="form-control" type="text" placeholder="http://www.artistally.com/" class="form-control" id="url3"/>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-group">
+                <label for="url3">Description:</label>
+<!--                <div class="input-group input-group-lg">-->
+<!--                    <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>-->
+                    <textarea class="form-control" rows="5" placeholder="Put anything you want here..." class="form-control" id="descField"></textarea>
+<!--                </div>-->
             </div>
         </div>
     </div>
@@ -181,20 +258,30 @@
     <br/>
     <p class="text-right"><a onclick="updateProfile()" class="btn btn-custom-blue wide">Update Profile</a></p>
 </div>
+
 {% else %}
-<div class="container">
-    {{pageUser}}'s Profile
-    <br/>    
-    {% if pageUser.startYear %}
-        they've been doing artist alley since {{pageUser.startYear}}
-        <br/>
-    {% endif %}
-    their user avatar
-    {% if pageUser.image %}
-        <img src="{{pageUser.image}}"/>
-    {% else %}
-        <img src="/static/images/icon-default.png"/>
-    {% endif %}
+<div class="convention-form-wrapper form-wrapper">
+    <h1 class="text-center title-wrapper">{{pageUser}}'s Profile</h1>
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="text-center">
+                {% if pageUser.image %}
+                    <img src="{{pageUser.image}}" class="user-icon-large">
+                {% else %}
+                    <img src="/static/images/icon-default.png" class="user-icon-large"/>
+                {% endif %}
+                <br/>
+                {{pageUser}}
+            </div>
+        </div>
+        <div class="col-sm-9">
+            {% if pageUser.startYear %}
+                they've been doing artist alley since {{pageUser.startYear}}
+                <br/>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

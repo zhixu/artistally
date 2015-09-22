@@ -10,25 +10,70 @@
             <div class="fixed">
                 {% include "includes/sidebar.html" %}
             </div>
-
-            <div class="col-sm-10 maincontent-wrapper">
-                <a class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Convention</a>
-                <div class="row">
-                    <div class="col-sm-4">
-                        
+        </div>
+        <div class="col-sm-10 maincontent-wrapper">
+            <a class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Convention</a>
+            <br/>
+            Show conventions from:
+            <select class="form-control">
+                <option value="1">Last year</option>
+                <option value="2">Last 2 years</option>
+                <option value="3">Last 5 years</option>
+                <option value="4">Beginning of time</option>
+            </select>
+            <br/>
+            
+            {% for con in currUser.conventions.all %}
+            <div class="convention-preview-wrapper">
+                <img class="convention-preview"/>
+                <div class="convention-preview-info-wrapper">
+                    <div class="convention-preview-date">
+                        <p><span>Dec</span>
+                        15</p>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="convention-preview-info">
+                        <h4>{{con}}</h4>
+                        <a href="#">View Convention Page &raquo;</a>
+                        <br/>
+                        <a href="#">View Convention Inventory &raquo;</a>
                     </div>
-                    <div class="col-sm-4">
+                </div>
+            </div>
+            {% endfor %}
+            
+        </div>
+    </div>
+            <!--
+            <div class="row">
+                <div class="col-sm-4">
+                    
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="convention-preview-wrapper">
+                        <a href="#">
+                            <img class="convention-preview" src="http://placehold.it/700x400"/>
+                            <h5>convention</h5>
+                            <a href="#">View Convention Page</a>
+                            <a href="#">View Inventory for Convention</a>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="convention-preview-wrapper">
+                        <a href="#">
+                            <img class="fit" src="http://placehold.it/700x400"/>
+                            <h5>convention</h5>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    {% for con in currUser.conventions.all %}
+-->
+<!--    {% for con in currUser.conventions.all %}
         {{con}}
         <br/>
-    {% endfor %}
+    {% endfor %}-->
 
 {% endblock %}
