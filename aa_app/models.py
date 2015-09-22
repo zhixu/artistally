@@ -42,7 +42,8 @@ class User(AbstractBaseUser):
 
     @property
     def conventions(self):
-        return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
+        return Convention.objects.filter(items__user = self).exclude(ID = INV_CON.ID).distinct()
+        #return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
     
     @property
     def profit(self):
@@ -147,7 +148,8 @@ class Convention(ValidatedModel):
     
     @property
     def users(self):
-        return User.objects.filter(Q(items__convention = self) | Q(writeups__convention = self)).distinct()
+        #return User.objects.filter(Q(items__convention = self) | Q(writeups__convention = self)).distinct()
+        return User.objects.filter(items__convention = self).distinct()
 
     # SETTERS
     def setName(self, newName):
