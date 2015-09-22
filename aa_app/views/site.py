@@ -84,6 +84,8 @@ def inventory(request, conID = None):
     if conID != None and get_object_or_404(models.Convention, ID = int(conID)) != models.INV_CON:
         conID = int(conID)
         context["convention"] = get_object_or_404(models.Convention, ID = conID)
+        if u.miscCosts.filter(convention = context["convention"]).exists():
+            context["miscCost"] = u.miscCosts.get(convention = context["convention"])
     else:
         context["convention"] = models.INV_CON
         context["invCon"] = True
@@ -158,7 +160,7 @@ def writeup(request, writeupID):
         u = request.user
         context["currUser"] = u
     context["writeup"] = get_object_or_404(models.Writeup, ID = writeupID)
-    context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
+    #context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
     return render_to_response("writeup.html", context)
 
 def search(request, query):

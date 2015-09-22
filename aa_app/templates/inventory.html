@@ -10,6 +10,43 @@
     <script type="text/javascript" src="/static/js/editablegrid/all_min.js"></script>
 
     <script>
+        {% if not invCon %}
+            {% if miscCost %}
+                function updateMiscCost() {
+                    var jsonDict = new Object();
+                    jsonDict.miscCostID = {{miscCost.ID}};
+                    jsonDict.amount = $("#miscCostsField").val();
+                    if (jsonDict.amount != $("#miscCostsField").prop("defaultValue")) {
+                        $.ajax({
+                            url: "/api/miscCost/setAmount",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            error: function(response) {
+                                alert("setAmount went wrong");
+                            },
+                        });
+                    }
+                }
+            {% else %}
+                function updateMiscCost() {
+                    var jsonDict = new Object();
+                    jsonDict.conID = {{convention.ID}};
+                    jsonDict.amount = $("#miscCostsField").val();
+                    $.ajax({
+                        url: "/api/miscCost/newMiscCost",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        error: function(response) {
+                            alert("newMiscCost went wrong");
+                        },
+                    });
+                }
+            {% endif %}
+        {% endif %}
+
         function findFandom() {
             var jsonDict = new Object();
             jsonDict.query = "test"
@@ -402,6 +439,12 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {% if not invCon %}
+                <br/>
+                Misc costs <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                <br/>
+                <a onclick="updateMiscCost()" href="#">update misccost</a>
+            {% endif %}
             </div>
         </div>
     </div>
