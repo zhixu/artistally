@@ -17,6 +17,7 @@ urlpatterns = [
     url(r"^signup$", "aa_app.views.site.signup"),
     url(r"^login$", "aa_app.views.site.login"),
     url(r"^inventory$", "aa_app.views.site.inventory"),
+    url(r"^inventory/([0-9]+)?$", "aa_app.views.site.inventory"),
     url(r"^myconventions$", "aa_app.views.site.myconventions"),
     url(r"^mywriteups$", "aa_app.views.site.mywriteups"),
     url(r"^addconvention$", "aa_app.views.site.addconvention"),

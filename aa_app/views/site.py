@@ -78,10 +78,16 @@ def convention(request, conID):
     return render_to_response("convention.html", context)
 
 @login_required
-def inventory(request):
+def inventory(request, conID = None):
     u = request.user
-    context = RequestContext(request, {"currUser": u, "invCon": models.INV_CON})
-    context["currUserInvItems"] = u.items.filter(convention = models.INV_CON)
+    context = RequestContext(request, {"currUser": u})
+    if conID != None and get_object_or_404(models.Convention, ID = int(conID)) != models.INV_CON:
+        conID = int(conID)
+        context["convention"] = get_object_or_404(models.Convention, ID = conID)
+    else:
+        context["convention"] = models.INV_CON
+        context["invCon"] = True
+    context["conItems"] = u.items.filter(convention = context["convention"])
     return render_to_response("inventory.html", context)
 
 @login_required

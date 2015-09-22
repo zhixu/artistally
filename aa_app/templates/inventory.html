@@ -1,7 +1,11 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    <title>ArtisTally | My Inventory</title>
+    {% if invCon %}
+        <title>ArtisTally | My Inventory</title>
+    {% else %}
+        <title>ArtisTally | My {{convention}} Inventory</title>
+    {% endif %}
 
     <script type="text/javascript" src="/static/js/editablegrid/all_min.js"></script>
 
@@ -15,7 +19,7 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    console.log(response)
+                    console.log(response.results)
                 },
                 error: function(response) {
                     alert("findFandom went wrong");
@@ -32,7 +36,7 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    console.log(response)
+                    console.log(response.results)
                 },
                 error: function(response) {
                     alert("findKind went wrong");
@@ -45,13 +49,17 @@
             
             var jsonDict = new Object();
             jsonDict.name = itemName = $("#new-name").val();
-            jsonDict.conID = {{invCon.ID}};
+            jsonDict.conID = {{convention.ID}};
             jsonDict.fandom = itemFandom = $("#new-fandom").val();
             jsonDict.kind = itemKind = $("#new-kind").val();
             jsonDict.price = itemPrice = $("#new-price").val();
             jsonDict.cost = itemCost = $("#new-cost").val();
-            jsonDict.numSold = 0;
             jsonDict.numLeft = itemNumLeft = $("#new-numLeft").val();
+            {% if invCon %}
+                jsonDict.numSold = 0;
+            {% else %}
+                jsonDict.numSold = itemNumSold = $("#new-numSold").val();
+            {% endif %}
             
             $.ajax({
                 url: "/api/item/newItem",
@@ -67,6 +75,9 @@
                         "<td id='" + response.itemID + "priceField'>" + itemPrice + "</td>" +
                         "<td id='" + response.itemID + "costField'>" + itemCost + "</td>" +
                         "<td id='" + response.itemID + "numLeftField'>" + itemNumLeft + "</td>" +
+                        {% if not invCon %}
+                        "<td id='" + response.itemID + "numSoldField'>" + itemNumSold + "</td>" +
+                        {% endif %}
                         "<td><a onclick='deleteItem(" + response.itemID + ")' style='cursor:pointer'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
                     editableGrid.refreshGrid();
@@ -83,7 +94,10 @@
                 kind = 3,
                 price = 4,
                 cost = 5,
-                numLeft = 6;
+                numLeft = 6
+                {% if not invCon %}
+                    ,numSold = 7
+                {% endif %};
             
             var jsonDict = new Object();
             jsonDict.itemID = itemID;
@@ -167,6 +181,21 @@
                         },
                     });
                     break;
+                {% if not invCon %}
+                    case numLeft:
+                        jsonDict.numSold = newValue;
+                        var ajaxObj = $.ajax({
+                            url: "/api/item/setNumSold",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            error: function(response) {
+                                alert("setNumSold went wrong");
+                                editableGrid.setValueAt(rowID, colID, oldValue, true);
+                            },
+                        });
+                        break;
+                {% endif %}
             }
         }
         
@@ -215,6 +244,9 @@
                 { name: "price", datatype: "double", editable: true },
                 { name: "cost", datatype: "double", editable: true },
                 { name: "remaining", datatype: "integer", editable: true }
+                {% if not invCon %}
+                    ,{ name: "sold", datatype: "integer", editable: true }
+                {% endif %}
             ]});
 
             // then we attach to the HTML table and render it
@@ -272,7 +304,7 @@
 
         <div class="col-sm-10 maincontent-wrapper">
             <div id="inventory-page">
-            <h1 id="temporarytest">Inventory</h1>
+            <h1>{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
                 
             <div>
                 <button onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</button>
@@ -318,6 +350,14 @@
                                     <input type="text" class="form-control" placeholder="Remaining" id="new-numLeft">
                                 </div>
                             </div>
+                            {% if not invCon %}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="new-numSold">Sold:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" placeholder="Sold" id="new-numSold">
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     <a onclick="makeItem()" class="btn btn-custom-blue">Add</a>
@@ -338,11 +378,14 @@
                         <th>Price</th>
                         <th>Cost</th>
                         <th>Remaining</th>
+                        {% if not invCon %}
+                            <th>Sold</th>
+                        {% endif %}
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="inventory-body">
-                {% for item in currUserInvItems %}
+                {% for item in conItems %}
                     <tr id="{{item.ID}}">
                         <td>Icon</td>
                         <td id="{{item.ID}}nameField">{{item.name}}</td>
@@ -351,6 +394,9 @@
                         <td id="{{item.ID}}priceField">{{item.price|floatformat:2}}</td>
                         <td id="{{item.ID}}costField">{{item.cost|floatformat:2}}</td>
                         <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                        {% if not invCon %}
+                            <td id="{{item.ID}}numSoldField">{{item.numSold}}</td>
+                        {% endif %}
                         <td><a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a></td>
                     </tr>
                 {% endfor %}
