@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.http import HttpResponse, Http404
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.db.models import Sum, Q
 from django.contrib import auth
@@ -42,13 +42,15 @@ def user(request, username):
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
-    context["pageUser"] = models.User.objects.get(username = username)
+    context["pageUser"] = get_object_or_404(models.User, username = username)
     return render_to_response("user.html", context)
 
 def convention(request, conID):
-    assert int(conID) != models.INV_CON.ID, "you can't visit the INV_CON"
+    conID = int(conID)
+    if conID == models.INV_CON.ID:
+        raise Http404("Accessing the INV_CON is disallowed.")
     context = RequestContext(request)
-    context["convention"] = models.Convention.objects.get(ID = int(conID))
+    context["convention"] = get_object_or_404(models.Convention, ID = conID)
     itemKindsCounter = {}
     itemFandomsCounter = {}
     itemsSoldTotal = context["convention"].items.aggregate(Sum("numSold"))["numSold__sum"] or 0
@@ -106,8 +108,10 @@ def addwriteup(request, conID = None):
     context = RequestContext(request, {"currUser": u})
     context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
     if conID != None:
-        assert int(conID) != models.INV_CON.ID, "you can't make a writeup for the INV_CON"
-        context["currCon"] = models.Convention.objects.get(ID = int(conID))
+        conID = int(conID)
+        if conID == models.INV_CON.ID:
+            raise Http404("Reviewing the INV_CON is disallowed.")
+        context["currCon"] = get_object_or_404(models.Convention, ID = conID)
     return render_to_response("addwriteup.html", context)
 
 #@login_required
@@ -135,19 +139,19 @@ def addwriteup(request, conID = None):
 #    return render_to_response("additem.html", context)
         
 def item(request, itemID):
-    context = RequestContext(request)
+    itemID = int(itemID)
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
-    context["item"] = models.Item.objects.get(ID = int(itemID))
+    context["item"] = get_object_or_404(models.Item, ID = itemID)
     return render_to_response("item.html", context)
         
 def writeup(request, writeupID):
-    context = RequestContext(request)
+    writeupID = int(writeupID)
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
-    context["writeup"] = models.Writeup.objects.get(ID = int(writeupID))
+    context["writeup"] = get_object_or_404(models.Writeup, ID = writeupID)
     context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
     return render_to_response("writeup.html", context)
 
