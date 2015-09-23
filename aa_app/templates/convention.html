@@ -135,7 +135,12 @@
             <br/>3. {{conTopItemFandoms.2.0}} ({% widthratio conTopItemFandoms.2.1 1 100 %}%)
         </div>
         
-        prev con is: {{convention.prevCon}}
+        {% if convention.prevCon %}
+            prev con is: {{convention.prevCon}}
+        {% endif %}
+        {% if convention.nextCon %}
+            next con is: {{convention.nextCon}}
+        {% endif %}
         
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>

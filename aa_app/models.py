@@ -39,11 +39,6 @@ class User(AbstractBaseUser):
     website1 = models.URLField(max_length = 200, blank = True, default = "")
     website2 = models.URLField(max_length = 200, blank = True, default = "")
     website3 = models.URLField(max_length = 200, blank = True, default = "")
-
-    @property
-    def conventions(self):
-        return Convention.objects.filter(items__user = self).exclude(ID = INV_CON.ID).distinct()
-        #return Convention.objects.filter(Q(items__user = self) | Q(writeups__user = self)).exclude(ID = INV_CON.ID).distinct()
     
     @property
     def profit(self):
@@ -133,7 +128,8 @@ class Convention(ValidatedModel):
     location = models.TextField()
     website = models.URLField(max_length = 200)
     image = models.URLField(max_length = 200, blank = True, default = "")
-    prevCon = models.ForeignKey("self", related_name = "nextCon", blank = True, null = True, default = None)
+    prevCon = models.OneToOneField("self", related_name = "_nextCon", blank = True, null = True, default = None)
+    #users = models.ManyToManyField(User, related_name = "conventions", blank = True, null = True, default = None)
     
     @property
     def avgRating(self):
@@ -148,9 +144,8 @@ class Convention(ValidatedModel):
         return profit / self.users().count()
     
     @property
-    def users(self):
-        #return User.objects.filter(Q(items__convention = self) | Q(writeups__convention = self)).distinct()
-        return User.objects.filter(items__convention = self).distinct()
+    def nextCon(self):
+        return self._nextCon if hasattr(self, "_nextCon") else None
 
     # SETTERS
     def setName(self, newName):
@@ -183,6 +178,14 @@ class Convention(ValidatedModel):
         
     def setPrevCon(self, newPrevCon):
         self.prevCon = newPrevCon
+        self.save()
+        
+    def setUser(self, newUser):
+        self.users.add(newUser)
+        self.save()
+            
+    def unsetUser(self, newUser):
+        self.users.remove(newUser)
         self.save()
 
     # UTIL
