@@ -52,7 +52,10 @@
                 jsonDict.email = $("#emailField").val();
                 jsonDict.password = $("#passField1").val();
                 jsonDict.oldPassword = $("#oldPassField").val();
-                
+                jsonDict.website1 = $("#url1Field").val();
+                jsonDict.website2 = $("#url2Field").val();
+                jsonDict.website3 = $("#url3Field").val();
+                jsonDict.description = $("#descField").val();
                 if (jsonDict.password != $("#passField2").val()) {
                     alert("Your passwords do not match, please try again.");
                 }
@@ -102,6 +105,67 @@
                             return false;
                         }
                     }
+                    if (jsonDict.description != $("#descField").prop("defaultValue")) {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setDescription",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            error: function(response) {
+                                alert("setDescription went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    if (jsonDict.website1 != $("#url1Field").prop("defaultValue")) {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setWebsite1",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            error: function(response) {
+                                alert("setWebsite1 went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    if (jsonDict.website2 != $("#url2Field").prop("defaultValue")) {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setWebsite2",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            error: function(response) {
+                                alert("setWebsite2 went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    if (jsonDict.website3 != $("#url3Field").prop("defaultValue")) {
+                        var ajaxObj = $.ajax({
+                            url: "/api/user/setWebsite3",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            error: function(response) {
+                                alert("setWebsite3 went wrong");
+                            },
+                        });
+                        if (ajaxObj.status != 200) {
+                            return false;
+                        }
+                    }
+                    
                     uploadFile();
                 }
             }
@@ -185,71 +249,32 @@
                     <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="urldesc1">Website Description:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="urldesc1-addon"><i class="fa fa-terminal"></i></span>
-                            <input class="form-control" type="text" placeholder="Tumblr, DeviantArt, etc..." class="form-control" id="urldesc1"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="url1">URL:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="url1-addon"><i class="fa fa-link"></i></span>
-                            <input class="form-control" type="text" placeholder="http://www.artistally.com/" class="form-control" id="url1"/>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label for="url1">URL:</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="url1-addon"><i class="fa fa-link"></i></span>
+                    <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url1Field" value="{{pageUser.website1}}"/>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="urldesc2">Website Description:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="urldesc2-addon"><i class="fa fa-terminal"></i></span>
-                            <input class="form-control" type="text" placeholder="Tumblr, DeviantArt, etc..." class="form-control" id="urldesc2"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="url2">URL:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="url2-addon"><i class="fa fa-link"></i></span>
-                            <input class="form-control" type="text" placeholder="http://www.artistally.com/" class="form-control" id="url2"/>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label for="url2">URL:</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="url2-addon"><i class="fa fa-link"></i></span>
+                    <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url2Field" value="{{pageUser.website2}}"/>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="urldesc3">Website Description:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="urldesc3-addon"><i class="fa fa-terminal"></i></span>
-                            <input class="form-control" type="text" placeholder="Tumblr, DeviantArt, etc..." class="form-control" id="urldesc3"/>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label for="url3">URL:</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>
+                    <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{pageUser.website3}}"/>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="url3">URL:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>
-                            <input class="form-control" type="text" placeholder="http://www.artistally.com/" class="form-control" id="url3"/>
-                        </div>
-                    </div>
-                </div>
-            </div> 
+            </div>
             <div class="form-group">
                 <label for="url3">Description:</label>
 <!--                <div class="input-group input-group-lg">-->
 <!--                    <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>-->
-                    <textarea class="form-control" rows="5" placeholder="Put anything you want here..." class="form-control" id="descField"></textarea>
+                    <textarea class="form-control" rows="5" placeholder="Put anything you want here..." class="form-control" id="descField">{{pageUser.description}}</textarea>
 <!--                </div>-->
             </div>
         </div>
@@ -277,8 +302,38 @@
         </div>
         <div class="col-sm-9">
             {% if pageUser.startYear %}
-                they've been doing artist alley since {{pageUser.startYear}}
+                <div class="row">
+                    <div class="col-sm-2"><b>Year Starting Artist Alley:</b></div>
+                    <div class="col-sm-10">{{pageUser.startYear}}</div>
+                </div>
+            {% endif %}
+            {% if pageUser.website1 %}
                 <br/>
+                <div class="row">
+                    <div class="col-sm-2"><b>URL:</b></div>
+                    <div class="col-sm-10">{{ pageUser.website1 }}</div>
+                </div>
+            {% endif %}
+            {% if pageUser.website2 %}
+                <br/>
+                <div class="row">
+                    <div class="col-sm-2"><b>URL:</b></div>
+                    <div class="col-sm-10">{{ pageUser.website2 }}</div>
+                </div>
+            {% endif %}
+            {% if pageUser.website3 %}
+                <br/>
+                <div class="row">
+                    <div class="col-sm-2"><b>URL:</b></div>
+                    <div class="col-sm-10">{{ pageUser.website3 }}</div>
+                </div>
+            {% endif %}
+            {% if pageUser.description %}
+                <br/>
+                <div class="row">
+                    <div class="col-sm-2"><b>Description:</b></div>
+                    <div class="col-sm-10">{{ pageUser.description }}</div>
+                </div>
             {% endif %}
         </div>
     </div>

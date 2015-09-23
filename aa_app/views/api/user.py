@@ -73,26 +73,26 @@ def setImage(request):
 def setDescription(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    u.setImage(d["description"])
+    u.setDescription(d["description"])
     return EMPTY_JSON_200
 
 @login_required
 def setWebsite1(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    u.setImage(d["website1"])
+    u.setWebsite1(d["website1"])
     return EMPTY_JSON_200
 
 @login_required
 def setWebsite2(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    u.setImage(d["website2"])
+    u.setWebsite2(d["website2"])
     return EMPTY_JSON_200
 
 @login_required
 def setWebsite3(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    u.setImage(d["website3"])
+    u.setWebsite3(d["website3"])
     return EMPTY_JSON_200
