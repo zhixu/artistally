@@ -24,21 +24,21 @@
             <br/>
             
             {% for con in currUser.conventions.all %}
-            <div class="convention-preview-wrapper">
-                <img class="convention-preview"/>
-                <div class="convention-preview-info-wrapper">
-                    <div class="convention-preview-date">
-                        <p><span>Dec</span>
-                        15</p>
-                    </div>
-                    <div class="convention-preview-info">
-                        <h4>{{con}}</h4>
-                        <a href="#">View Convention Page &raquo;</a>
-                        <br/>
-                        <a href="#">View Convention Inventory &raquo;</a>
+                <div class="convention-preview-wrapper">
+                    <img class="convention-preview"/>
+                    <div class="convention-preview-info-wrapper">
+                        <div class="convention-preview-date">
+                            <p><span>Dec</span>
+                            15</p>
+                        </div>
+                        <div class="convention-preview-info">
+                            <h4>{{con}}</h4>
+                            <a href="#">View Convention Page &raquo;</a>
+                            <br/>
+                            <a href="#">View Convention Inventory &raquo;</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endfor %}
             
         </div>
@@ -71,9 +71,5 @@
         </div>
     </div>
 -->
-<!--    {% for con in currUser.conventions.all %}
-        {{con}}
-        <br/>
-    {% endfor %}-->
 
 {% endblock %}

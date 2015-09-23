@@ -77,6 +77,14 @@ def convention(request, conID):
             context["currUserConWriteup"] = u.writeups.get(convention = context["convention"])
     return render_to_response("convention.html", context)
 
+def conreviews(request, conID):
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
+        context["currUser"] = u
+    context["convention"] = get_object_or_404(models.Convention, ID = conID)
+    return render_to_response("conreviews.html", context)
+
 @login_required
 def inventory(request, conID = None):
     u = request.user

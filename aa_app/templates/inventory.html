@@ -14,7 +14,7 @@
             {% if miscCost %}
                 function updateMiscCost() {
                     var jsonDict = new Object();
-                    jsonDict.miscCostID = {{miscCost.ID}};
+                    jsonDict.miscCostID = "{{miscCost.ID}}";
                     jsonDict.amount = $("#miscCostsField").val();
                     if (jsonDict.amount != $("#miscCostsField").prop("defaultValue")) {
                         $.ajax({
@@ -32,7 +32,7 @@
             {% else %}
                 function updateMiscCost() {
                     var jsonDict = new Object();
-                    jsonDict.conID = {{convention.ID}};
+                    jsonDict.conID = "{{convention.ID}}";
                     jsonDict.amount = $("#miscCostsField").val();
                     $.ajax({
                         url: "/api/miscCost/newMiscCost",
@@ -86,7 +86,7 @@
             
             var jsonDict = new Object();
             jsonDict.name = itemName = $("#new-name").val();
-            jsonDict.conID = {{convention.ID}};
+            jsonDict.conID = "{{convention.ID}}";
             jsonDict.fandom = itemFandom = $("#new-fandom").val();
             jsonDict.kind = itemKind = $("#new-kind").val();
             jsonDict.price = itemPrice = $("#new-price").val();

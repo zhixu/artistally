@@ -31,7 +31,7 @@
             function updateImage(url) {
                 var jsonDict = new Object();
                 jsonDict.image = url;
-                jsonDict.itemID = {{item.ID}};
+                jsonDict.itemID = "{{item.ID}}";
                 var ajaxObj = $.ajax({
                     url: "/api/item/setImage",
                     type: "POST",
@@ -49,7 +49,7 @@
             
             function updateItem() {
                 var jsonDict = new Object();
-                jsonDict.itemID = {{item.ID}};
+                jsonDict.itemID = "{{item.ID}}";
                 jsonDict.name = $("#nameField").val();
                 jsonDict.numSold = $("#numSoldField").val();
                 jsonDict.numLeft = $("#numLeftField").val();

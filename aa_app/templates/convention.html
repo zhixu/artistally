@@ -21,28 +21,32 @@
             });
             
             {% if currUser %}
-                function uploadFile() {
-                    var file = document.getElementById("fileField").files[0];
-                    var reader = new FileReader();
-                    reader.onloadend = function() {
-                        var jsonDict = new Object();
-                        jsonDict.file = reader.result.split(",")[1];
-                        $.ajax({
-                            url: "/api/util/uploadFile",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(jsonDict),
-                            success: function(response) {
-                                updateImage(response.url);
-                            },
-                            error: function(response) {
-                                alert("uploadFile went wrong");
-                            },
-                        });
-                    }
-                    if (file) {
-                        reader.readAsDataURL(file);
-                    }
+                function setFavorite() {
+                    var jsonDict = new Object();
+                    jsonDict.conID = "{{convention.ID}}";
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setUser",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        error: function(response) {
+                            alert("setUser went wrong");
+                        },
+                    });
+                }
+             
+                function unsetFavorite() {
+                    var jsonDict = new Object();
+                    jsonDict.conID = "{{convention.ID}}";
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/unsetUser",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        error: function(response) {
+                            alert("setUser went wrong");
+                        },
+                    });
                 }
 
                 function makeWriteup() {
@@ -83,10 +87,9 @@
                 <div class="containery">
                     <div class="centery">
                         {% if currUserConWriteup %}
-        <!--                <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>-->
-                        <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                         {% else %}
-                        <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
+                            <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
                         {% endif %}
                     </div>
                 </div>
@@ -177,41 +180,49 @@
             {% endfor %}
             <p class="text-center">
                 {{convention.writeups.count}} review{{convention.writeups.count|pluralize}} in total
-                <br/><a href="#" class="btn btn-custom-blue">Read All Reviews</a>
+                <br/><a href="/conreviews/{{convention.ID}}" class="btn btn-custom-blue">Read All Reviews</a>
             </p>
         </div>
         
         {% if currUser %}
-        <div class="section-wrapper border-wrapper" id="add-review">
-            {% if currUserConWriteup %}
-            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+
+            {% if currUser not in convention.users.all %}
+                refresh the page to see it change, it does work.
+                <button onclick="setFavorite()">mark as favorite convention</button>
             {% else %}
-                <h2 class="title-wrapper">Write Review</h2>
-                <div class="review-entry">
-                    <div class="side-entry">
-                        <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
-                        <br/>{{currUser}}
-                    </div>
-                    <div class="main-entry">
-                        Rating:
-                        <span class="star-rating">
-                            <input type="radio" name="ratingField" value="1"><i></i>
-                            <input type="radio" name="ratingField" value="2"><i></i>
-                            <input type="radio" name="ratingField" value="3"><i></i>
-                            <input type="radio" name="ratingField" value="4"><i></i>
-                            <input type="radio" name="ratingField" value="5"><i></i>
-                        </span>
-                        <br/>
-                        <div class="form-group">
-                            <textarea class="form-control" rows="5" id="reviewField"></textarea>
+                <button onclick="unsetFavorite()">unmark as favorite convention</button>
+            {% endif %}
+        
+            <div class="section-wrapper border-wrapper" id="add-review">
+                {% if currUserConWriteup %}
+                <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                {% else %}
+                    <h2 class="title-wrapper">Write Review</h2>
+                    <div class="review-entry">
+                        <div class="side-entry">
+                            <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
+                            <br/>{{currUser}}
+                        </div>
+                        <div class="main-entry">
+                            Rating:
+                            <span class="star-rating">
+                                <input type="radio" name="ratingField" value="1"><i></i>
+                                <input type="radio" name="ratingField" value="2"><i></i>
+                                <input type="radio" name="ratingField" value="3"><i></i>
+                                <input type="radio" name="ratingField" value="4"><i></i>
+                                <input type="radio" name="ratingField" value="5"><i></i>
+                            </span>
+                            <br/>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" id="reviewField"></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="right">
-                    <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
-                </div>
-            {% endif %}
+                    <div class="right">
+                        <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
 

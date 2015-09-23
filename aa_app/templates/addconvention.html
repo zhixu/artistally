@@ -23,7 +23,9 @@
             jsonDict.location = $("#locationField").val();
             jsonDict.website = $("#websiteField").val();
             jsonDict.image = $("#imageField").val();
-            jsonDict.prevConID = $("#prevConIDField").val();
+            if ($("#prevConIDField").val() != "") {
+                jsonDict.prevConID = $("#prevConIDField").val();
+            }
             $.ajax({
                 url: "/api/convention/newConvention",
                 type: "POST",
@@ -112,6 +114,7 @@
         
         Prev Con
         <select id="prevConIDField">
+            <option value selected>--optional--</option>
             {% for con in cons %}
                 <option value="{{con.ID}}">{{con}}</option>
             {% endfor %}

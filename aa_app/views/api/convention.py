@@ -84,3 +84,19 @@ def setPrevCon(request):
     c = models.Convention.objects.get(ID = int(d["conID"]))
     c.setPrevCon(models.Convention.objects.get(ID = int(d["prevConID"])))
     return EMPTY_JSON_200
+
+@login_required
+def setUser(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    c = models.Convention.objects.get(ID = int(d["conID"]))
+    c.setUser(u)
+    return EMPTY_JSON_200
+
+@login_required
+def unsetUser(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    c = models.Convention.objects.get(ID = int(d["conID"]))
+    c.unsetUser(u)
+    return EMPTY_JSON_200

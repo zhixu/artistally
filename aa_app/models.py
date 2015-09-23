@@ -129,7 +129,7 @@ class Convention(ValidatedModel):
     website = models.URLField(max_length = 200)
     image = models.URLField(max_length = 200, blank = True, default = "")
     prevCon = models.OneToOneField("self", related_name = "_nextCon", blank = True, null = True, default = None)
-    #users = models.ManyToManyField(User, related_name = "conventions", blank = True, null = True, default = None)
+    users = models.ManyToManyField(User, related_name = "conventions", blank = True, default = None)
     
     @property
     def avgRating(self):
@@ -145,7 +145,7 @@ class Convention(ValidatedModel):
     
     @property
     def nextCon(self):
-        return self._nextCon if hasattr(self, "_nextCon") else None
+        return getattr(self, "_nextCon", None)
 
     # SETTERS
     def setName(self, newName):
@@ -193,6 +193,13 @@ class Convention(ValidatedModel):
         super().clean()
         if (self.endDate - self.startDate).days < 0:
             raise ValidationError("endDate cannot be before startDate")
+        if self is INV_CON:
+            if self.prevCon:
+                raise ValidationError("you can't link the INV_CON to other cons")
+            if self.users.exists():
+                raise ValidationError("you can't have a user favorite the INV_CON")
+        if self.prevCon == INV_CON:
+            raise ValidationError("you can't link the INV_CON to other cons")
 
     def __str__(self):
         return self.name
