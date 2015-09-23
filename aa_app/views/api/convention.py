@@ -17,6 +17,8 @@ def newConvention(request):
     c = models.newConvention(d["name"], startDate, endDate, int(d["numAttenders"]), d["location"], d["website"])
     if "image" in d:
         c.setImage(d["image"])
+    if "prevConID" in d:
+        c.setPrevCon(models.Convention.objects.get(ID = int(d["prevConID"])))
     return JsonResponse({"conID": c.ID})
 
 @login_required
@@ -73,4 +75,12 @@ def setImage(request):
     u = request.user
     c = models.Convention.objects.get(ID = int(d["conID"]))
     c.setImage(d["image"])
+    return EMPTY_JSON_200
+
+@login_required
+def setPrevCon(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    c = models.Convention.objects.get(ID = int(d["conID"]))
+    c.setPrevCon(models.Convention.objects.get(ID = int(d["prevConID"])))
     return EMPTY_JSON_200

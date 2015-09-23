@@ -108,6 +108,7 @@ def mywriteups(request):
 def addconvention(request):
     u = request.user
     context = RequestContext(request, {"currUser": u})
+    context["cons"] = models.Convention.objects.exclude(ID = models.INV_CON.ID)
     return render_to_response("addconvention.html", context)
 
 @login_required

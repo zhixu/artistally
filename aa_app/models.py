@@ -133,6 +133,7 @@ class Convention(ValidatedModel):
     location = models.TextField()
     website = models.URLField(max_length = 200)
     image = models.URLField(max_length = 200, blank = True, default = "")
+    prevCon = models.ForeignKey("self", related_name = "nextCon", blank = True, null = True, default = None)
     
     @property
     def avgRating(self):
@@ -178,6 +179,10 @@ class Convention(ValidatedModel):
 
     def setImage(self, newImage):
         self.image = newImage
+        self.save()
+        
+    def setPrevCon(self, newPrevCon):
+        self.prevCon = newPrevCon
         self.save()
 
     # UTIL

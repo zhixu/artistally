@@ -23,6 +23,7 @@
             jsonDict.location = $("#locationField").val();
             jsonDict.website = $("#websiteField").val();
             jsonDict.image = $("#imageField").val();
+            jsonDict.prevConID = $("#prevConIDField").val();
             $.ajax({
                 url: "/api/convention/newConvention",
                 type: "POST",
@@ -108,6 +109,14 @@
                 <input type="url" class="form-control" id="imageField" placeholder="Banner image" aria-describedby="image-addon"/>
             </div>
         </div>
+        
+        Prev Con
+        <select id="prevConIDField">
+            {% for con in cons %}
+                <option value="{{con.ID}}">{{con}}</option>
+            {% endfor %}
+        </select> 
+        
         <br/>
         <sub class="required text-center">Required</sub>
         <br/>
