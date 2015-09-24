@@ -157,6 +157,7 @@ def addwriteup(request, conID = None):
         
 def item(request, itemID):
     itemID = int(itemID)
+    context = RequestContext(request)
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
@@ -165,6 +166,7 @@ def item(request, itemID):
         
 def writeup(request, writeupID):
     writeupID = int(writeupID)
+    context = RequestContext(request)
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u

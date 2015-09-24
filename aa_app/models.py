@@ -200,6 +200,8 @@ class Convention(ValidatedModel):
                 raise ValidationError("you can't have a user favorite the INV_CON")
         if self.prevCon == INV_CON:
             raise ValidationError("you can't link the INV_CON to other cons")
+        if self is self.prevCon:
+            raise ValidationError("you can't link a con to itself")
 
     def __str__(self):
         return self.name

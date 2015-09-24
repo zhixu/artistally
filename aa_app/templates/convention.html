@@ -3,73 +3,178 @@
 {% block head %}
     <title>ArtisTally | {{convention}} Overview</title>
     
-        <script>
-            $(function() {
-                // set rating
-                {% if convention.avgRating != None %}
-                    var rating = {{convention.avgRating}};
-                    var percent = (rating/5)*100;
-                    $("#average-rating").width(percent + "%"); // need the percentage
-                {% endif %}
+    <script>
+        var colors = new Array("#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360");
+        var highlights = new Array("#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774");
+        
+        $(function() {
+            //---------------------------- RATING ----------------------------//
+            {% if convention.avgRating != None %}
+                setStars();
+            {% endif %}
+
+            //---------------------------- COVER PHOTO ----------------------------//
+            {% if convention.image %}
                 
-                //set cover photo
-                {% if convention.image %}
+            {% else %}
                 
-                {% else %}
-                
-                {% endif %}
-            });
-            
-            {% if currUser %}
-                function setFavorite() {
-                    var jsonDict = new Object();
-                    jsonDict.conID = "{{convention.ID}}";
-                    var ajaxObj = $.ajax({
-                        url: "/api/convention/setUser",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        error: function(response) {
-                            alert("setUser went wrong");
-                        },
-                    });
-                }
+            {% endif %}
+
+            {% if conTopItemKinds %}
+                setKindsChart();
+             {% endif %}
              
-                function unsetFavorite() {
-                    var jsonDict = new Object();
-                    jsonDict.conID = "{{convention.ID}}";
-                    var ajaxObj = $.ajax({
-                        url: "/api/convention/unsetUser",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        error: function(response) {
-                            alert("setUser went wrong");
+             {% if conTopItemFandoms %}
+                setFandomsChart();
+             {% endif %}
+        });
+                                      
+        function setStars() {
+            var rating = {{convention.avgRating}};
+            var percent = (rating/5)*100;
+            $("#average-rating").width(percent + "%");
+        }
+
+        function setKindsChart() {
+            var kindsData = [
+                {% for kind in conTopItemKinds|slice:":5" %}
+                    {
+                        value: {% widthratio kind.1 1 100 %},
+                        color: colors[{{forloop.counter0}}],
+                        highlight: highlights[{{forloop.counter0}}],
+                        label: "{{kind.0}}"
+                    },
+                {% endfor %}
+            ]
+            var kindsOptions = { 
+                responsive : false,
+                animation: false,
+                tooltipTemplate: {% verbatim %} "\<%if (label){%><%=label%>: <%}%><%= value %>%" {% endverbatim %},
+                segmentStrokeColor : "#f9f9f9",
+                legendTemplate : {% verbatim %} "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><div class=\"comm-how\"><%=segments[i].value%>%</div><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>" {% endverbatim %}
+            }
+
+            var kindsCanvas = $("#kindsChart")[0].getContext("2d");
+            var kindsChart = new Chart(kindsCanvas).Doughnut(kindsData, kindsOptions);
+
+            var helpers = Chart.helpers;
+            var legendHolder = $("#kindsLegend")[0];
+                legendHolder.innerHTML = kindsChart.generateLegend();
+                // Include a html legend template after the module doughnut itself
+                helpers.each(legendHolder.firstChild.childNodes, function(legendNode, index){
+                    helpers.addEvent(legendNode, 'mouseover', function(){
+                        var activeSegment = kindsChart.segments[index];
+                      activeSegment.save();
+                      activeSegment.fillColor = activeSegment.highlightColor;
+                      kindsChart.showTooltip([activeSegment]);
+                      activeSegment.restore();
+                  });
+              });
+              helpers.addEvent(legendHolder.firstChild, 'mouseout', function(){
+                  kindsChart.draw();
+              });
+              $("#kindsChart")[0].parentNode.parentNode.appendChild(legendHolder.firstChild);
+
+
+              kindsChart.generateLegend();
+              $("#kindsLegend").innerHTML = kindsChart.generateLegend();
+        }
+            
+        function setFandomsChart() {
+            var fandomsData = [
+                    {% for fandom in conTopItemFandoms|slice:":5" %}
+                        {
+                            value: {% widthratio fandom.1 1 100 %},
+                            color: colors[{{forloop.counter0}}],
+                            highlight: highlights[{{forloop.counter0}}],
+                            label: "{{fandom.0}}"
                         },
-                    });
+                    {% endfor %}
+                ]
+                var fandomsOptions = { 
+                    responsive : false,
+                    animation: false,
+                    tooltipTemplate: {% verbatim %} "\<%if (label){%><%=label%>: <%}%><%= value %>%" {% endverbatim %},
+                    segmentStrokeColor : "#f9f9f9",
+                    legendTemplate : {% verbatim %} "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><div class=\"comm-how\"><%=segments[i].value%>%</div><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>" {% endverbatim %}
                 }
 
-                function makeWriteup() {
-                    var jsonDict = new Object();
-                    jsonDict.rating = $('input[name="ratingField"]:checked').val();
-                    jsonDict.conID = "{{convention.ID}}";
-                    jsonDict.review = $("#reviewField").val();
-                    jsonDict.miscCosts = $("#miscCostsField").val();
-                    $.ajax({
-                        url: "/api/writeup/newWriteup",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        success: function(response) {
-                            location.reload();
-                        },
-                        error: function(response) {
-                            alert("newWriteup went wrong");
-                        },
-                    });
-                }
-            {% endif %}
-        </script>
+                var fandomsCanvas = $("#fandomsChart")[0].getContext("2d");
+                var fandomsChart = new Chart(fandomsCanvas).Doughnut(fandomsData, fandomsOptions);
+
+                var helpers = Chart.helpers;
+                var legendHolder = $("#fandomsLegend")[0];
+                    legendHolder.innerHTML = fandomsChart.generateLegend();
+                    // Include a html legend template after the module doughnut itself
+                    helpers.each(legendHolder.firstChild.childNodes, function(legendNode, index){
+                        helpers.addEvent(legendNode, 'mouseover', function(){
+                            var activeSegment = fandomsChart.segments[index];
+                          activeSegment.save();
+                          activeSegment.fillColor = activeSegment.highlightColor;
+                          fandomsChart.showTooltip([activeSegment]);
+                          activeSegment.restore();
+                      });
+                  });
+                  helpers.addEvent(legendHolder.firstChild, 'mouseout', function(){
+                      fandomsChart.draw();
+                  });
+                  $("#fandomsChart")[0].parentNode.parentNode.appendChild(legendHolder.firstChild);
+
+
+                  fandomsChart.generateLegend();
+                  $("#fandomsLegend").innerHTML = fandomsChart.generateLegend();
+        }
+        
+        {% if currUser %}
+            function setFavorite() {
+                var jsonDict = new Object();
+                jsonDict.conID = "{{convention.ID}}";
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/setUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    error: function(response) {
+                        alert("setUser went wrong");
+                    },
+                });
+            }
+
+            function unsetFavorite() {
+                var jsonDict = new Object();
+                jsonDict.conID = "{{convention.ID}}";
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/unsetUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    error: function(response) {
+                        alert("setUser went wrong");
+                    },
+                });
+            }
+
+            function makeWriteup() {
+                var jsonDict = new Object();
+                jsonDict.rating = $('input[name="ratingField"]:checked').val();
+                jsonDict.conID = "{{convention.ID}}";
+                jsonDict.review = $("#reviewField").val();
+                jsonDict.miscCosts = $("#miscCostsField").val();
+                $.ajax({
+                    url: "/api/writeup/newWriteup",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(response) {
+                        alert("newWriteup went wrong");
+                    },
+                });
+            }
+        {% endif %}
+    </script>
     
 {% endblock %}
 
@@ -83,6 +188,18 @@
                 {{convention.location}} | {{convention.startDate}} - {{convention.endDate}} | <a href="{{convention.website}}">{{convention.website}}</a>
             </div>
             {% if currUser %}
+            <div class="cell text-center">
+                <div class="containery">
+                    <div class="centery">
+                        {% if currUser not in convention.users.all %}
+                            <a class="btn btn-custom-blue" onclick="setFavorite()">Add to my Conventions</a>
+                        {% else %}
+                            <a class="btn btn-custom-blue" onclick="unsetFavorite()">Remove from my Conventions</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
             <div class="cell text-center">
                 <div class="containery">
                     <div class="centery">
@@ -122,20 +239,29 @@
                 <br/>
                 On average, each artist makes a total of ${{convention.avgUserProfit|floatformat:2}}.
             {% endif %}
-            {% if convention.avgRating != None %}
-                <br/>
-                Convention has average rating {{convention.avgRating}} stars.
-            {% endif %}
-            <br/><!-- if only 2 kinds... if only 1 kind -->
-            <br/>Top 3 most popular merchandise items sold:
-            <br/>1. {{conTopItemKinds.0.0}} ({% widthratio conTopItemKinds.0.1 1 100 %}%)
-            <br/>2. {{conTopItemKinds.1.0}} ({% widthratio conTopItemKinds.1.1 1 100 %}%)
-            <br/>3. {{conTopItemKinds.2.0}} ({% widthratio conTopItemKinds.2.1 1 100 %}%)
-            <br/>
-            <br/>Top 3 most popular fandoms for merchandise:
-            <br/>1. {{conTopItemFandoms.0.0}} ({% widthratio conTopItemFandoms.0.1 1 100 %}%)
-            <br/>2. {{conTopItemFandoms.1.0}} ({% widthratio conTopItemFandoms.1.1 1 100 %}%)
-            <br/>3. {{conTopItemFandoms.2.0}} ({% widthratio conTopItemFandoms.2.1 1 100 %}%)
+            
+<!--            <canvas id="moneyChart" width="400" height="400"></canvas>-->
+            
+            
+            
+            
+            <!-- ------------------------ CHARTS ------------------------- -->
+            <div class="row">
+                <div class="col-sm-6">
+                    <div>
+                        <h1>Most Popular Merchandise</h1>
+                        <canvas id="kindsChart" width="200" height="200"></canvas>
+                    </div>
+                    <div id="kindsLegend"></div>
+                </div>
+                <div class="col-sm-6">
+                    <div>
+                        <h1>Most Popular Fandoms</h1>
+                        <canvas id="fandomsChart" width="200" height="200"></canvas>
+                    </div>
+                    <div id="fandomsLegend"></div>
+                </div>
+            </div>
         </div>
         
         {% if convention.prevCon %}
@@ -185,14 +311,6 @@
         </div>
         
         {% if currUser %}
-
-            {% if currUser not in convention.users.all %}
-                refresh the page to see it change, it does work.
-                <button onclick="setFavorite()">mark as favorite convention</button>
-            {% else %}
-                <button onclick="unsetFavorite()">unmark as favorite convention</button>
-            {% endif %}
-        
             <div class="section-wrapper border-wrapper" id="add-review">
                 {% if currUserConWriteup %}
                 <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>

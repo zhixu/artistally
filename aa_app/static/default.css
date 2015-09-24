@@ -413,6 +413,15 @@ color:red
     height: 80px;
 }
 
+.canvas-wrapper {
+    display: inline-block;
+    float: left;
+}
+
+.graph-legend {
+    display: inline-block;   
+}
+
 /* ------------------------------------------------- */
 /* ----------------- MY CONVENTIONS ---------------- */
 /* ------------------------------------------------- */

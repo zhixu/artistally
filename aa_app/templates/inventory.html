@@ -133,7 +133,7 @@
                 cost = 5,
                 numLeft = 6
                 {% if not invCon %}
-                    ,numSold = 7
+                    , numSold = 7
                 {% endif %};
             
             var jsonDict = new Object();
@@ -219,7 +219,7 @@
                     });
                     break;
                 {% if not invCon %}
-                    case numLeft:
+                    case numSold:
                         jsonDict.numSold = newValue;
                         var ajaxObj = $.ajax({
                             url: "/api/item/setNumSold",
@@ -344,7 +344,10 @@
             <h1>{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
                 
             <div>
-                <button onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</button>
+                {% if not invCon %}
+                <a class="btn btn-custom-blue">Copy Over Main Inventory</a>
+                {% endif %}
+                <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
                 <div id="item-form">
                     <label class="control-label">Preview Image:</label>
                     <div class="row">
@@ -355,43 +358,49 @@
                                     <input type="text" class="form-control" placeholder="Name" id="new-name">
                                 </div>
                             </div>
+                            <br/>
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="new-fandom">Fandom:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Fandom" id="new-fandom">
+                                    <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
                                 </div>
                             </div>
+                            <br/>
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="new-kind">Kind:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Kind" id="new-kind">
+                                    <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
                                 </div>
                             </div>
+                            <br/>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="new-price">Price:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Price" id="new-price">
+                                    <input type="text" class="form-control" placeholder="0" id="new-price">
                                 </div>
                             </div>
+                            <br/>
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="new-cost">Cost:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Cost" id="new-cost">
+                                    <input type="text" class="form-control" placeholder="0" id="new-cost">
                                 </div>
                             </div>
+                            <br/>
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="new-numLeft">Remaining:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Remaining" id="new-numLeft">
+                                    <input type="text" class="form-control" placeholder="0" id="new-numLeft">
                                 </div>
                             </div>
                             {% if not invCon %}
+                                <br/>
                                 <div class="form-group">
                                     <label class="control-label col-sm-2" for="new-numSold">Sold:</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="Sold" id="new-numSold">
+                                        <input type="text" class="form-control" placeholder="0" id="new-numSold">
                                     </div>
                                 </div>
                             {% endif %}
@@ -441,9 +450,13 @@
             </table>
             {% if not invCon %}
                 <br/>
-                Misc costs <input type="number" min="0" step="0.01" id="miscCostsField" placeholder="0.01" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                <div class="form-group">
+                    <label for="miscCostsField">Miscellaneous Costs:</label>
+                    
+                    Misc costs <input type="number" class="form-control" min="0" step="0.01" id="miscCostsField" placeholder="0.00" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                </div>
                 <br/>
-                <a onclick="updateMiscCost()" href="#">update misccost</a>
+                <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">update misccost</a>
             {% endif %}
             </div>
         </div>
