@@ -25,7 +25,12 @@
             
             {% for con in currUser.conventions.all %}
                 <div class="convention-preview-wrapper">
-                    <img class="convention-preview"/>
+                    {% if con.image %}
+                        <img class="convention-preview" style="background-image: url({{con.image}});"/>
+                    {% else %}
+                        <img class="convention-preview"/>
+                    {% endif %}
+                    
                     <div class="convention-preview-info-wrapper">
                         <div class="convention-preview-date">
                             

@@ -2,24 +2,104 @@
 
 {% block head %}
     <title>ArtisTally | {{convention}} Reviews</title>
+    <script>
+        $(function() {
+            {% if convention.avgRating != None %}
+                setStars();
+            {% endif %}
+            
+            //COVER PHOTO
+            {% if convention.image %}
+                $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
+            {% endif %}
+        });
+        function setStars() {
+            var rating = {{convention.avgRating}};
+            var percent = (rating/5)*100;
+            $("#average-rating").width(percent + "%");
+        }
+    </script>
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3 sidebar">
-            <div class="fixed">
-                {% include "includes/sidebar.html" %}
+    <div class="container">
+        <div class="jumbotron-convention">
+        </div>
+        <div class="con-header">
+            <div class="main-info">
+                <h2>{{convention}}</h2>
+                {{convention.location}} | {{convention.startDate}} - {{convention.endDate}} | <a href="{{convention.website}}">{{convention.website}}</a>
             </div>
-
-            <div class="col-sm-9">
-
+            {% if currUser %}
+            <div class="cell text-center">
+                <div class="containery">
+                    <div class="centery">
+                        {% if currUser not in convention.users.all %}
+                            <a class="btn btn-custom-blue" onclick="setFavorite()">Add to my Conventions</a>
+                        {% else %}
+                            <a class="btn btn-custom-blue" onclick="unsetFavorite()">Remove from my Conventions</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cell text-center">
+                <div class="containery">
+                    <div class="centery">
+                        {% if currUserConWriteup %}
+                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                        {% else %}
+                            <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="cell text-center">
+                <div class="containery">
+                    <div class="centery">
+                        <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:0%"></span></div>
+                        {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <div class="section-wrapper border-wrapper">
+            <h2 class="title-wrapper">Reviews</h2>
+            {% for writeup in convention.writeups.all %}
+                <div class="review-entry">
+                    <div class="side-entry">
+                        <a href="/user/{{writeup.user}}">
+                        {% if writeup.user.image %}
+                            <img src="{{writeup.user.image}}" class="user-icon-large">
+                        {% else %}
+                            <img src="/static/images/icon-default.png" class="user-icon-large">
+                        {% endif %}</a>
+                        <br/>
+                        <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
+                        <br/>
+                        {{writeup.editTime|date:"M d, Y"}}
+                        {% if writeup.user == currUser %}
+                            <br/>
+                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                        {% endif %}
+                    </div>
+                    <div class="main-entry">
+                        <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                        <div class="main-entry-text">
+                            {{writeup.review}}
+                        </div>
+                        <br/>
+                        <p class="text-right"><sup><a href="#">Read More &raquo;</a></sup></p>
+                    </div>
+                </div>
+                <hr>
+            {% empty %}
+                No one has reviewed this convention yet.
+            {% endfor %}
+            <p class="text-center">
+            </p>
+        </div>
     </div>
-
-
-    {% for writeup in convention.writeups.all %}
-        {{writeup.review}}
-    {% endfor %}
-
 {% endblock %}
