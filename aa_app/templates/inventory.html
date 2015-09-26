@@ -328,10 +328,17 @@
             editableGrid.renderGrid();
         }
         
-        var kindsResults = ["testing", "asdf", "aeiou"];
-        var fandomResults = ["testing", "asdf", "aeiou"];
-        
         function appendAutoComplete() {
+            var kindsResults = [
+                {% for kind in kinds %}
+                    "{{kind}}",
+                {% endfor %}
+            ];
+            var fandomResults = [
+                {% for fandom in fandoms %}
+                    "{{fandom}}",
+                {% endfor %} 
+            ];
             
             $("#new-fandom").autocomplete({
                 source: fandomResults
@@ -438,11 +445,13 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <a onclick="makeItem()" class="btn btn-custom-blue">Add</a>
+                        <p class="text-right"><a onclick="makeItem()" class="btn btn-custom-blue">Add</a></p>
+<!--
                         <br/>
                         <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#fandomModal">Add Fandom</a>
                         <br/>
                         <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#kindModal">Add Kind</a>
+-->
                     </div>
                 </div>
 

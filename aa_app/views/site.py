@@ -97,6 +97,8 @@ def inventory(request, conID = None):
     else:
         context["convention"] = models.INV_CON
         context["invCon"] = True
+    context["kinds"] = list(models.Kind.objects.all())
+    context["fandoms"] = list(models.Fandom.objects.all())
     context["conItems"] = u.items.filter(convention = context["convention"])
     return render_to_response("inventory.html", context)
 
