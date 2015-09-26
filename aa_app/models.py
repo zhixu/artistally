@@ -120,7 +120,7 @@ class User(AbstractBaseUser):
 
 class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
-    name = models.TextField()
+    name = models.TextField(unique = True)
     startDate = models.DateField()
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
