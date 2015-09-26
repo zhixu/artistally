@@ -6,16 +6,48 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-sm-3 sidebar">
+        <div class="col-sm-2 sidebar">
             <div class="fixed">
                 {% include "includes/sidebar.html" %}
             </div>
-
-            <div class="col-sm-9">
-
+        </div>
+        <div class="col-sm-10 maincontent-wrapper">
+            <div class="section-wrapper border-wrapper">
+                <h1 class="title-wrapper">My Reviews</h1>
+                
+                {% for writeup in currUser.writeups.all %}
+                    <div class="review-entry">
+                        <div class="side-entry">
+                            <a href="/user/{{writeup.user}}">
+                            {% if writeup.user.image %}
+                                <img src="{{writeup.user.image}}" class="user-icon-large">
+                            {% else %}
+                                <img src="/static/images/icon-default.png" class="user-icon-large">
+                            {% endif %}</a>
+                            <br/>
+                            <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
+                            <br/>
+                            Entry created: {{writeup.writeTime|date:"M d, Y"}}
+                            <br/>
+                            Entry edited: {{writeup.editTime|date:"M d, Y"}}
+                            {% if writeup.user == currUser %}
+                                <br/>
+                                <br/>
+                                <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                            {% endif %}
+                        </div>
+                        <div class="main-entry">
+                            Review for <a href="/convention/{{writeup.convention.ID}}">{{writeup.convention}}</a>
+                            <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                            <div class="main-entry-text">
+                                {{writeup.review}}
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
-    </div>
 
 
     {% for writeup in currUser.writeups.all %}
