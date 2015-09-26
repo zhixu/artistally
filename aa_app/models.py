@@ -1,13 +1,12 @@
 from django.db import models
 from django.db.models import Avg, Q, Sum
+from django.db.utils import OperationalError
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 import datetime, random
 
-
-INV_CON = None      # initialized in artistally/urls.py
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password):
@@ -121,7 +120,7 @@ class User(AbstractBaseUser):
 
 class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
-    name = models.TextField()
+    name = models.TextField(unique = True)
     startDate = models.DateField()
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
@@ -193,13 +192,14 @@ class Convention(ValidatedModel):
         super().clean()
         if (self.endDate - self.startDate).days < 0:
             raise ValidationError("endDate cannot be before startDate")
-        if self is INV_CON:
-            if self.prevCon:
+        if INV_CON is not None:
+            if self is INV_CON:
+                if self.prevCon:
+                    raise ValidationError("you can't link the INV_CON to other cons")
+                if self.users.exists():
+                    raise ValidationError("you can't have a user favorite the INV_CON")
+            if self.prevCon == INV_CON:
                 raise ValidationError("you can't link the INV_CON to other cons")
-            if self.users.exists():
-                raise ValidationError("you can't have a user favorite the INV_CON")
-        if self.prevCon == INV_CON:
-            raise ValidationError("you can't link the INV_CON to other cons")
         if self is self.prevCon:
             raise ValidationError("you can't link a con to itself")
 
@@ -323,7 +323,7 @@ class MiscCost(ValidatedModel):
     convention = models.ForeignKey(Convention, related_name = "miscCosts")
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
     
-    # SETTERS    
+    # SETTERS
     def setAmount(self, newAmount):
         self.amount = newAmount
         self.save()
@@ -335,6 +335,9 @@ class MiscCost(ValidatedModel):
             raise ValidationError("you can't make a miscCost for the INV_CON")
         if self.amount < 0:
             raise ValidationError("you can't have negative miscCost amount")
+        filtered = self.user.miscCosts.filter(convention = self.convention)
+        if filtered.exists() and filtered.get().ID is not self.ID:
+            raise ValidationError("user already has a miscCost for that convention")
     
     def __str__(self):
         return str(self.amount)
@@ -371,3 +374,16 @@ def newConvention(name, startDate, endDate, numAttenders, location, website):
     k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location, website = website)
     k.save()
     return k
+
+INV_CON = None
+try:
+    if Convention.objects.filter(name = "INV_CON").exists():
+        INV_CON = Convention.objects.get(name = "INV_CON")
+    else:
+        INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
+except OperationalError as e:
+    if str(e) == "no such table: aa_app_convention":    # django currently migrating, can't load it
+        pass
+    else:
+        raise e
+    
