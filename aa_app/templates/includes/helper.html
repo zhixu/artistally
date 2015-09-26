@@ -29,8 +29,25 @@
     {% block head %}
     {% endblock %}
     
-    {% if currUser %}
-        <script>
+    <script>
+        $(function() {
+            KEYUP = function(event) {
+                if (event.keyCode == 13) {
+                    $("#conSearchButton").click();
+                }
+            }
+            $("#conSearch").keyup(KEYUP);
+        });
+        
+        function search() {
+            console.log("in here");
+            $("#conSearch").unbind("keyup", KEYUP);
+            var searchstring = $("#conSearch").val();
+            window.location = "/search/" + searchstring;
+        }
+        
+        {% if currUser %}
+        
             function logout() {
                 $.ajax({
                     url: "/api/user/logout",
@@ -43,8 +60,8 @@
                     },
                 });
             }
-        </script>
-    {% endif %}
+        {% endif %}
+    </script>
 </head>
 
 <body>
@@ -65,9 +82,9 @@
                     <div class="searchbox-wrapper">
                         <form class="navbar-form" role="search">
                             <div class="input-group">
-                                <input type="text" class="form-control searchbox" placeholder="Search..."/>
+                                <input type="text" class="form-control searchbox" id="conSearch" placeholder="Search Conventions"/>
                                 <span class="input-group-btn">
-                                    <button class="btn btn-custom-white" type="button">Go</button>
+                                    <a class="btn btn-custom-white" onclick="search()" id="conSearchButton" type="button">Go</a>
                                 </span>
                             </div>
                         </form>

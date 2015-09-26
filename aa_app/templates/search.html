@@ -5,8 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    {% for con in cons %}
-        {{con}}
-        <br/>
-    {% endfor %}
+    <div class="container">
+        <div class="section-wrapper border-wrapper">
+            <h2 class="title-wrapper">Search results for "{{query}}"</h2>
+            {% for con in cons %}
+                <a href="/convention/{{con.ID}}">{{con}}</a>
+                <br/>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

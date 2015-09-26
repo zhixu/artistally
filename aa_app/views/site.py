@@ -179,6 +179,7 @@ def search(request, query):
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
+    context["query"] = query
     context["cons"] = models.Convention.objects.filter(Q(name__icontains = query) | Q(location__icontains = query) | Q(website__icontains = query)).exclude(ID = models.INV_CON.ID).distinct()
     return render_to_response("search.html", context)
     

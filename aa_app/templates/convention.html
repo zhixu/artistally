@@ -318,8 +318,9 @@
             </p>
         </div>
         
-        {% if currUser %}
-            <div class="section-wrapper border-wrapper" id="add-review">
+        
+        <div class="section-wrapper border-wrapper" id="add-review">
+            {% if currUser %}
                 {% if currUserConWriteup %}
                 <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                 {% else %}
@@ -349,48 +350,21 @@
                         <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
                     </div>
                 {% endif %}
+            {% else %}
+<!--
+            <div class="containery">
+                <div class="centery">
+-->
+                    <h2 class="title-wrapper">Write Review</h2>
+                    <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
+                    </p>
+<!--
+                </div>
             </div>
-        {% endif %}
+-->
+            {% endif %}
+        </div>
+        
 
     </div>
-
-  <!--  {% if currUser %}
-        {% if currUserConWriteup %}
-            <a href="/writeup/{{currUserConWriteup.ID}}">View or edit your writeup!</a>
-        {% endif %}
-        <br/>
-        {% for item in currUserConItems %}
-            <a href="/item/{{item.ID}}">Your item {{item}}</a>
-            <br/>
-        {% endfor %}
-        <a href="/additem/{{convention.ID}}">Add an Item!</a>
-        <br/>
-        {% if convention.image %}
-            <img src="{{convention.image}}"/>
-            <br/>
-        {% endif %}
-        upload or replace the pic?
-        <br/>
-        <input type="file" id="fileField" accept="image/*"/> max 10 MiB
-        <br/>
-        <a onclick="uploadFile()" href="#">Submit</a>
-    {% else %}
-        {{convention.name}}'s Page
-        <br/>
-        {{convention.numAttenders}} attenders
-        <br/>
-        located at {{convention.location}}
-        <br/>
-        website at <a href="{{convention.website}}">{{convention.website}}</a>
-        <br/>
-        starts/started on {{convention.startDate}}
-        <br/>
-        ends/ended on {{convention.endDate}}
-        <br/>
-        {% if convention.image %}
-            <img src="{{convention.image}}"/>
-            <br/>
-        {% endif %}
-    {% endif %}-->
-
 {% endblock %}
