@@ -33,7 +33,10 @@
         $(function() {
             KEYUP = function(event) {
                 if (event.keyCode == 13) {
+                    console.log("herererer");
                     $("#conSearchButton").click();
+                    console.log("hererere");
+                    //search();
                 }
             }
             $("#conSearch").keyup(KEYUP);
@@ -41,7 +44,7 @@
         
         function search() {
             console.log("in here");
-            $("#conSearch").unbind("keyup", KEYUP);
+            //$("#conSearch").unbind("keyup", KEYUP);
             var searchstring = $("#conSearch").val();
             window.location = "/search/" + searchstring;
         }
@@ -80,14 +83,12 @@
 
                 <div id="navbar" class="navbar-collapse collapse">
                     <div class="searchbox-wrapper">
-                        <form class="navbar-form" role="search">
-                            <div class="input-group">
-                                <input type="text" class="form-control searchbox" id="conSearch" placeholder="Search Conventions"/>
-                                <span class="input-group-btn">
-                                    <a class="btn btn-custom-white" onclick="search()" id="conSearchButton" type="button">Go</a>
-                                </span>
-                            </div>
-                        </form>
+                        <div class="input-group">
+                            <input type="text" class="form-control searchbox" id="conSearch" placeholder="Search Conventions"/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-custom-white" onclick="search()" id="conSearchButton" type="button">Go</button>
+                            </span>
+                        </div>
                     </div>
 
                     <ul class="nav navbar-nav navbar-right">

@@ -6,9 +6,9 @@
     {% else %}
         <title>ArtisTally | My {{convention}} Inventory</title>
     {% endif %}
-
+    
     <script type="text/javascript" src="/static/js/editablegrid/all_min.js"></script>
-
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
         {% if not invCon %}
             {% if miscCost %}
@@ -264,34 +264,6 @@
             }
         }
         
-        window.onload = function() {
-            editableGrid = new EditableGrid("InventoryEditableGrid", 
-                { sortIconUp: "/static/images/up.png", 
-                sortIconDown: "/static/images/down.png",
-                // called when some value has been modified: we display a message
-                // row.id to get ID
-                modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, rowIdx, colIdx, newValue, oldValue); }});
-        
-            // we build and load the metadata in Javascript
-            editableGrid.load({ metadata: [
-                { name: "thumbnail", datatype: "string", editable: false },
-                { name: "name", datatype: "string", editable: true },
-                { name: "fandom", datatype: "string", editable: true },
-                { name: "kind", datatype: "string", editable: true },
-                { name: "price", datatype: "double", editable: true },
-                { name: "cost", datatype: "double", editable: true },
-                { name: "remaining", datatype: "integer", editable: true }
-                {% if not invCon %}
-                    ,{ name: "sold", datatype: "integer", editable: true }
-                {% endif %}
-            ]});
-
-            // then we attach to the HTML table and render it
-            editableGrid.attachToHTMLTable("inventory");
-            //editableGrid.setPageSize(5);
-            editableGrid.renderGrid();
-        }
-        
         function makeFandom() {
             var jsonDict = new Object();
             jsonDict.name = $("#fandomField").val();
@@ -327,6 +299,66 @@
                 },
             });
         }
+                    
+        function makeEditableGrid() {
+            editableGrid = new EditableGrid("InventoryEditableGrid", 
+                { sortIconUp: "/static/images/up.png", 
+                sortIconDown: "/static/images/down.png",
+                // called when some value has been modified: we display a message
+                // row.id to get ID
+                modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, rowIdx, colIdx, newValue, oldValue); }});
+        
+            // we build and load the metadata in Javascript
+            editableGrid.load({ metadata: [
+                { name: "thumbnail", datatype: "string", editable: false },
+                { name: "name", datatype: "string", editable: true },
+                { name: "fandom", datatype: "string", editable: true },
+                { name: "kind", datatype: "string", editable: true },
+                { name: "price", datatype: "double", editable: true },
+                { name: "cost", datatype: "double", editable: true },
+                { name: "remaining", datatype: "integer", editable: true }
+                {% if not invCon %}
+                    ,{ name: "sold", datatype: "integer", editable: true }
+                {% endif %}
+            ]});
+
+            // then we attach to the HTML table and render it
+            editableGrid.attachToHTMLTable("inventory");
+            //editableGrid.setPageSize(5);
+            editableGrid.renderGrid();
+        }
+        
+        var kindsResults = ["testing", "asdf", "aeiou"];
+        var fandomResults = ["testing", "asdf", "aeiou"];
+        
+        function appendAutoComplete() {
+            
+            $("#new-fandom").autocomplete({
+                source: fandomResults
+            });
+            $("#new-kind").autocomplete({
+                source: kindsResults
+            });
+            
+            $("#new-fandom").autocomplete({
+                open: function(){
+                    $(".ui-autocomplete").append('<li class="ui-menu-item" data-toggle="modal" data-target="#fandomModal" aria-label="Add New"><i class="fa fa-plus"></i> Add New</li>');
+                }
+            });
+            
+            $("#new-kind").autocomplete({
+                open: function(){
+                    $(".ui-autocomplete").append('<li class="ui-menu-item" data-toggle="modal" data-target="#kindModal" aria-label="Add New"><i class="fa fa-plus"></i> Add New</li>');
+                }
+            });
+        }
+        
+        $(function() {
+            //add editable grid
+            makeEditableGrid();
+            // make new fandom and new kinds in add new form searchable
+            appendAutoComplete();
+        });
         
     </script>
 {% endblock %}
@@ -340,124 +372,125 @@
         </div>
 
         <div class="col-sm-10 maincontent-wrapper">
-            <div id="inventory-page">
-            <h1>{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
-                
-            <div>
-                {% if not invCon %}
-                <a class="btn btn-custom-blue">Copy Over Main Inventory</a>
-                {% endif %}
-                <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
-                <div id="item-form">
-                    <label class="control-label">Preview Image:</label>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="new-name">Name:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Name" id="new-name">
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="new-fandom">Fandom:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="new-kind">Kind:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
-                                </div>
-                            </div>
-                            <br/>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="new-price">Price:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="0" id="new-price">
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="new-cost">Cost:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="0" id="new-cost">
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="new-numLeft">Remaining:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="0" id="new-numLeft">
-                                </div>
-                            </div>
-                            {% if not invCon %}
-                                <br/>
+            <div class="section-wrapper border-wrapper">
+                <h1 class="title-wrapper">{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
+                <div id="inventory-page">
+                <div>
+                    {% if not invCon %}
+                    <a class="btn btn-custom-blue">Copy Over Main Inventory</a>
+                    {% endif %}
+                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
+                    <div id="item-form">
+                        <label class="control-label">Preview Image:</label>
+                        <div class="row">
+                            <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-numSold">Sold:</label>
+                                    <label class="control-label col-sm-2" for="new-name">Name:</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="0" id="new-numSold">
+                                        <input type="text" class="form-control" placeholder="Name" id="new-name">
                                     </div>
                                 </div>
-                            {% endif %}
+                                <br/>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="new-fandom">Fandom:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="new-kind">Kind:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="new-price">Price:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" placeholder="0" id="new-price">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="new-cost">Cost:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" placeholder="0" id="new-cost">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="new-numLeft">Remaining:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" placeholder="0" id="new-numLeft">
+                                    </div>
+                                </div>
+                                {% if not invCon %}
+                                    <br/>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2" for="new-numSold">Sold:</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" placeholder="0" id="new-numSold">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
+                        <a onclick="makeItem()" class="btn btn-custom-blue">Add</a>
+                        <br/>
+                        <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#fandomModal">Add Fandom</a>
+                        <br/>
+                        <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#kindModal">Add Kind</a>
                     </div>
-                    <a onclick="makeItem()" class="btn btn-custom-blue">Add</a>
-                    <br/>
-                    <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#fandomModal">Add Fandom</a>
-                    <br/>
-                    <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#kindModal">Add Kind</a>
                 </div>
-            </div>
 
-            <table class="table table-hover" id="inventory">
-                <thead>
-                    <tr>
-                        <th>Thumbnail</th>
-                        <th>Name</th>
-                        <th>Fandom</th>
-                        <th>Kind</th>
-                        <th>Price</th>
-                        <th>Cost</th>
-                        <th>Remaining</th>
-                        {% if not invCon %}
-                            <th>Sold</th>
-                        {% endif %}
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="inventory-body">
-                {% for item in conItems %}
-                    <tr id="{{item.ID}}">
-                        <td>Icon</td>
-                        <td id="{{item.ID}}nameField">{{item.name}}</td>
-                        <td id="{{item.ID}}fandomField">{{item.fandom}}</td>
-                        <td id="{{item.ID}}kindField">{{item.kind}}</td>
-                        <td id="{{item.ID}}priceField">{{item.price|floatformat:2}}</td>
-                        <td id="{{item.ID}}costField">{{item.cost|floatformat:2}}</td>
-                        <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
-                        {% if not invCon %}
-                            <td id="{{item.ID}}numSoldField">{{item.numSold}}</td>
-                        {% endif %}
-                        <td><a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {% if not invCon %}
-                <br/>
-                <div class="form-group">
-                    <label for="miscCostsField">Miscellaneous Costs:</label>
-                    
-                    Misc costs <input type="number" class="form-control" min="0" step="0.01" id="miscCostsField" placeholder="0.00" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                <table class="table table-hover" id="inventory">
+                    <thead>
+                        <tr>
+                            <th>Thumbnail</th>
+                            <th>Name</th>
+                            <th>Fandom</th>
+                            <th>Kind</th>
+                            <th>Price</th>
+                            <th>Cost</th>
+                            <th>Remaining</th>
+                            {% if not invCon %}
+                                <th>Sold</th>
+                            {% endif %}
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-body">
+                    {% for item in conItems %}
+                        <tr id="{{item.ID}}">
+                            <td>Icon</td>
+                            <td id="{{item.ID}}nameField">{{item.name}}</td>
+                            <td id="{{item.ID}}fandomField">{{item.fandom}}</td>
+                            <td id="{{item.ID}}kindField">{{item.kind}}</td>
+                            <td id="{{item.ID}}priceField">{{item.price|floatformat:2}}</td>
+                            <td id="{{item.ID}}costField">{{item.cost|floatformat:2}}</td>
+                            <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                            {% if not invCon %}
+                                <td id="{{item.ID}}numSoldField">{{item.numSold}}</td>
+                            {% endif %}
+                            <td><a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if not invCon %}
+                    <br/>
+                    <div class="form-group">
+                        <label for="miscCostsField">Miscellaneous Costs:</label>
+
+                        Misc costs <input type="number" class="form-control" min="0" step="0.01" id="miscCostsField" placeholder="0.00" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                    </div>
+                    <br/>
+                    <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">update misccost</a>
+                {% endif %}
                 </div>
-                <br/>
-                <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">update misccost</a>
-            {% endif %}
             </div>
         </div>
     </div>
