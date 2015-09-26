@@ -1,14 +1,8 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from aa_app import models
-
 import datetime
 
-if models.Convention.objects.filter(name = "INV_CON").exists():
-    models.INV_CON = models.Convention.objects.get(name = "INV_CON")
-else:
-    models.INV_CON = models.newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
     
 urlpatterns = [
     url(r"^$", "aa_app.views.site.root"),
