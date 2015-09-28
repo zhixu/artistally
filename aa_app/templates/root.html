@@ -2,6 +2,12 @@
 
 {% block head %}
     <title>ArtisTally | Home</title>
+    <script>
+        {% if currUser %}
+            
+            
+        {% endif %}
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -19,45 +25,56 @@
                 </div>
             </div>
 
-            <div class="col-sm-10 maincontent-wrapper">
-                <h1>Dashboard</h1>
+            <div class="col-sm-10">
+                <div class="my-section-wrapper border-wrapper">
+                    <h1 class="title-wrapper">Dashboard</h1>
 
-                View data from: <input type="date"> to: <input type="date">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="dash-box">
-                            <i class="fa fa-building fa-4x pull-left"></i>
-                            <div class="text-right">
-                                <h3>{{currUser.conventions.count}}</h3>
-                                conventions
+<!--                View data from: <input type="date"> to: <input type="date">-->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="dash-box">
+                                <i class="fa fa-building fa-4x pull-left"></i>
+                                <div class="text-right">
+                                    <h3>{{currUser.conventions.count}}</h3>
+                                    conventions
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="dash-box">
+                                <i class="fa fa-money fa-4x pull-left"></i>
+                                <div class="text-right">
+                                    <h3>${{currUser.profit|floatformat:2}}</h3>
+                                    profit
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="dash-box">
+                                <i class="fa fa-cube fa-4x pull-left"></i>
+                                <div class="text-right">
+                                    <h3>{{currUserItemsSold}}</h3>
+                                    items sold
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="dash-box">
-                            <i class="fa fa-money fa-4x pull-left"></i>
-                            <div class="text-right">
-                                <h3>${{currUser.profit|floatformat:2}}</h3>
-                                profit
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div class="dash-box">
+                                <h3 class="title-wrapper">Upcoming Conventions</h3>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="dash-box">
-                            <i class="fa fa-cube fa-4x pull-left"></i>
-                            <div class="text-right">
-                                <h3>{{currUserItemsSold}}</h3>
-                                items sold
-                            </div>
+                        <div class="col-sm-3">
+                            <canvas id="Chart1" width="400" height="400"></canvas>
+                            <canvas id="Chart2" width="400" height="400"></canvas>
+                            <canvas id="Chart3" width="400" height="400"></canvas>
+                            graphs and stuff go here
                         </div>
                     </div>
+                    <br/>
                 </div>
-                <br/>
-                <canvas id="Chart1" width="400" height="400"></canvas>
-                <canvas id="Chart2" width="400" height="400"></canvas>
-                <canvas id="Chart3" width="400" height="400"></canvas>
-                graphs and stuff go here
-                <br/>
             </div>
         </div>
 

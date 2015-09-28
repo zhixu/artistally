@@ -11,41 +11,43 @@
                 {% include "includes/sidebar.html" %}
             </div>
         </div>
-        <div class="col-sm-10 maincontent-wrapper">
-<!--            <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#conModal"><i class="fa fa-plus-circle fa-1x"></i> Add Convention</a>-->
-            <br/>
-            Show conventions from:
-            <select class="form-control">
-                <option value="1">Last year</option>
-                <option value="2">Last 2 years</option>
-                <option value="3">Last 5 years</option>
-                <option value="4">Beginning of time</option>
-            </select>
-            <br/>
-            
-            {% for con in currUser.conventions.all %}
-                <div class="convention-preview-wrapper">
-                    {% if con.image %}
-                        <img class="convention-preview" style="background-image: url({{con.image}});"/>
-                    {% else %}
-                        <img class="convention-preview"/>
-                    {% endif %}
-                    
-                    <div class="convention-preview-info-wrapper">
-                        <div class="convention-preview-date">
-                            
-                            <p><span>{{con.startDate|date:"M"}}</span>
-                            {{con.startDate|date:"d"}}</p>
-                        </div>
-                        <div class="convention-preview-info">
-                            <h4>{{con}}</h4>
-                            <a href="/convention/{{con.ID}}">View Convention Page &raquo;</a>
-                            <br/>
-                            <a href="/inventory/{{con.ID}}">View Convention Inventory &raquo;</a>
+        <div class="col-sm-10">
+            <div class="my-section-wrapper border-wrapper">
+                <h1 class="title-wrapper">My Conventions</h1>
+                <br/>
+                Show conventions from:
+                <select class="form-control">
+                    <option value="1">Last year</option>
+                    <option value="2">Last 2 years</option>
+                    <option value="3">Last 5 years</option>
+                    <option value="4">Beginning of time</option>
+                </select>
+                <br/>
+
+                {% for con in currUser.conventions.all %}
+                    <div class="convention-preview-wrapper">
+                        {% if con.image %}
+                            <img class="convention-preview" style="background-image: url({{con.image}});"/>
+                        {% else %}
+                            <img class="convention-preview"/>
+                        {% endif %}
+
+                        <div class="convention-preview-info-wrapper">
+                            <div class="convention-preview-date">
+
+                                <p><span>{{con.startDate|date:"M"}}</span>
+                                {{con.startDate|date:"d"}}</p>
+                            </div>
+                            <div class="convention-preview-info">
+                                <h4>{{con}}</h4>
+                                <a href="/convention/{{con.ID}}">View Convention Page &raquo;</a>
+                                <br/>
+                                <a href="/inventory/{{con.ID}}">View Convention Inventory &raquo;</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 

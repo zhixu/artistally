@@ -255,6 +255,10 @@
                 });
             }
         }
+                    
+        function duplicateItem(itemID) {
+            
+        }
         
         function toggleItemForm() {
             if ($("#item-form").css("display") == "none") {
@@ -378,8 +382,8 @@
             </div>
         </div>
 
-        <div class="col-sm-10 maincontent-wrapper">
-            <div class="section-wrapper border-wrapper">
+        <div class="col-sm-10">
+            <div class="my-section-wrapper border-wrapper">
                 <h1 class="title-wrapper">{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
                 <div id="inventory-page">
                 <div>
@@ -445,13 +449,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <p class="text-right"><a onclick="makeItem()" class="btn btn-custom-blue">Add</a></p>
-<!--
-                        <br/>
-                        <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#fandomModal">Add Fandom</a>
-                        <br/>
-                        <a class="btn btn-custom-blue btn-lg" data-toggle="modal" data-target="#kindModal">Add Kind</a>
--->
+                        <p class="text-right"><a onclick="makeItem()" class="btn btn-custom-blue">Add</a></p>   
                     </div>
                 </div>
 
@@ -484,7 +482,10 @@
                             {% if not invCon %}
                                 <td id="{{item.ID}}numSoldField">{{item.numSold}}</td>
                             {% endif %}
-                            <td><a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a></td>
+                            <td>
+                                <a onclick="duplicateItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-clone"></i></a>
+                                <a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

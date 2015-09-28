@@ -27,7 +27,6 @@
                 setFandomsChart();
             {% endif %}
              
-             
             //setProfitChart();
         });
                                       
@@ -140,6 +139,9 @@
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
+                    },
                     error: function(response) {
                         alert("setUser went wrong");
                     },
@@ -154,6 +156,9 @@
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
+                    },
                     error: function(response) {
                         alert("setUser went wrong");
                     },
@@ -197,11 +202,13 @@
             <div class="cell text-center">
                 <div class="containery">
                     <div class="centery">
+                        <div id="setFavoriteButtonWrapper">
                         {% if currUser not in convention.users.all %}
-                            <a class="btn btn-custom-blue" onclick="setFavorite()">Add to my Conventions</a>
+                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
                         {% else %}
-                            <a class="btn btn-custom-blue" onclick="unsetFavorite()">Remove from my Conventions</a>
+                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
                         {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -252,25 +259,30 @@
             
             <!-- ------------------------ CHARTS ------------------------- -->
             
-            <canvas id="profitChart" width="200" height="200"></canvas>
+<!--            <canvas id="profitChart" width="200" height="200"></canvas>-->
             
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <div>
-                        <h3>Most Popular Merchandise</h3>
-                        <canvas id="kindsChart" width="200" height="200"></canvas>
+            {% if conTopItemKinds %}
+                <div class="row">
+                    
+                    <div class="col-sm-6">
+                        <h3 class="title-wrapper">Most Popular Merchandise</h3>
+                        <div class="chart-display">
+                            <canvas id="kindsChart" width="150" height="150"></canvas>
+                        </div>
+                        <div class="col-sm-6 chart-legend" id="kindsLegend"></div>
                     </div>
-                    <div id="kindsLegend"></div>
-                </div>
-                <div class="col-sm-6">
-                    <div>
-                        <h3>Popular Fandoms</h3>
-                        <canvas id="fandomsChart" width="200" height="200"></canvas>
+                    <div class="col-sm-6">
+                        <h3 class="title-wrapper">Popular Fandoms</h3>
+                        <div class="chart-display">
+                            <canvas id="fandomsChart" width="150" height="150"></canvas>
+                        </div>
+                        <div class="chart-legend" id="fandomsLegend"></div>
                     </div>
-                    <div id="fandomsLegend"></div>
                 </div>
-            </div>
+            {% else %}
+                <br/>
+                There's currently no merchandise data for this convention! Help us by adding this convention to your list and adding your inventory data.       
+            {% endif %}
         </div>
         
         {% if convention.prevCon %}
@@ -321,6 +333,7 @@
         
         <div class="section-wrapper border-wrapper" id="add-review">
             {% if currUser %}
+                <h2 class="title-wrapper">Write Review</h2>
                 {% if currUserConWriteup %}
                 <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                 {% else %}
@@ -351,17 +364,8 @@
                     </div>
                 {% endif %}
             {% else %}
-<!--
-            <div class="containery">
-                <div class="centery">
--->
-                    <h2 class="title-wrapper">Write Review</h2>
-                    <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
-                    </p>
-<!--
-                </div>
-            </div>
--->
+                <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
+                </p>
             {% endif %}
         </div>
         
