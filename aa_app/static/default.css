@@ -345,10 +345,6 @@ color:red
     padding-top: 20px;
 }
 
-.maincontent-wrapper {
-    padding: 40px 20px;
-}
-
 .border-wrapper {
     border: 1px solid #ccc;
     border-radius: 10px; 
@@ -610,10 +606,14 @@ img.convention-preview {
     margin-right: 30px;
 }
 
-.chart-legend li span {
+.doughnut-legend {
+    list-style-type: none;   
+}
+
+.doughnut-legend li span {
     display: inline-block;
-    width: 12px;
-    height: 12px;
+    width: 12px !important;
+    height: 12px !important;
     margin-right: 5px;
 }
 

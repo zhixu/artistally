@@ -82,6 +82,8 @@
         }
         
         function makeItem() {
+            $("#new-numSold").unbind("keyup", KEYUP);
+            
             var itemName, itemFandom, itemKind, itemPrice, itemCost, itemNumLeft;
             
             var jsonDict = new Object();
@@ -261,10 +263,22 @@
         }
         
         function toggleItemForm() {
+            {% if invCon %}
+                var buttonStr = "#new-numLeft";
+            {% else %}
+                var buttonStr = "#new-numSold";
+            {% endif %}
             if ($("#item-form").css("display") == "none") {
                 $("#item-form").show("slow", function() {});
+                var KEYUP = function(event) {
+                    if (event.keyCode == 13) {
+                        $("#add-item").click();
+                    }
+                }
+                $(buttonStr).keyup(KEYUP);
             } else {
                 $("#item-form").hide("slow", function() {});
+                $(buttonStr).unbind("keyup", KEYUP);
             }
         }
         
@@ -392,64 +406,46 @@
                     {% endif %}
                     <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
                     <div id="item-form">
-                        <label class="control-label">Preview Image:</label>
+<!--                        <label class="control-label">Preview Image:</label>-->
+                        <br/>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-name">Name:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="Name" id="new-name">
-                                    </div>
+                                    <label class="control-label required" for="new-name">Name:</label>
+                                    <input type="text" class="form-control" placeholder="Name" id="new-name">
                                 </div>
-                                <br/>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-fandom">Fandom:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
-                                    </div>
+                                    <label class="control-label required" for="new-fandom">Fandom:</label>
+                                    <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
                                 </div>
-                                <br/>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-kind">Kind:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
-                                    </div>
+                                    <label class="control-label required" for="new-kind">Kind:</label>
+                                    <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
                                 </div>
-                                <br/>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-price">Price:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="0" id="new-price">
-                                    </div>
+                                    <label class="control-label required" for="new-price">Price:</label>
+                                    <input type="text" class="form-control" placeholder="0" id="new-price">
                                 </div>
-                                <br/>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-cost">Cost:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="0" id="new-cost">
-                                    </div>
+                                    <label class="control-label required" for="new-cost">Cost:</label>
+                                    <input type="text" class="form-control" placeholder="0" id="new-cost">
                                 </div>
-                                <br/>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-2" for="new-numLeft">Remaining:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" placeholder="0" id="new-numLeft">
-                                    </div>
+                                    <label class="control-label required" for="new-numLeft">Remaining:</label>
+                                    <input type="text" class="form-control" placeholder="0" id="new-numLeft">
                                 </div>
                                 {% if not invCon %}
-                                    <br/>
                                     <div class="form-group">
-                                        <label class="control-label col-sm-2" for="new-numSold">Sold:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" placeholder="0" id="new-numSold">
-                                        </div>
+                                        <label class="control-label required" for="new-numSold">Sold:</label>
+                                        <input type="text" class="form-control" placeholder="0" id="new-numSold">
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
-                        <p class="text-right"><a onclick="makeItem()" class="btn btn-custom-blue">Add</a></p>   
+                        <p class="text-center"><a onclick="makeItem()" class="btn btn-custom-blue" id="add-item">Add Item</a></p> 
+                        <hr>
                     </div>
                 </div>
 
