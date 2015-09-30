@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Avg, Q, Sum
 from django.db.utils import OperationalError
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -195,13 +195,13 @@ class Convention(ValidatedModel):
         if INV_CON is not None:
             if self is INV_CON:
                 if self.prevCon:
-                    raise ValidationError("you can't link the INV_CON to other cons")
+                    raise ValidationError({"prevCon": ["you can't link the INV_CON to other cons"]})
                 if self.users.exists():
-                    raise ValidationError("you can't have a user favorite the INV_CON")
+                    raise ValidationError({"users": ["you can't have a user favorite the INV_CON"]})
             if self.prevCon == INV_CON:
-                raise ValidationError("you can't link the INV_CON to other cons")
+                raise ValidationError({"prevCon": ["you can't link the INV_CON to other cons"]})
         if self is self.prevCon:
-            raise ValidationError("you can't link a con to itself")
+            raise ValidationError({"prevCon": ["you can't link a con to itself"]})
 
     def __str__(self):
         return self.name
@@ -228,7 +228,7 @@ class Writeup(ValidatedModel):
     def clean(self):
         super().clean()
         if self.convention is INV_CON:
-            raise ValidationError("you can't make a writeup for the INV_CON")
+            raise ValidationError({"convention": ["you can't make a writeup for the INV_CON"]})
         filtered = self.user.writeups.filter(convention = self.convention)
         if filtered.exists() and filtered.get().ID is not self.ID:
             raise ValidationError("user already has a writeup for that convention")
@@ -269,8 +269,8 @@ class Item(ValidatedModel):
     kind = models.ForeignKey(Kind, related_name = "items")
     price = models.DecimalField(max_digits = 10, decimal_places = 2)
     cost = models.DecimalField(max_digits = 10, decimal_places = 2)
-    numSold = models.PositiveIntegerField()
-    numLeft = models.PositiveIntegerField()
+    numSold = models.PositiveIntegerField(validators = [MinValueValidator(0)])
+    numLeft = models.PositiveIntegerField(validators = [MinValueValidator(0)])
     image = models.URLField(max_length = 200, blank = True, default = "")
 
     # SETTERS
@@ -310,9 +310,7 @@ class Item(ValidatedModel):
     def clean(self):
         super().clean()
         if self.convention is INV_CON and self.numSold != 0:
-            raise ValidationError("you can't have a nonzero numSold for the INV_CON")
-        if self.price < 0 or self.cost < 0:
-            raise ValidationError("you can't have negative price or cost")
+            raise ValidationError({"numSold": ["you can't have a nonzero numSold for the INV_CON"]})
 
     def __str__(self):
         return self.name
@@ -321,7 +319,7 @@ class MiscCost(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "miscCosts")
     convention = models.ForeignKey(Convention, related_name = "miscCosts")
-    amount = models.DecimalField(max_digits = 10, decimal_places = 2)
+    amount = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)]))
     
     # SETTERS
     def setAmount(self, newAmount):
@@ -332,9 +330,7 @@ class MiscCost(ValidatedModel):
     def clean(self):
         super().clean()
         if self.convention is INV_CON:
-            raise ValidationError("you can't make a miscCost for the INV_CON")
-        if self.amount < 0:
-            raise ValidationError("you can't have negative miscCost amount")
+            raise ValidationError({"convention": ["you can't make a miscCost for the INV_CON"]})
         filtered = self.user.miscCosts.filter(convention = self.convention)
         if filtered.exists() and filtered.get().ID is not self.ID:
             raise ValidationError("user already has a miscCost for that convention")
