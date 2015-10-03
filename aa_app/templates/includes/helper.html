@@ -15,7 +15,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     
     <!-- Google Fonts -->
-    <!--link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700,400"/ -->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Playfair+Display+SC:400,700|Open+Sans:400,700"/>
     
     <!-- Font Awesome -->
@@ -33,10 +32,7 @@
         $(function() {
             KEYUP = function(event) {
                 if (event.keyCode == 13) {
-                    console.log("herererer");
                     $("#conSearchButton").click();
-                    console.log("hererere");
-                    //search();
                 }
             }
             $("#conSearch").keyup(KEYUP);
@@ -44,7 +40,6 @@
         
         function search() {
             console.log("in here");
-            //$("#conSearch").unbind("keyup", KEYUP);
             var searchstring = $("#conSearch").val();
             window.location = "/search/" + searchstring;
         }
@@ -92,12 +87,12 @@
                     </div>
 
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/search/">Browse</a></li>
                         {% if currUser %}
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle img-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if currUser.image %}<img src="{{currUser.image}}" class="user-icon"/>{% else %}<img src="/static/images/icon-default.png" class="user-icon"/>{% endif %}<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     {% include "includes/links.html" %}
-                                    <li><a href="/user/{{currUser}}">Edit Profile</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="#" onclick="logout()">Logout</a></li>
                                 </ul>

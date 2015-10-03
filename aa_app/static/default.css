@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    padding-top: 53px;
+    padding-top: 50px;
     font-family: "Open Sans", sans-serif;
     color: #605063;
     padding-bottom: 100px; /* footer height */
@@ -60,6 +60,15 @@ th, td {
     overflow-y: auto;
 }
 
+.searchbox-wrapper {
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 7px;
+    display: inline-block;
+    width: 78%;
+    text-align: center;
+}
+
 .searchbox {
     background-color: white;
     border: 2px solid white;
@@ -100,12 +109,14 @@ th, td {
 
 .dash-box {
     padding: 30px 20px;
-    margin: 20px 20px;
+    margin-bottom: 20px;
+/*    height: 150px;*/
+    max-width: 300px;
     border-color: #9ccceb;
-    border-style: solid;
+    background-color: #ccdee0;
     border-radius: 5px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
 }
 
 #wrap {
@@ -233,12 +244,6 @@ color:red
 
 .navbar-default .navbar-nav > li > a.img-nav-item {
   padding: 8px;
-}
-
-.searchbox-wrapper {
-    display: inline-block;
-    width: 78%;
-    text-align: center;
 }
 
 .navbar-center {
@@ -612,9 +617,12 @@ img.convention-preview {
 
 .doughnut-legend li span {
     display: inline-block;
-    width: 12px !important;
-    height: 12px !important;
+    width: 15px;
+    height: 15px;
     margin-right: 5px;
+    border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
 }
 
 .chart-display {
@@ -634,6 +642,9 @@ img.convention-preview {
     cursor: default;
 }
 
+.ui-helper-hidden-accessible {
+    display:none; 
+}
 
 /* Bootstrap styles for Jquery UI */
  .ui-autocomplete {
@@ -684,4 +695,11 @@ img.convention-preview {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     background-image: none;
+}
+
+/* ----------------- Screen Resize ----------------- */
+@media screen and (max-width: 767px) {
+    .sidebar {
+        display: none;
+    }
 }

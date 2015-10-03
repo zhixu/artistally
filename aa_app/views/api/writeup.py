@@ -29,7 +29,7 @@ def setRating(request):
     u = request.user
     try:
         w = models.Writeup.objects.get(ID = int(d["writeupID"]))
-        if w.user is not u:
+        if w.user != u:
             return JsonResponse({"error": "not your writeup"}, status = 400)
         w.setRating(int(d["rating"]))
     except models.Writeup.DoesNotExist as e:
@@ -44,7 +44,7 @@ def setReview(request):
     u = request.user
     try:
         w = models.Writeup.objects.get(ID = int(d["writeupID"]))
-        if w.user is not u:
+        if w.user != u:
             return JsonResponse({"error": "not your writeup"}, status = 400)
         w.setReview(d["review"])
     except models.Writeup.DoesNotExist as e:

@@ -27,39 +27,83 @@
 
             <div class="col-sm-10">
                 <div class="my-section-wrapper border-wrapper">
-                    <h1 class="title-wrapper">Dashboard</h1>
+                    <h1 class="title-wrapper">Hi there, {{currUser}}!</h1>
 
 <!--                View data from: <input type="date"> to: <input type="date">-->
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="dash-box">
-                                <i class="fa fa-building fa-4x pull-left"></i>
-                                <div class="text-right">
-                                    <h3>{{currUser.conventions.count}}</h3>
-                                    conventions
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <i class="fa fa-money fa-4x"></i>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h3>${{currUser.profit|floatformat:2}}</h3>
+                                        profit
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="dash-box">
-                                <i class="fa fa-money fa-4x pull-left"></i>
-                                <div class="text-right">
-                                    <h3>${{currUser.profit|floatformat:2}}</h3>
-                                    profit
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <i class="fa fa-cube fa-4x"></i>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h3>{{currUserItemsSold}}</h3>
+                                        items sold
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="dash-box">
-                                <i class="fa fa-cube fa-4x pull-left"></i>
-                                <div class="text-right">
-                                    <h3>{{currUserItemsSold}}</h3>
-                                    items sold
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <i class="fa fa-building fa-4x"></i>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h3>{{currUser.conventions.count}}</h3>
+                                        conventions
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="dash-box">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <i class="fa fa-comments fa-4x"></i>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h3>{{currUser.writeups.count}}</h3>
+                                        reviews
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <br/>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h3 class="title-wrapper">Title</h3>
+                            <div class="chart-display">
+                                <canvas id="Chart1" width="150" height="150"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3 class="title-wrapper">Title</h3>
+                            <div class="chart-display">
+                                <canvas id="Chart2" width="150" height="150"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3 class="title-wrapper">Title</h3>
+                            <div class="chart-display">
+                                <canvas id="Chart3" width="150" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-9">
                             <div class="dash-box">
@@ -67,10 +111,6 @@
                             </div>
                         </div>
                         <div class="col-sm-3">
-                            <canvas id="Chart1" width="400" height="400"></canvas>
-                            <canvas id="Chart2" width="400" height="400"></canvas>
-                            <canvas id="Chart3" width="400" height="400"></canvas>
-                            graphs and stuff go here
                         </div>
                     </div>
                     <br/>

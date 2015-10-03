@@ -7,7 +7,11 @@
 {% block body %}
     <div class="container">
         <div class="section-wrapper border-wrapper">
-            <h2 class="title-wrapper">Search results for "{{query}}"</h2>
+            {% if query %}
+                <h2 class="title-wrapper">Search results for "{{query}}"</h2>
+            {% else %}
+                <h2 class="title-wrapper">All Conventions</h2>
+            {% endif %}
             {% for con in cons %}
                 <a href="/convention/{{con.ID}}">{{con}}</a>
                 <br/>

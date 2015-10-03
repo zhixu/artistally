@@ -37,7 +37,7 @@ def deleteItem(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.delete()
     except models.Item.DoesNotExist as e:
@@ -50,7 +50,7 @@ def setNumSold(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setNumSold(int(d["numSold"]))
     except models.Item.DoesNotExist as e:
@@ -65,7 +65,7 @@ def setNumLeft(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setNumLeft(int(d["numLeft"]))
     except models.Item.DoesNotExist as e:
@@ -80,7 +80,7 @@ def setName(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setName(d["name"])
     except models.Item.DoesNotExist as e:
@@ -95,7 +95,7 @@ def setImage(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setImage(d["image"])
     except models.Item.DoesNotExist as e:
@@ -110,7 +110,7 @@ def setPrice(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setPrice(Decimal(d["price"]))
     except models.Item.DoesNotExist as e:
@@ -125,7 +125,7 @@ def setCost(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setCost(Decimal(d["cost"]))
     except models.Item.DoesNotExist as e:
@@ -140,7 +140,7 @@ def setFandom(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setFandom(models.Fandom.objects.get(name__iexact = d["fandom"]))
     except models.Item.DoesNotExist as e:
@@ -157,7 +157,7 @@ def setKind(request):
     u = request.user
     try:
         i = models.Item.objects.get(ID = int(d["itemID"]))
-        if i.user is not u:
+        if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
         i.setKind(models.Fandom.objects.get(name__iexact = d["kind"]))
     except models.Item.DoesNotExist as e:

@@ -29,7 +29,7 @@ def setAmount(request):
     u = request.user
     try:
         m = models.MiscCost.objects.get(ID = int(d["miscCostID"]))
-        if m.user is not u:
+        if m.user != u:
             return JsonResponse({"error": "not your miscCost"}, status = 400)
         m.setAmount(Decimal(d["amount"]))
     except models.MiscCost.DoesNotExist as e:

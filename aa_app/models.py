@@ -267,10 +267,10 @@ class Item(ValidatedModel):
     name = models.TextField()
     fandom = models.ForeignKey(Fandom, related_name = "items")
     kind = models.ForeignKey(Kind, related_name = "items")
-    price = models.DecimalField(max_digits = 10, decimal_places = 2)
-    cost = models.DecimalField(max_digits = 10, decimal_places = 2)
-    numSold = models.PositiveIntegerField(validators = [MinValueValidator(0)])
-    numLeft = models.PositiveIntegerField(validators = [MinValueValidator(0)])
+    price = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
+    cost = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
+    numSold = models.PositiveIntegerField()
+    numLeft = models.PositiveIntegerField()
     image = models.URLField(max_length = 200, blank = True, default = "")
 
     # SETTERS
@@ -319,7 +319,7 @@ class MiscCost(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "miscCosts")
     convention = models.ForeignKey(Convention, related_name = "miscCosts")
-    amount = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)]))
+    amount = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
     
     # SETTERS
     def setAmount(self, newAmount):

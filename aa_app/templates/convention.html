@@ -287,12 +287,14 @@
             {% endif %}
         </div>
         
+<!--
         {% if convention.prevCon %}
             prev con is: {{convention.prevCon}}
         {% endif %}
         {% if convention.nextCon %}
             next con is: {{convention.nextCon}}
         {% endif %}
+-->
         
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>
@@ -339,7 +341,6 @@
                 {% if currUserConWriteup %}
                 <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                 {% else %}
-                    <h2 class="title-wrapper">Write Review</h2>
                     <div class="review-entry">
                         <div class="side-entry">
                             <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
@@ -361,9 +362,7 @@
                         </div>
                     </div>
 
-                    <div class="right">
-                        <button onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</button>
-                    </div>
+                    <p class="text-center"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
                 {% endif %}
             {% else %}
                 <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>

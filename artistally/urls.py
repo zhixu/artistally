@@ -67,6 +67,7 @@ urlpatterns = [
     url(r"^api/convention/setPrevCon$", "aa_app.views.api.convention.setPrevCon"),
     url(r"^api/convention/setUser$", "aa_app.views.api.convention.setUser"),
     url(r"^api/convention/unsetUser$", "aa_app.views.api.convention.unsetUser"),
+    url(r"^api/convention/copyInventory$", "aa_app.views.api.convention.copyInventory"),
     url(r"^api/util/uploadFile$", "aa_app.views.api.util.uploadFile"),
     url(r"^api/util/findFandom$", "aa_app.views.api.util.findFandom"),
     url(r"^api/util/findKind$", "aa_app.views.api.util.findKind"),

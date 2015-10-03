@@ -13,11 +13,48 @@
                 $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
             {% endif %}
         });
+             
         function setStars() {
             var rating = {{convention.avgRating}};
             var percent = (rating/5)*100;
             $("#average-rating").width(percent + "%");
         }
+    
+        {% if currUser %}
+            function setFavorite() {
+                var jsonDict = new Object();
+                jsonDict.conID = "{{convention.ID}}";
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/setUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
+                    },
+                    error: function(response) {
+                        alert("setUser went wrong");
+                    },
+                });
+            }
+
+            function unsetFavorite() {
+                var jsonDict = new Object();
+                jsonDict.conID = "{{convention.ID}}";
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/unsetUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
+                    },
+                    error: function(response) {
+                        alert("setUser went wrong");
+                    },
+                });
+            }
+         {% endif %}
     </script>
 {% endblock %}
 
@@ -34,11 +71,13 @@
             <div class="cell text-center">
                 <div class="containery">
                     <div class="centery">
+                        <div id="setFavoriteButtonWrapper">
                         {% if currUser not in convention.users.all %}
-                            <a class="btn btn-custom-blue" onclick="setFavorite()">Add to my Conventions</a>
+                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
                         {% else %}
-                            <a class="btn btn-custom-blue" onclick="unsetFavorite()">Remove from my Conventions</a>
+                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
                         {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,8 +129,6 @@
                         <div class="main-entry-text">
                             {{writeup.review}}
                         </div>
-                        <br/>
-                        <p class="text-right"><sup><a href="#">Read More &raquo;</a></sup></p>
                     </div>
                 </div>
                 <hr>

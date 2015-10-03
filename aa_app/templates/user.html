@@ -46,9 +46,8 @@
                 }
             }
             
-            function checkURL(str) {
-                console.log(str.substring(7));
-                if(str.sustring(7) == "http://") {
+            function isURL(str) {
+                if(str.substring(0, 7) == 'http://' || str.substring(0, 8) == 'https://') {
                     return true;
                 } else {
                     return false;
@@ -65,6 +64,7 @@
                 jsonDict.website2 = $("#url2Field").val();
                 jsonDict.website3 = $("#url3Field").val();
                 jsonDict.description = $("#descField").val();
+                
                 if (jsonDict.password != $("#passField2").val()) {
                     alert("Your passwords do not match, please try again.");
                 }
@@ -130,6 +130,7 @@
                         }
                     }
                     if (jsonDict.website1 != $("#url1Field").prop("defaultValue")) {
+                        if (!isURL(jsonDict.website1)) { jsonDict.website1 = 'http://' + jsonDict.website1 }
                         var ajaxObj = $.ajax({
                             url: "/api/user/setWebsite1",
                             type: "POST",
@@ -145,6 +146,7 @@
                         }
                     }
                     if (jsonDict.website2 != $("#url2Field").prop("defaultValue")) {
+                        if (!isURL(jsonDict.website2)) { jsonDict.website2 = 'http://' + jsonDict.website2 }
                         var ajaxObj = $.ajax({
                             url: "/api/user/setWebsite2",
                             type: "POST",
@@ -160,6 +162,7 @@
                         }
                     }
                     if (jsonDict.website3 != $("#url3Field").prop("defaultValue")) {
+                        if (!isURL(jsonDict.website3)) { jsonDict.website3 = 'http://' + jsonDict.website3 }
                         var ajaxObj = $.ajax({
                             url: "/api/user/setWebsite3",
                             type: "POST",
@@ -194,153 +197,155 @@
 {% block body %}
     {% if currUser and currUser == pageUser %}
 
-<div class="convention-form-wrapper form-wrapper">
-    <h1 class="text-center title-wrapper">Edit Profile</h1>
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="text-center">
-                {% if pageUser.image %}
-                <img src="{{pageUser.image}}" class="user-icon-large"/>
-                {% else %}
-                <img src="/static/images/icon-default.png" class="user-icon-large"/>
-                {% endif %}
-                <br/>
-                {{pageUser}}
-                <br/>
-                <br/>
-                <input class="hidden" type="file" id="fileField" accept="image/*"/ onchange="showFileChosenMessage()">
-                <p class="hidden" id="fileChosenMessage">File has been chosen.</p>
-                <a onclick="chooseFile()" class="btn btn-custom-blue">Upload New Picture</a>
-                <br/>
-                Max 10 MiB
-            </div>
-        </div>
-        <div class="col-sm-9">
-            <div class="form-group">
-                <label for="oldPassField">Current Password:</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
-                    <input type="password" class="form-control" id="oldPassField" aria-describedby="oldpassword-addon"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="passField1">New Password:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
-                            <input type="password" class="form-control" id="passField1" aria-describedby="password1-addon"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="passField2">Re-enter New Password:</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
-                            <input type="password" class="form-control" id="passField2" aria-describedby="password2-addon"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="emailField">New Email:</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
-                    <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
-                </div>
-            </div>
-            <hr/>
-            <div class="form-group">
-                <label for="startYearField">Year Starting Artist Alley:</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
-                    <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="url1">URL1:</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="url1-addon"><i class="fa fa-link"></i></span>
-                    <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url1Field" value="{{pageUser.website1}}"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="url2">URL2:</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="url2-addon"><i class="fa fa-link"></i></span>
-                    <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url2Field" value="{{pageUser.website2}}"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="url3">URL3:</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>
-                    <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{pageUser.website3}}"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="url3">Description:</label>
-                    <textarea class="form-control" rows="5" placeholder="Put anything you want here..." class="form-control" id="descField">{{pageUser.description}}</textarea>
-            </div>
-        </div>
-    </div>
-    <br/>
-    <br/>
-    <p class="text-right"><a onclick="updateProfile()" class="btn btn-custom-blue wide">Update Profile</a></p>
-</div>
-
-{% else %}
-<div class="convention-form-wrapper form-wrapper">
-    <h1 class="text-center title-wrapper">{{pageUser}}'s Profile</h1>
-
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="text-center">
-                {% if pageUser.image %}
-                    <img src="{{pageUser.image}}" class="user-icon-large">
-                {% else %}
+<div class="container">
+    <div class="convention-form-wrapper form-wrapper">
+        <h1 class="text-center title-wrapper">Edit Profile</h1>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="text-center">
+                    {% if pageUser.image %}
+                    <img src="{{pageUser.image}}" class="user-icon-large"/>
+                    {% else %}
                     <img src="/static/images/icon-default.png" class="user-icon-large"/>
-                {% endif %}
-                <br/>
-                {{pageUser}}
+                    {% endif %}
+                    <br/>
+                    {{pageUser}}
+                    <br/>
+                    <br/>
+                    <input class="hidden" type="file" id="fileField" accept="image/*"/ onchange="showFileChosenMessage()">
+                    <p class="hidden" id="fileChosenMessage">File has been chosen.</p>
+                    <a onclick="chooseFile()" class="btn btn-custom-blue">Upload New Picture</a>
+                    <br/>
+                    Max 10 MiB
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <div class="form-group">
+                    <label for="oldPassField">Current Password:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
+                        <input type="password" class="form-control" id="oldPassField" aria-describedby="oldpassword-addon"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="passField1">New Password:</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
+                                <input type="password" class="form-control" id="passField1" aria-describedby="password1-addon"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="passField2">Re-enter New Password:</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
+                                <input type="password" class="form-control" id="passField2" aria-describedby="password2-addon"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="emailField">New Email:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
+                    </div>
+                </div>
+                <hr/>
+                <div class="form-group">
+                    <label for="startYearField">Year Starting Artist Alley:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                        <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url1">URL1:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="url1-addon"><i class="fa fa-link"></i></span>
+                        <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url1Field" value="{{pageUser.website1}}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url2">URL2:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="url2-addon"><i class="fa fa-link"></i></span>
+                        <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url2Field" value="{{pageUser.website2}}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url3">URL3:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>
+                        <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{pageUser.website3}}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url3">Description:</label>
+                        <textarea class="form-control" rows="5" placeholder="Put anything you want here..." class="form-control" id="descField">{{pageUser.description}}</textarea>
+                </div>
             </div>
         </div>
-        <div class="col-sm-9">
-            {% if pageUser.startYear %}
-                <div class="row">
-                    <div class="col-sm-2"><b>Year Starting Artist Alley:</b></div>
-                    <div class="col-sm-10">{{pageUser.startYear}}</div>
+        <br/>
+        <br/>
+        <p class="text-right"><a onclick="updateProfile()" class="btn btn-custom-blue wide">Update Profile</a></p>
+    </div>
+
+    {% else %}
+    <div class="convention-form-wrapper form-wrapper">
+        <h1 class="text-center title-wrapper">{{pageUser}}'s Profile</h1>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="text-center">
+                    {% if pageUser.image %}
+                        <img src="{{pageUser.image}}" class="user-icon-large">
+                    {% else %}
+                        <img src="/static/images/icon-default.png" class="user-icon-large"/>
+                    {% endif %}
+                    <br/>
+                    {{pageUser}}
                 </div>
-            {% endif %}
-            {% if pageUser.website1 %}
-                <br/>
-                <div class="row">
-                    <div class="col-sm-2"><b>URL:</b></div>
-                    <div class="col-sm-10">{{ pageUser.website1 }}</div>
-                </div>
-            {% endif %}
-            {% if pageUser.website2 %}
-                <br/>
-                <div class="row">
-                    <div class="col-sm-2"><b>URL:</b></div>
-                    <div class="col-sm-10">{{ pageUser.website2 }}</div>
-                </div>
-            {% endif %}
-            {% if pageUser.website3 %}
-                <br/>
-                <div class="row">
-                    <div class="col-sm-2"><b>URL:</b></div>
-                    <div class="col-sm-10">{{ pageUser.website3 }}</div>
-                </div>
-            {% endif %}
-            {% if pageUser.description %}
-                <br/>
-                <div class="row">
-                    <div class="col-sm-2"><b>Description:</b></div>
-                    <div class="col-sm-10">{{ pageUser.description }}</div>
-                </div>
-            {% endif %}
+            </div>
+            <div class="col-sm-9">
+                {% if pageUser.startYear %}
+                    <div class="row">
+                        <div class="col-sm-2"><b>Year Starting Artist Alley:</b></div>
+                        <div class="col-sm-10">{{pageUser.startYear}}</div>
+                    </div>
+                {% endif %}
+                {% if pageUser.website1 %}
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-2"><b>URL:</b></div>
+                        <div class="col-sm-10">{{ pageUser.website1 }}</div>
+                    </div>
+                {% endif %}
+                {% if pageUser.website2 %}
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-2"><b>URL:</b></div>
+                        <div class="col-sm-10">{{ pageUser.website2 }}</div>
+                    </div>
+                {% endif %}
+                {% if pageUser.website3 %}
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-2"><b>URL:</b></div>
+                        <div class="col-sm-10">{{ pageUser.website3 }}</div>
+                    </div>
+                {% endif %}
+                {% if pageUser.description %}
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-2"><b>Description:</b></div>
+                        <div class="col-sm-10">{{ pageUser.description }}</div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

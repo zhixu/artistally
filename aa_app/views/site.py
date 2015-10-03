@@ -63,10 +63,11 @@ def convention(request, conID):
             itemFandomsCounter[k.fandom] += k.numSold
         else:
             itemFandomsCounter[k.fandom] = k.numSold
-    for k in itemKindsCounter:
-        itemKindsCounter[k] /= itemsSoldTotal
-    for k in itemFandomsCounter:
-        itemFandomsCounter[k] /= itemsSoldTotal
+    if itemsSoldTotal:
+        for k in itemKindsCounter:
+            itemKindsCounter[k] /= itemsSoldTotal
+        for k in itemFandomsCounter:
+            itemFandomsCounter[k] /= itemsSoldTotal
     context["conTopItemKinds"] = sorted(itemKindsCounter.items(), key = operator.itemgetter(1), reverse = True)
     context["conTopItemFandoms"] = sorted(itemFandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
     if request.user.is_authenticated():

@@ -12,6 +12,14 @@
             $("#imageField").keyup(KEYUP);
         });
         
+        function isURL(str) {
+            if(str.substring(0, 7) == 'http://' || str.substring(0, 8) == 'https://') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
         function makeConvention() {
             $("#imageField").unbind("keyup", KEYUP);
             $("#submitButton").attr("disabled", true);
@@ -23,6 +31,9 @@
             jsonDict.location = $("#locationField").val();
             jsonDict.website = $("#websiteField").val();
             jsonDict.image = $("#imageField").val();
+            
+            if (!isURL(jsonDict.website)) { jsonDict.website = 'http://' + jsonDict.website }
+            
             if ($("#prevConIDField").val() != "") {
                 jsonDict.prevConID = $("#prevConIDField").val();
             }
