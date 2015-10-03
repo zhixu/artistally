@@ -343,7 +343,12 @@
                 {% else %}
                     <div class="review-entry">
                         <div class="side-entry">
-                            <img src="/static/images/icon-default.png" class="user-icon-large text-center"/>
+                            <a href="/user/{{currUser}}">
+                            {% if currUser.image %}
+                                <img src="{{currUser.image}}" class="user-icon-large">
+                            {% else %}
+                                <img src="/static/images/icon-default.png" class="user-icon-large">
+                            {% endif %}</a>
                             <br/>{{currUser}}
                         </div>
                         <div class="main-entry">

@@ -348,6 +348,10 @@ color:red
 
 .sidebar-wrapper {
     padding-top: 20px;
+    margin: 20px;
+    
+/*    margin: 20px;*/
+/*    padding: 10px 15px;*/
 }
 
 .border-wrapper {
