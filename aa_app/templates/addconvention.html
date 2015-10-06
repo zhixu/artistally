@@ -46,7 +46,7 @@
                     window.location.href = "/convention/" + response.conID;
                 },
                 error: function(response) {
-                    alert("newConvention went wrong");
+                    alert('Could not add new convention! \n Error - ' + JSON.parse(response.responseText).error);
                     $("#submitButton").attr("disabled", false);
                 },
             });

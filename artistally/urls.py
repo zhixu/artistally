@@ -24,7 +24,7 @@ urlpatterns = [
     url(r"^user/([0-9A-Za-z_\-]+)$", "aa_app.views.site.user"),
     url(r"^convention/([0-9]+)$", "aa_app.views.site.convention"),
     url(r"^conreviews/([0-9]+)$", "aa_app.views.site.conreviews"),
-    url(r"^item/([0-9]+)$", "aa_app.views.site.item"),
+#    url(r"^item/([0-9]+)$", "aa_app.views.site.item"),
     url(r"^writeup/([0-9]+)$", "aa_app.views.site.writeup"),
     url(r"^search/(.*)$", "aa_app.views.site.search"),
     url(r"^api/user/newUser$", "aa_app.views.api.user.newUser"),

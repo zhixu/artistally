@@ -19,7 +19,7 @@
                             updateImage(response.url);
                         },
                         error: function(response) {
-                            alert("uploadFile went wrong");
+                            alert('Could not change profile picture! \n Error - ' + JSON.parse(response.responseText).error);
                         },
                     });
                 }
@@ -77,7 +77,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setStartYear went wrong");
+                                alert('Could not change year starting artist alley! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -92,7 +92,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setEmail went wrong");
+                                alert('Could not change email! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -107,7 +107,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setPassword went wrong");
+                                alert('Could not change password! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -122,7 +122,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setDescription went wrong");
+                                alert('Could not change description! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -138,7 +138,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setWebsite1 went wrong");
+                                alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -154,7 +154,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setWebsite2 went wrong");
+                                alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {
@@ -170,7 +170,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setWebsite3 went wrong");
+                                alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                         if (ajaxObj.status != 200) {

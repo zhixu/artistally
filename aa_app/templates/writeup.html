@@ -38,7 +38,7 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert("setReview went wrong");
+                            alert('Could not edit review! \n Error - ' + JSON.parse(response.responseText).error);
                         },
                     });
                     if (ajaxObj.status != 200) {

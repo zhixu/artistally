@@ -27,7 +27,7 @@
                     window.location.href = "/";
                 },
                 error: function(response) {
-                    alert("login went wrong");
+                    alert('Login failed! \n Error - ' + JSON.parse(response.responseText).error);
                     $("#loginButton").attr("disabled", false);
                     setTimeout(function() {
                         $("#passField").keyup(KEYUP);

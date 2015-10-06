@@ -3,6 +3,7 @@
 {% block head %}
     <title>ArtisTally | Home</title>
     <script>
+        
         {% if currUser %}
             
             
@@ -13,126 +14,126 @@
 {% block body %}
 
     {% if currUser %}
-
-    <!--<div class="jumbotron-convention">
-        <h1>Welcome back, {{currUser}}!</h1>
-    </div>-->
-
-        <div class="row">
-            <div class="col-sm-2 sidebar">
-                <div class="fixed">
-                    {% include "includes/sidebar.html" %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 sidebar">
+                    <div class="fixed">
+                        {% include "includes/sidebar.html" %}
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-sm-10">
-                <div class="my-section-wrapper border-wrapper">
-                    <h1 class="title-wrapper">Hi there, {{currUser}}!</h1>
+                <div class="col-md-10">
+                    <div class="my-section-wrapper border-wrapper">
+                        <h1 class="title-wrapper">Hi there, {{currUser}}!</h1>
 
-<!--                View data from: <input type="date"> to: <input type="date">-->
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="dash-box">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <i class="fa fa-money fa-4x"></i>
+    <!--                View data from: <input type="date"> to: <input type="date">-->
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="dash-box">
+                                    <div class="row">
+                                        <div class="col-lg-6 text-center">
+                                            <i class="fa fa-money fa-4x"></i>
+                                        </div>
+                                        <div class="col-lg-6 text-center">
+                                            <h3>${{currUser.profit|floatformat:2}}</h3>
+                                            profit
+                                        </div>
                                     </div>
-                                    <div class="col-md-6 text-center">
-                                        <h3>${{currUser.profit|floatformat:2}}</h3>
-                                        profit
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="dash-box">
+                                    <div class="row">
+                                        <div class="col-lg-6 text-center">
+                                            <i class="fa fa-cube fa-4x"></i>
+                                        </div>
+                                        <div class="col-lg-6 text-center">
+                                            <h3>{{currUserItemsSold}}</h3>
+                                            items sold
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="dash-box">
+                                    <div class="row">
+                                        <div class="col-lg-6 text-center">
+                                            <i class="fa fa-building fa-4x"></i>
+                                        </div>
+                                        <div class="col-lg-6 text-center">
+                                            <h3>{{currUser.conventions.count}}</h3>
+                                            conventions
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="dash-box">
+                                    <div class="row">
+                                        <div class="col-lg-6 text-center">
+                                            <i class="fa fa-comments fa-4x"></i>
+                                        </div>
+                                        <div class="col-lg-6 text-center">
+                                            <h3>{{currUser.writeups.count}}</h3>
+                                            reviews
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <div class="dash-box">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <i class="fa fa-cube fa-4x"></i>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <h3>{{currUserItemsSold}}</h3>
-                                        items sold
-                                    </div>
+    <!--
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h3 class="title-wrapper">Title</h3>
+                                <div class="chart-display">
+                                    <canvas id="Chart1" width="150" height="150"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 class="title-wrapper">Title</h3>
+                                <div class="chart-display">
+                                    <canvas id="Chart2" width="150" height="150"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 class="title-wrapper">Title</h3>
+                                <div class="chart-display">
+                                    <canvas id="Chart3" width="150" height="150"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <div class="dash-box">
-                                <div class="row">
-                                    <div class="col-md-6 text-center">
-                                        <i class="fa fa-building fa-4x"></i>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <h3>{{currUser.conventions.count}}</h3>
-                                        conventions
-                                    </div>
-                                </div>
+    -->
+    <!--
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <h3 class="title-wrapper">Upcoming Conventions</h3>
+                            </div>
+                            <div class="col-sm-3">
+                                <h3 class="title-wrapper">Convention Checklist</h3>
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <div class="dash-box">
-                                <div class="row">
-                                    <div class="col-md-6 text-center">
-                                        <i class="fa fa-comments fa-4x"></i>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <h3>{{currUser.writeups.count}}</h3>
-                                        reviews
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    -->
+                        <br/>
                     </div>
-<!--
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <h3 class="title-wrapper">Title</h3>
-                            <div class="chart-display">
-                                <canvas id="Chart1" width="150" height="150"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <h3 class="title-wrapper">Title</h3>
-                            <div class="chart-display">
-                                <canvas id="Chart2" width="150" height="150"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <h3 class="title-wrapper">Title</h3>
-                            <div class="chart-display">
-                                <canvas id="Chart3" width="150" height="150"></canvas>
-                            </div>
-                        </div>
-                    </div>
--->
-<!--
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <h3 class="title-wrapper">Upcoming Conventions</h3>
-                        </div>
-                        <div class="col-sm-3">
-                            <h3 class="title-wrapper">Convention Checklist</h3>
-                        </div>
-                    </div>
--->
-                    <br/>
                 </div>
             </div>
         </div>
-
     {% else %}
 
-        <div class="container">
-            <div class="containery">
-                <div class="centery">
-                    <h2>Be informed.</h2>
+        <div class="jumbotron" id="jumbotron-splash">
+            <div class="container">
+                <div class="text-center">
+                <h1 class="splash-text">Make informed decisions about your artist alley table.</h1>
+<!--
+                <br/>
+                Keep track of your inventory wherever you go and find out in-depth data about every single convention.
+-->
                 </div>
             </div>
         </div>
         <div class="container">
             <div class="splash-section-wrapper text-center">
-            <h3>Designed by an artist for artists.</h3>
+            <h3>Designed by artists for artists.</h3>
             <br/>
             <br/>
             <br/>
@@ -144,7 +145,7 @@
                         </span>
                         <h5>Keep track of sales wherever you go.</h5>
                         <br/>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
+                        <p>Add your inventory to ArtisTally and easily tally off your sales wherever you are.</p>
                     </div>
                     <div class="col-sm-4">
                         <span class="fa-stack fa-4x splash-icon">
@@ -153,7 +154,7 @@
                         </span>
                         <h5>View sales trends at each venue.</h5>
                         <br/>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
+                        <p>We aggregate all user data in order to help you see trends at different conventions.</p>
                     </div>
                     <div class="col-sm-4">
                         <span class="fa-stack fa-4x splash-icon">
@@ -162,24 +163,23 @@
                         </span>
                         <h5>Find out what other artists think.</h5>
                         <br/>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a purus et nibh tempor cursus quis efficitur massa. Integer accumsan lectus vel turpis rhoncus pulvinar. Mauris gravida id velit eget rutrum. Fusce enim felis, placerat eget odio ut, sodales malesuada tellus. Proin gravida metus nulla, non faucibus urna rutrum at. Suspendisse mattis euismod molestie. Donec gravida convallis condimentum.</p>
+                        <p>Review conventions and read the opinion of others. Find out how each convention is treating vendors.</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="jumbotron">
+        <div class="splash-signup">
             <div class="container">
                 <div class="containery">
                     <div class="centery">
-                        <h1>Sign up today!</h1>
+                        <h1>Sign up to see what's up!</h1>
                         <br/>
                         <br/>
-                        <button class="btn-custom-white" ><h3 class="lowercase">Sign Up</h3></button>
+                        <a href="/signup" class="btn btn-custom-blue">Sign Up</a>
                     </div>
                 </div>
             </div>
         </div>
-
     {% endif %}
 
 {% endblock %}

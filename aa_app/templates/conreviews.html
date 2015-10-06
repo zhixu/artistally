@@ -33,7 +33,7 @@
                          $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert("setUser went wrong");
+                        alert('Could not add to your conventions! \n Error - ' + JSON.parse(response.responseText).error);
                     },
                 });
             }
@@ -50,7 +50,7 @@
                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert("setUser went wrong");
+                        alert('Could not remove from your conventions! \n Error - ' + JSON.parse(response.responseText).error);
                     },
                 });
             }

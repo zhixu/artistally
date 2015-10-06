@@ -3,21 +3,6 @@
 {% block head %}
     <title>Artistally Create Writeup</title>
     <script>
-        function makeMiscCost() {
-            var jsonDict = new Object();
-            jsonDict.conID = $("#conIDField").val();
-            jsonDict.amount = $("#miscCostsField").val();
-            $.ajax({
-                url: "/api/miscCost/newMiscCost",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(jsonDict),
-                error: function(response) {
-                    alert("newMiscCost went wrong");
-                },
-            });
-        }
-        
         function makeWriteup() {
             var jsonDict = new Object();
             jsonDict.rating = $("#ratingField").val();
@@ -32,7 +17,7 @@
                     window.location.href = "/writeup/" + response.writeupID;
                 },
                 error: function(response) {
-                    alert("newWriteup went wrong");
+                    alert('Could not create new review! \n Error - ' + JSON.parse(response.responseText).error);
                 },
             });
         }

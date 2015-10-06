@@ -24,7 +24,7 @@
                             data: JSON.stringify(jsonDict),
                             async: false,
                             error: function(response) {
-                                alert("setAmount went wrong");
+                                alert('Could not set miscellaneous costs! \n Error - ' + JSON.parse(response.responseText).error);
                             },
                         });
                     }
@@ -40,7 +40,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("newMiscCost went wrong");
+                            alert('Could not set miscellaneous costs! \n Error - ' + JSON.parse(response.responseText).error);
                         },
                     });
                 }
@@ -111,7 +111,7 @@
                     editableGrid.refreshGrid();
                 },
                 error: function(response) {
-                    alert("newItem went wrong");
+                    alert('Error: \n' + JSON.parse(response.responseText).error);
                 },
             });
         }
@@ -139,7 +139,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("setName went wrong");
+                            alert('Could not set new name! \n Error - ' + JSON.parse(response.responseText).error);
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
@@ -152,7 +152,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("setFandom went wrong");
+                            alert('Could not set new fandom! \n Error - ' + JSON.parse(response.responseText).error);
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
@@ -165,7 +165,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("setKind went wrong");
+                            alert('Could not set new kind! \n Error - ' + JSON.parse(response.responseText).error);
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
@@ -178,7 +178,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("setPrice went wrong");
+                            alert('Could not set new price! \n Error - ' + JSON.parse(response.responseText).error);
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
@@ -191,7 +191,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("setCost went wrong");
+                            alert('Could not set new cost! \n Error - ' + JSON.parse(response.responseText).error);
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
@@ -204,7 +204,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
                         error: function(response) {
-                            alert("setNumLeft went wrong");
+                            alert('Could not set new number remaining! \n Error - ' + JSON.parse(response.responseText).error);
                             editableGrid.setValueAt(rowID, colID, oldValue, true);
                         },
                     });
@@ -218,7 +218,7 @@
                             contentType: "application/json",
                             data: JSON.stringify(jsonDict),
                             error: function(response) {
-                                alert("setNumSold went wrong");
+                                alert('Could not set new number sold! \n Error - ' + JSON.parse(response.responseText).error);
                                 editableGrid.setValueAt(rowID, colID, oldValue, true);
                             },
                         });
@@ -241,7 +241,7 @@
                         // Editable Grid shuffles everything inside the tr but not the tr itself... so the IDs don't match up
                     },
                     error: function(response) {
-                        alert("deleteItem went wrong");
+                        alert('Could not delete item! \n Error - ' + JSON.parse(response.responseText).error);
                     },
                 });
             }
@@ -280,7 +280,7 @@
                     location.reload();
                 },
                 error: function(response) {
-                    alert("newKind went wrong");
+                    alert('Could not make new fandom! \n Error - ' + JSON.parse(response.responseText).error);
                 },
             });
         }
@@ -298,7 +298,7 @@
                     location.reload();
                 },
                 error: function(response) {
-                    alert("newKind went wrong");
+                    alert('Could not set new kind! \n Error - ' + JSON.parse(response.responseText).error);
                 },
             });
         }
@@ -316,7 +316,7 @@
                     location.reload();
                 },
                 error: function(response) {
-                    alert("copyInventory went wrong");
+                    alert('Could not copy inventory! \n Error - ' + JSON.parse(response.responseText).error);
                 },
             });
         }
@@ -391,110 +391,112 @@
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-2 sidebar">
-            <div class="fixed">
-                {% include "includes/sidebar.html" %}
-            </div>
-        </div>
-
-        <div class="col-sm-10">
-            <div class="my-section-wrapper border-wrapper">
-                <h1 class="title-wrapper">{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
-                <div id="inventory-page">
-                <div>
-                    {% if not invCon %}
-                        <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
-                    {% endif %}
-                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
-                    <div id="item-form">
-                        <br/>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="control-label required" for="new-name">Name:</label>
-                                    <input type="text" class="form-control" placeholder="Name" id="new-name" autocomplete="off">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label required" for="new-fandom">Fandom:</label>
-                                    <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label required" for="new-kind">Kind:</label>
-                                    <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="control-label required" for="new-price">Price:</label>
-                                    <input type="text" class="form-control" placeholder="0" id="new-price">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label required" for="new-cost">Cost:</label>
-                                    <input type="text" class="form-control" placeholder="0" id="new-cost" autocomplete="off">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label required" for="new-numLeft">In Stock:</label>
-                                    <input type="text" class="form-control" placeholder="0" id="new-numLeft" autocomplete="off">
-                                </div>
-                                {% if not invCon %}
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-numSold">Sold:</label>
-                                        <input type="text" class="form-control" placeholder="0" id="new-numSold" autocomplete="off">
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <p class="text-center"><a onclick="makeNewItem()" class="btn btn-custom-blue" id="add-item">Add Item</a></p> 
-                        <hr>
-                    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 sidebar">
+                <div class="fixed">
+                    {% include "includes/sidebar.html" %}
                 </div>
+            </div>
 
-                <table class="table table-hover" id="inventory">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Fandom</th>
-                            <th>Kind</th>
-                            <th>Price</th>
-                            <th>Cost</th>
-                            <th>In Stock</th>
-                            {% if not invCon %}
-                                <th>Sold</th>
-                            {% endif %}
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventory-body">
-                    {% for item in conItems %}
-                        <tr id="{{item.ID}}">
-                            <td id="{{item.ID}}nameField">{{item.name}}</td>
-                            <td id="{{item.ID}}fandomField">{{item.fandom}}</td>
-                            <td id="{{item.ID}}kindField">{{item.kind}}</td>
-                            <td id="{{item.ID}}priceField">{{item.price|floatformat:2}}</td>
-                            <td id="{{item.ID}}costField">{{item.cost|floatformat:2}}</td>
-                            <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
-                            {% if not invCon %}
-                                <td id="{{item.ID}}numSoldField">{{item.numSold}}</td>
-                            {% endif %}
-                            <td>
-                                <a onclick="duplicateItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-clone"></i></a>
-                                <a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                {% if not invCon %}
-                    <br/>
-                    <div class="form-group">
-                        <label for="miscCostsField">Miscellaneous Costs:</label>
-
-                        Misc costs <input type="number" class="form-control" min="0" step="0.01" id="miscCostsField" placeholder="0.00" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+            <div class="col-md-10">
+                <div class="my-section-wrapper border-wrapper">
+                    <h1 class="title-wrapper">{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
+                    <div id="inventory-page">
+                    <div>
+                        {% if not invCon %}
+                            <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
+                        {% endif %}
+                        <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
+                        <div id="item-form">
+                            <br/>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-name">Name:</label>
+                                        <input type="text" class="form-control" placeholder="Name" id="new-name" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-fandom">Fandom:</label>
+                                        <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-kind">Kind:</label>
+                                        <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-price">Price:</label>
+                                        <input type="text" class="form-control" placeholder="0" id="new-price">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-cost">Cost:</label>
+                                        <input type="text" class="form-control" placeholder="0" id="new-cost" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-numLeft">In Stock:</label>
+                                        <input type="text" class="form-control" placeholder="0" id="new-numLeft" autocomplete="off">
+                                    </div>
+                                    {% if not invCon %}
+                                        <div class="form-group">
+                                            <label class="control-label required" for="new-numSold">Sold:</label>
+                                            <input type="text" class="form-control" placeholder="0" id="new-numSold" autocomplete="off">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="text-center"><a onclick="makeNewItem()" class="btn btn-custom-blue" id="add-item">Add Item</a></p> 
+                            <hr>
+                        </div>
                     </div>
-                    <br/>
-                    <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">update misccost</a>
-                {% endif %}
+
+                    <table class="table table-hover" id="inventory">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Fandom</th>
+                                <th>Kind</th>
+                                <th>Price</th>
+                                <th>Cost</th>
+                                <th>In Stock</th>
+                                {% if not invCon %}
+                                    <th>Sold</th>
+                                {% endif %}
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-body">
+                        {% for item in conItems %}
+                            <tr id="{{item.ID}}">
+                                <td id="{{item.ID}}nameField">{{item.name}}</td>
+                                <td id="{{item.ID}}fandomField">{{item.fandom}}</td>
+                                <td id="{{item.ID}}kindField">{{item.kind}}</td>
+                                <td id="{{item.ID}}priceField">{{item.price|floatformat:2}}</td>
+                                <td id="{{item.ID}}costField">{{item.cost|floatformat:2}}</td>
+                                <td id="{{item.ID}}numLeftField">{{item.numLeft}}</td>
+                                {% if not invCon %}
+                                    <td id="{{item.ID}}numSoldField">{{item.numSold}}</td>
+                                {% endif %}
+                                <td>
+                                    <a onclick="duplicateItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-clone"></i></a>
+                                    <a onclick="deleteItem({{item.ID}})" style="cursor:pointer"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if not invCon %}
+                        <br/>
+                        <div class="form-group">
+                            <label for="miscCostsField">Miscellaneous Costs:</label>
+
+                            Misc costs <input type="number" class="form-control" min="0" step="0.01" id="miscCostsField" placeholder="0.00" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                        </div>
+                        <br/>
+                        <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">update misccost</a>
+                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
