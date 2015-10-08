@@ -16,20 +16,24 @@
                 <div class="my-section-wrapper border-wrapper">
                     <h1 class="title-wrapper">My Reviews</h1>
 
-                    {% for writeup in currUser.writeups.all %}
-                        <div class="review-entry">
-                            <sub>Review for <a href="/convention/{{writeup.convention.ID}}">{{writeup.convention}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</sub>
-                            <br/>
-                            <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
-                            <div class="main-entry-text">
-                                {{writeup.review}}
+                    {% if currUser.writeups.exists %}
+                        {% for writeup in currUser.writeups.all %}
+                            <div class="review-entry">
+                                <sub>Review for <a href="/convention/{{writeup.convention.ID}}">{{writeup.convention}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</sub>
+                                <br/>
+                                <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                                <div class="main-entry-text">
+                                    {{writeup.review}}
+                                </div>
+                                <br/>
+                                <div class="text-center"><a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a></div>
+                                <br/>
+                                <hr/>
                             </div>
-                            <br/>
-                            <div class="text-center"><a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a></div>
-                            <br/>
-                            <hr/>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        No reviews to display.
+                    {% endif %}
                 </div>
             </div>
         </div>

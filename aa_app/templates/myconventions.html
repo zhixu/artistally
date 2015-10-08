@@ -16,6 +16,7 @@
                 <div class="my-section-wrapper border-wrapper">
                     <h1 class="title-wrapper">My Conventions</h1>
                     <br/>
+<!--
                     Show conventions from:
                     <select class="form-control">
                         <option value="1">Last year</option>
@@ -24,30 +25,30 @@
                         <option value="4">Beginning of time</option>
                     </select>
                     <br/>
-
-                    {% for con in currUser.conventions.all %}
-                        <div class="convention-preview-wrapper">
-                            {% if con.image %}
-                                <img class="convention-preview" style="background-image: url({{con.image}});"/>
-                            {% else %}
-                                <img class="convention-preview"/>
-                            {% endif %}
-
-                            <div class="convention-preview-info-wrapper">
-                                <div class="convention-preview-date">
-
-                                    <p><span>{{con.startDate|date:"M"}}</span>
-                                    {{con.startDate|date:"d"}}</p>
-                                </div>
-                                <div class="convention-preview-info">
-                                    <h4>{{con}}</h4>
-                                    <a href="/convention/{{con.ID}}">View Convention Page &raquo;</a>
-                                    <br/>
-                                    <a href="/inventory/{{con.ID}}">View Convention Inventory &raquo;</a>
-                                </div>
+-->
+                    
+                    {% if currUser.conventions.exists %}
+                        {% for con in currUser.conventions.all %}
+                            <div class="convention-preview-wrapper">
+                                    <div class="convention-preview-date">
+                                        <p><span>{{con.startDate|date:"M"}}</span>
+                                        {{con.startDate|date:"d"}}</p>
+                                    </div>
+                                    <div class="convention-preview-info">
+                                        <h4>{{con}}</h4>
+                                        <a href="/convention/{{con.ID}}">View Convention Page &raquo;</a>
+                                        <br/>
+                                        <a href="/inventory/{{con.ID}}">View Convention Inventory &raquo;</a>
+                                    </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                    No conventions to display.
+                    {% endif %}
+                    
+                    <br/>
+                    <br/>
+                    <a href="/search/">Browse conventions</a> to add them to your conventions.
                 </div>
             </div>
         </div>

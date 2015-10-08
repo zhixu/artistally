@@ -8,6 +8,7 @@ urlpatterns = [
     url(r"^$", "aa_app.views.site.root"),
     url(r"^404$", "django.views.defaults.page_not_found"),
     url(r"^admin/", include(admin.site.urls)),
+    url(r"^about$", "aa_app.views.site.about"),
     url(r"^signup$", "aa_app.views.site.signup"),
     url(r"^login$", "aa_app.views.site.login"),
     url(r"^inventory$", "aa_app.views.site.inventory"),

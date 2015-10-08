@@ -1,7 +1,7 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    <title>Artistally Writeup by {{writeup.user}} about {{writeup.convention}}</title>
+    <title>Artistally | Edit Review</title>
     {% if currUser and currUser == writeup.user %}
         <script>
             $(function() {
@@ -23,7 +23,7 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert("setRating went wrong");
+                            alert('Could not edit review! \n Error - ' + JSON.parse(response.responseText).error);
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -45,9 +45,8 @@
                         return false;
                     }
                 }
-            
-                $("alerts").after("<div class='alert alert-success' role='alert'>Your review has been updated!</div>");
-                //window.location.reload(true);
+                
+                window.location.href = "/convention/{{writeup.convention.ID}}";
             }
         </script>
     {% endif %}
@@ -58,6 +57,8 @@
 <div class="container">
     <div class="form-wrapper">
         {% if currUser and currUser == writeup.user %}
+        <p class="text-center"><sub><a href="/convention/{{writeup.convention.ID}}">&laquo; Return to {{writeup.convention}} Overview</a></sub></p>
+        <br/>
         <h1 class="text-center title-wrapper">Edit your review for <b>{{writeup.convention}}</b></h1>
         <div class="review-entry">
             <div class="side-entry">

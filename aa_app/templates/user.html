@@ -1,9 +1,11 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    <title>Artistally User {{pageUser}}</title>
+    <title>Artistally | {{pageUser}} User Profile</title>
     {% if currUser and currUser == pageUser %}
         <script>
+            var hasNewFile = false;
+            
             function uploadFile() {
                 var file = document.getElementById("fileField").files[0];
                 var reader = new FileReader();
@@ -38,7 +40,7 @@
                     data: JSON.stringify(jsonDict),
                     async: false,
                     error: function(response) {
-                        alert("setImage went wrong");
+                        alert('Could not change profile picture! \n Error - ' + JSON.parse(response.responseText).error);
                     },
                 });
                 if (ajaxObj.status == 200) {
@@ -178,7 +180,11 @@
                         }
                     }
                     
-                    uploadFile();
+                    if (hasNewFile) {
+                        uploadFile();
+                    } else {
+                        window.location.reload(true);
+                    }
                 }
             }
             
@@ -188,6 +194,7 @@
             
             function showFileChosenMessage() {
                 $("#fileChosenMessage").removeClass("hidden");
+                hasNewFile = true;
             }
             
         </script>
@@ -221,7 +228,7 @@
             </div>
             <div class="col-sm-9">
                 <div class="form-group">
-                    <label for="oldPassField">Current Password:</label>
+                    <label for="oldPassField">Current Password: (Needed to change password)</label>
                     <div class="input-group input-group-lg">
                         <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
                         <input type="password" class="form-control" id="oldPassField" aria-describedby="oldpassword-addon"/>
@@ -258,8 +265,8 @@
                 <div class="form-group">
                     <label for="startYearField">Year Starting Artist Alley:</label>
                     <div class="input-group input-group-lg">
-                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
-                        <input class="form-control" type="number" min="1950" max="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
+                        <span class="input-group-addon" id="email-addon"><i class="fa fa-calendar-check-o"></i></span>
+                        <input class="form-control" type="number" min="1990" max="{% now 'Y' %}" placeholder="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -293,8 +300,9 @@
         <br/>
         <p class="text-right"><a onclick="updateProfile()" class="btn btn-custom-blue wide">Update Profile</a></p>
     </div>
-
+</div>
     {% else %}
+<div class="container">
     <div class="convention-form-wrapper form-wrapper">
         <h1 class="text-center title-wrapper">{{pageUser}}'s Profile</h1>
 

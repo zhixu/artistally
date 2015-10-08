@@ -46,6 +46,12 @@ textarea {
     height: 100%;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 th, td {
     text-align: right;   
 }
@@ -58,20 +64,6 @@ th, td {
 .fixed {
     position: fixed;
     overflow-y: auto;
-}
-
-.searchbox-wrapper {
-/*    float: left;*/
-/*
-    padding-left: 20%;
-    padding-right: 20%;
-    
-    display: inline-block;
-    width: 70%;
-*/
-    width: 100%;
-    padding-top: 7px;
-    text-align: center;
 }
 
 .searchbox {
@@ -233,9 +225,13 @@ color:red
   color: #605063;
 }
 
+.navbar-form {
+    border: none !important;   
+}
+
 @media (max-width: 767px) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-    color: #ffffff;
+    color: #605063;
   }
   .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
     color: #605063;
@@ -276,6 +272,15 @@ color:red
     background-color: #605063;   
 }
 */
+
+.navbar-collapse {
+    max-height: 100%;
+}
+
+.navbar-nav {
+    margin: 0;
+}
+
 
 /* BUTTONS */
 
@@ -329,7 +334,6 @@ color:red
     overflow:hidden;
     display:inline-block; 
     padding:10px;
-    margin-top: 100px;
     font-weight:bold;
     font-size:150px;
     text-shadow: 0 0 1px #FFFFFF;
@@ -373,7 +377,7 @@ color:red
 
 .sidebar-wrapper {
     padding-top: 20px;
-    margin: 20px;
+    margin: 20px 20px 20px 0px;
     
 /*    margin: 20px;*/
 /*    padding: 10px 15px;*/
@@ -433,18 +437,10 @@ color:red
 
 .convention-preview-wrapper {
     margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    width: 300px;
+    width: 260px;
+    height: 80px;
     display: inline-block;
     background-color: #ffffff;
-}
-
-.convention-preview-info-wrapper {
-/*    padding: 10px;*/
-    height: 80px;
 }
 
 .canvas-wrapper {
@@ -462,20 +458,6 @@ color:red
 
 .convention-preview-lists {
 /*    height: 100%;  */
-}
-
-img.convention-preview {
-    width: 100%;
-    height: 200px;
-    background-image: url('/static/images/banner-sakura.jpg');
-    border: 0px;
-    background-size: cover;
-    border-top-left-radius: 10px; 
-    border-top-right-radius: 10px; 
-    -moz-border-top-left-radius: 10px; 
-    -moz-border-top-right-radius: 10px; 
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
 }
 
 .convention-preview-date {
@@ -595,7 +577,7 @@ img.convention-preview {
     border: 1px solid #ccc;
     border-top: none;
     display: inline-block;
-    height: 76px;
+/*    height: 76px;*/
     padding-left: 15px;
     padding-right: 15px;
     border-bottom-left-radius: 10px;
@@ -612,10 +594,12 @@ img.convention-preview {
     /*border-left: 1px solid #ccc;*/
     margin: 0 auto;
     float: right;
-    height: 100%;
+    height: 76px;
 }
 
 .con-header .main-info {
+    height: 76px;
+    padding-top: 5px;
     float: left !important;
     border: none !important;
 }
@@ -627,13 +611,15 @@ img.convention-preview {
 }
 
 .side-entry {
-    width: 20%;
+/*    width: 20%;*/
     float: left;
     padding-top: 30px;
+    margin-right: 10px;
 }
 
 .main-entry {
     width: 80%;
+/*    min-width: 200px;*/
     float: right;
 }
 
@@ -654,6 +640,11 @@ img.convention-preview {
     border-radius: 2px;
     -moz-border-radius: 2px; 
     -webkit-border-radius: 2px;
+}
+
+.chart-wrapper {
+    min-width: 300px;
+    height: 250px;
 }
 
 .chart-display {
@@ -748,6 +739,10 @@ img.convention-preview {
         margin-left: 20%;
         margin-right: 20%;
     }
+    
+    .main-entry {
+        width: 100%;   
+    }
 
 }
 
@@ -755,5 +750,15 @@ img.convention-preview {
     .reg-form-wrapper {
         margin-left: 5%;
         margin-right: 5%;
+    }
+    
+    .navbar-form {
+        margin: 0px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+        margin-left: 0px !important;
     }
 }

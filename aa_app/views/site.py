@@ -18,6 +18,10 @@ def root(request):
         context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
     return render_to_response("root.html", context)
 
+def about(request):
+    context = RequestContext(request)
+    return render_to_response("about.html", context)
+
 def signup(request):
     context = RequestContext(request)
     if request.user.is_authenticated():

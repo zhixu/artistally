@@ -29,6 +29,13 @@
              
             //setProfitChart();
         });
+             
+//        $(window).resize(function() {
+//            c.attr('width', jQuery(".chart-display").width());
+//            c.attr('height', jQuery(".chart-display").height());
+//            //Call a function to redraw other content (texts, images etc)
+//            myNewChart = new Chart(ct).Bar(data, options);
+//        });
                                       
         function setStars() {
             var rating = {{convention.avgRating}};
@@ -202,24 +209,17 @@
             <div class="cell text-center">
                 <div class="containery">
                     <div class="centery">
-                        <div id="setFavoriteButtonWrapper">
-                        {% if currUser not in convention.users.all %}
-                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
-                        {% else %}
-                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
-                        {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="cell text-center">
-                <div class="containery">
-                    <div class="centery">
+                        <span id="setFavoriteButtonWrapper">
+                            {% if currUser not in convention.users.all %}
+                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
+                            {% else %}
+                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
+                            {% endif %}
+                        </span>
                         {% if currUserConWriteup %}
-                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                            <span><a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a></span>
                         {% else %}
-                            <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
+                            <span><a href="#add-review" class="btn btn-custom-blue">Add Review</a></span>
                         {% endif %}
                     </div>
                 </div>
@@ -265,20 +265,24 @@
                 <br/>
                 <div class="row">
                     <div class="col-sm-6">
-                        <h3 class="title-wrapper">Popular Merchandise</h3>
-                        <div class="chart-display">
-                            <canvas id="kindsChart" width="150" height="150"></canvas>
+                        <div class="chart-wrapper">
+                            <h3 class="title-wrapper">Popular Merchandise</h3>
+                            <div class="chart-display">
+                                <canvas id="kindsChart" width="150" height="150"></canvas>
+                            </div>
+    <!--                        <br/>-->
+                            <div class="chart-legend" id="kindsLegend"></div>
                         </div>
-<!--                        <br/>-->
-                        <div class="chart-legend" id="kindsLegend"></div>
                     </div>
                     <div class="col-sm-6">
-                        <h3 class="title-wrapper">Popular Fandoms</h3>
-                        <div class="chart-display">
-                            <canvas id="fandomsChart" width="150" height="150"></canvas>
+                        <div class="chart-wrapper">
+                            <h3 class="title-wrapper">Popular Fandoms</h3>
+                            <div class="chart-display">
+                                <canvas id="fandomsChart" width="150" height="150"></canvas>
+                            </div>
+    <!--                        <br/>-->
+                            <div class="chart-legend" id="fandomsLegend"></div>
                         </div>
-<!--                        <br/>-->
-                        <div class="chart-legend" id="fandomsLegend"></div>
                     </div>
                 </div>
             {% else %}
@@ -339,6 +343,8 @@
             {% if currUser %}
                 <h2 class="title-wrapper">Write Review</h2>
                 {% if currUserConWriteup %}
+                You've already written a review.
+                <br/>
                 <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                 {% else %}
                     <div class="review-entry">
@@ -367,7 +373,7 @@
                         </div>
                     </div>
 
-                    <p class="text-center"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
+                    <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
                 {% endif %}
             {% else %}
                 <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>

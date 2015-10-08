@@ -38,6 +38,18 @@
             $("#conSearch").keyup(KEYUP);
         });
         
+        {% if currUser %}
+//            $(window).load(function() {
+//                if ($(window).width() > 767) {
+//                    $("#userMenuFull").css("display", "block");
+//                    $("#userMenuSmall").css("display", "none");
+//                } else {
+//                    $("#userMenuFull").css("display", "none");
+//                    $("#userMenuSmall").css("display", "block");
+//                }
+//            });
+        {% endif %}
+        
         function search() {
             console.log("in here");
             var searchstring = $("#conSearch").val();
@@ -67,21 +79,16 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
+                    <a class="navbar-brand" href="/"><img alt="ArtisTally" src="/static/images/logo-white-s.png"/></a>
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/"><img alt="ArtisTally" src="/static/images/logo-white-s.png"/></a>
                 </div><!--/.navbar-header -->
 
                 <div id="navbar" class="navbar-collapse collapse">
-<!--
-                    <div class="searchbox-wrapper">
-                        
-                    </div>
--->
                     
                     <ul class="nav navbar-nav">
                         <div class="navbar-form navbar-left" role="search">
@@ -92,20 +99,27 @@
                             </span>
                         </div>
                         </div>
-                        <li><a href="/search/">Browse</a></li>
+                        <li><a href="/search/">Browse All</a></li>
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        
                         {% if currUser %}
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle img-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if currUser.image %}<img src="{{currUser.image}}" class="user-icon"/>{% else %}<img src="/static/images/icon-default.png" class="user-icon"/>{% endif %}<span class="caret"></span></a>
+                                <a href="#" id="userMenuButton" class="dropdown-toggle img-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if currUser.image %}<img src="{{currUser.image}}" class="user-icon"/>{% else %}<img src="/static/images/icon-default.png" class="user-icon"/>{% endif %}<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     {% include "includes/links.html" %}
                                     <li role="separator" class="divider"></li>
                                     <li><a href="#" onclick="logout()">Logout</a></li>
                                 </ul>
                             </li>
+                        
+<!--
+                            <div id="userMenuSmall" css="display: none">
+                                {% include "includes/links.html" %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#" onclick="logout()">Logout</a></li>
+                            </div>
+-->
                         {% else %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/signup">Register</a></li>
@@ -121,8 +135,8 @@
 
     <footer>
         <div class="container">
-            <p><a href="#">About</a> | <a href="#">FAQ</a> | <a href="#">Contact</a></p>
-            <p>&copy; {% now "Y" %} ArtisTally</p>
+            <p>&copy; {% now "Y" %} ArtisTally
+                <br/>Made with <i class="fa fa-heart"></i> in <a href="/about">Berkeley</a></p>
         </div>
     </footer>
 </body>
