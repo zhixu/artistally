@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Avg, Q, Sum
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -379,9 +379,6 @@ try:
         INV_CON = Convention.objects.get(name = "INV_CON")
     else:
         INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
-except OperationalError as e:
-    if str(e) == "no such table: aa_app_convention":    # django currently migrating, can't load it
-        pass
-    else:
-        raise e
+except (OperationalError, ProgrammingError) as e:   # django currently migrating
+    pass
     
