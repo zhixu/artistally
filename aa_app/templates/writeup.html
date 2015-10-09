@@ -5,10 +5,9 @@
     {% if currUser and currUser == writeup.user %}
         <script>
             $(function() {
-             //check correct review radio button
                 $("#r" + {{writeup.rating}}).attr("checked", true);
             });
-            
+
             function updateWriteup() {
                 var jsonDict = new Object();
                 jsonDict.writeupID = "{{writeup.ID}}";
@@ -23,7 +22,7 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not edit review! \n Error - ' + JSON.parse(response.responseText).error);
+                            alert("Could not edit review! \n Error - " + JSON.parse(response.responseText).error);
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -38,14 +37,13 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not edit review! \n Error - ' + JSON.parse(response.responseText).error);
+                            alert("Could not edit review! \n Error - " + JSON.parse(response.responseText).error);
                         },
                     });
                     if (ajaxObj.status != 200) {
                         return false;
                     }
                 }
-                
                 window.location.href = "/convention/{{writeup.convention.ID}}";
             }
         </script>
@@ -53,50 +51,50 @@
 {% endblock %}
 
 {% block body %}
-
-<div class="container">
-    <div class="form-wrapper">
-        {% if currUser and currUser == writeup.user %}
-        <p class="text-center"><sub><a href="/convention/{{writeup.convention.ID}}">&laquo; Return to {{writeup.convention}} Overview</a></sub></p>
-        <br/>
-        <h1 class="text-center title-wrapper">Edit your review for <b>{{writeup.convention}}</b></h1>
-        <div class="review-entry">
-            <div class="side-entry">
-                <a href="/user/{{currUser}}">
-                {% if currUser.image %}
-                    <img src="{{currUser.image}}" class="user-icon-large">
-                {% else %}
-                    <img src="/static/images/icon-default.png" class="user-icon-large">
-                {% endif %}</a>
-                <br/><a href="/user/{{currUser}}"><b>{{currUser}}</b></a>
-                <br/>{{writeup.editTime|date:"M d, Y"}}
-                {% if writeup.editTime.timestamp > writeup.writeTime.timestamp|add:1 %}
-            <br/> Last edit {{writeup.editTime|date:"M d, Y"}}
-            {% endif %}
-            </div>
-            <div class="main-entry">
-                 Rating:
-                <span class="star-rating">
-                    <input type="radio" name="ratingField" id="r1" value="1"><i></i>
-                    <input type="radio" name="ratingField" id="r2" value="2"><i></i>
-                    <input type="radio" name="ratingField" id="r3" value="3"><i></i>
-                    <input type="radio" name="ratingField" id="r4" value="4"><i></i>
-                    <input type="radio" name="ratingField" id="r5" value="5"><i></i>
-                </span>
+    <div class="container">
+        <div class="form-wrapper">
+            {% if currUser and currUser == writeup.user %}
+                <p class="text-center"><sub><a href="/convention/{{writeup.convention.ID}}">&laquo; Return to {{writeup.convention}} Overview</a></sub></p>
                 <br/>
-                <div class="form-group">
-                    <label for="reviewField">Review:</label>
-                    <textarea class="form-control" rows="10" id="reviewField">{{writeup.review}}</textarea>
+                <h1 class="text-center title-wrapper">Edit your review for <b>{{writeup.convention}}</b></h1>
+                <div class="review-entry">
+                    <div class="side-entry">
+                        <a href="/user/{{currUser}}">
+                        {% if currUser.image %}
+                            <img src="{{currUser.image}}" class="user-icon-large">
+                        {% else %}
+                            <img src="/static/images/icon-default.png" class="user-icon-large">
+                        {% endif %}</a>
+                        <br/><a href="/user/{{currUser}}"><b>{{currUser}}</b></a>
+                        <br/>{{writeup.editTime|date:"M d, Y"}}
+                        {% if writeup.editTime.timestamp > writeup.writeTime.timestamp|add:1 %}
+                            <br/>
+                            Last edit {{writeup.editTime|date:"M d, Y"}}
+                        {% endif %}
+                    </div>
+                    <div class="main-entry">
+                         Rating:
+                        <span class="star-rating">
+                            <input type="radio" name="ratingField" id="r1" value="1"><i></i>
+                            <input type="radio" name="ratingField" id="r2" value="2"><i></i>
+                            <input type="radio" name="ratingField" id="r3" value="3"><i></i>
+                            <input type="radio" name="ratingField" id="r4" value="4"><i></i>
+                            <input type="radio" name="ratingField" id="r5" value="5"><i></i>
+                        </span>
+                        <br/>
+                        <div class="form-group">
+                            <label for="reviewField">Review:</label>
+                            <textarea class="form-control" rows="10" id="reviewField">{{writeup.review}}</textarea>
+                        </div>
+                        <p class="text-right"><a onclick="updateWriteup()" class="btn btn-custom-blue">Update</a></p>
+                    </div>
                 </div>
-                <p class="text-right"><a onclick="updateWriteup()" class="btn btn-custom-blue">Update</a></p>
-            </div>
+            {% else %}
+
+            <!-- ============ 404 page ============-->
+
+            {% endif %}
         </div>
     </div>
-</div>
-    {% else %}
-    
-    <!-- ============ 404 page ============-->
-    
-    {% endif %}
 {% endblock %}
 

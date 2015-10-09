@@ -27,7 +27,7 @@
                     window.location.href = "/";
                 },
                 error: function(response) {
-                    alert('Login failed! \n Error - ' + JSON.parse(response.responseText).error);
+                    alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
                     $("#loginButton").attr("disabled", false);
                     setTimeout(function() {
                         $("#passField").keyup(KEYUP);
@@ -39,32 +39,32 @@
 {% endblock %}
 
 {% block body %}
-<div class="form-wrapper reg-form-wrapper">
-    <p class="text-center"><sup><a href="/">&laquo; Go back home</a></sup></p>
-    <br/>
-    <h3 class="text-center">Sign in to your account</h3>
-    <br/>
-    <div class="form-group">
-        <label for="userField" class="required">Username</label>
-        <div class="input-group input-group-lg">
-            <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
-            <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon"/>
+    <div class="form-wrapper reg-form-wrapper">
+        <p class="text-center"><sup><a href="/">&laquo; Go back home</a></sup></p>
+        <br/>
+        <h3 class="text-center">Sign in to your account</h3>
+        <br/>
+        <div class="form-group">
+            <label for="userField" class="required">Username</label>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon"/>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="passField" class="required">Password</label>
-        <div class="input-group input-group-lg">
-            <span class="input-group-addon" id="password-addon"><i class="fa fa-key"></i></span>
-            <input type="password" class="form-control" id="passField" placeholder="Password" aria-describedby="password-addon"/>
+        <div class="form-group">
+            <label for="passField" class="required">Password</label>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="password-addon"><i class="fa fa-key"></i></span>
+                <input type="password" class="form-control" id="passField" placeholder="Password" aria-describedby="password-addon"/>
+            </div>
         </div>
+        <p class="text-center">
+            <br/>
+            <br/><a onclick="login()" id="loginButton" class="btn btn-custom-blue wide">Login</a>
+            <br/>
+            <br/><sub><a href="#">Forgot Password?</a></sub>
+            <br/>
+            <br/><sub><a href="/signup">Create a new account</a></sub>
+        </p>
     </div>
-    <p class="text-center">
-        <br/>
-        <br/><a onclick="login()" id="loginButton" class="btn btn-custom-blue wide">Login</a>
-        <br/>
-        <br/><sub><a href="#">Forgot Password?</a></sub>
-        <br/>
-        <br/><sub><a href="/signup">Create a new account</a></sub>
-    </p>
-</div>
 {% endblock %}

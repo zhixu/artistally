@@ -20,6 +20,9 @@ def root(request):
 
 def about(request):
     context = RequestContext(request)
+    if request.user.is_authenticated():
+        u = request.user
+        context["currUser"] = u
     return render_to_response("about.html", context)
 
 def signup(request):
@@ -181,11 +184,13 @@ def writeup(request, writeupID):
     #context["miscCost"] = u.miscCosts.get(convention = context["writeup"].convention)
     return render_to_response("writeup.html", context)
 
-def search(request, query):
+def search(request, query = None):
     context = RequestContext(request)
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
+    if query == None:
+        query = ""
     context["query"] = query
     context["cons"] = models.Convention.objects.filter(Q(name__icontains = query) | Q(location__icontains = query) | Q(website__icontains = query)).exclude(ID = models.INV_CON.ID).distinct()
     return render_to_response("search.html", context)

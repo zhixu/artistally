@@ -26,7 +26,6 @@
                     </select>
                     <br/>
 -->
-                    
                     {% if currUser.conventions.exists %}
                         {% for con in currUser.conventions.all %}
                             <div class="convention-preview-wrapper">
@@ -43,12 +42,11 @@
                             </div>
                         {% endfor %}
                     {% else %}
-                    No conventions to display.
+                        No conventions to display.
                     {% endif %}
-                    
                     <br/>
                     <br/>
-                    <a href="/search/">Browse conventions</a> to add them to your conventions.
+                    <a href="/search">Browse conventions</a> to add them to your conventions.
                 </div>
             </div>
         </div>

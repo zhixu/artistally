@@ -69,7 +69,10 @@ def setStartYear(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
     try:
-        u.setStartYear(int(d["startYear"]))
+        if d["startYear"] == "":
+            u.setStartYear(None)
+        else:
+            u.setStartYear(int(d["startYear"]))
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
     return EMPTY_JSON_200

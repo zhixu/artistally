@@ -4,10 +4,7 @@
     <meta charset="utf-8"/>
     
     <!-- JQuery -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    
-    <!-- Chart.js -->
-    <script type="text/javascript" src="/static/js/Chart.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
@@ -19,6 +16,9 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+    
+    <!-- Chart.js -->
+    <script src="/static/js/Chart.min.js"></script>
     
     <!-- ArtisTally-->
     <link rel="stylesheet" href="/static/default.css"/>
@@ -57,7 +57,6 @@
         }
         
         {% if currUser %}
-        
             function logout() {
                 $.ajax({
                     url: "/api/user/logout",
@@ -66,7 +65,7 @@
                         window.location.href = "/";
                     },
                     error: function(response) {
-                        alert('Could not log out! \n Error - ' + JSON.parse(response.responseText).error);
+                        alert("Could not log out! \n Error - " + JSON.parse(response.responseText).error);
                     },
                 });
             }

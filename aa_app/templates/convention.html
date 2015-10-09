@@ -8,17 +8,14 @@
         var highlights = new Array("#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774");
         
         $(function() {
-            //RATING
             {% if convention.avgRating != None %}
                 setStars();
             {% endif %}
 
-            //COVER PHOTO
             {% if convention.image %}
                 $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
             {% endif %}
 
-            //CHARTS
             {% if conTopItemKinds %}
                 setKindsChart();
             {% endif %}
@@ -150,7 +147,7 @@
                          $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert('Could not add to your conventions! \n Error - ' + JSON.parse(response.responseText).error);
+                        alert("Could not add to your conventions! \n Error - " + JSON.parse(response.responseText).error);
                     },
                 });
             }
@@ -167,7 +164,7 @@
                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert('Could not remove from your conventions! \n Error - ' + JSON.parse(response.responseText).error);
+                        alert("Could not remove from your conventions! \n Error - " + JSON.parse(response.responseText).error);
                     },
                 });
             }
@@ -187,7 +184,7 @@
                         location.reload();
                     },
                     error: function(response) {
-                        alert('Could not add new review! \n Error - ' + JSON.parse(response.responseText).error);
+                        alert("Could not add new review! \n Error - " + JSON.parse(response.responseText).error);
                     },
                 });
             }
@@ -198,8 +195,7 @@
 
 {% block body %}
     <div class="container">
-        <div class="jumbotron-convention">
-        </div>
+        <div class="jumbotron-convention"></div>
         <div class="con-header">
             <div class="main-info">
                 <h2>{{convention}}</h2>
@@ -246,20 +242,17 @@
                 <option value="4">Beginning of time</option>
             </select>
 -->
-            
             A total of {{convention.numAttenders}} attendees were at {{convention}}.
             <br/>We have data from a total of {{convention.users.count}} people from this period in time.
             {% if convention.avgUserProfit != None %}
                 <br/>
                 On average, each artist makes a total of ${{convention.avgUserProfit|floatformat:2}}.
             {% endif %}
-            
             <!--            <canvas id="moneyChart" width="400" height="400"></canvas>-->
             
             <!-- ------------------------ CHARTS ------------------------- -->
             
 <!--            <canvas id="profitChart" width="200" height="200"></canvas>-->
-            
             {% if conTopItemKinds %}
                 <br/>
                 <br/>
@@ -290,7 +283,6 @@
                 There's currently no merchandise data for this convention! Help us by adding this convention to your list and adding your inventory data.       
             {% endif %}
         </div>
-        
 <!--
         {% if convention.prevCon %}
             prev con is: {{convention.prevCon}}
@@ -299,7 +291,6 @@
             next con is: {{convention.nextCon}}
         {% endif %}
 -->
-        
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>
             {% for writeup in convention.writeups.all|slice:":5" %}
@@ -337,15 +328,13 @@
                 <br/><a href="/conreviews/{{convention.ID}}" class="btn btn-custom-blue">Read All Reviews</a>
             </p>
         </div>
-        
-        
         <div class="section-wrapper border-wrapper" id="add-review">
             {% if currUser %}
                 <h2 class="title-wrapper">Write Review</h2>
                 {% if currUserConWriteup %}
-                You've already written a review.
-                <br/>
-                <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                    You've already written a review.
+                    <br/>
+                    <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                 {% else %}
                     <div class="review-entry">
                         <div class="side-entry">
@@ -372,7 +361,6 @@
                             </div>
                         </div>
                     </div>
-
                     <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
                 {% endif %}
             {% else %}
@@ -380,7 +368,5 @@
                 </p>
             {% endif %}
         </div>
-        
-
     </div>
 {% endblock %}

@@ -2,17 +2,9 @@
 
 {% block head %}
     <title>ArtisTally | Home</title>
-    <script>
-        
-        {% if currUser %}
-            
-            
-        {% endif %}
-    </script>
 {% endblock %}
 
 {% block body %}
-
     {% if currUser %}
         <div class="container">
             <div class="row">
@@ -25,7 +17,6 @@
                 <div class="col-md-10">
                     <div class="my-section-wrapper border-wrapper">
                         <h1 class="title-wrapper">Hi there, {{currUser}}!</h1>
-
     <!--                View data from: <input type="date"> to: <input type="date">-->
                         <div class="row">
                             <div class="col-sm-3">
@@ -102,8 +93,6 @@
                                 </div>
                             </div>
                         </div>
-    -->
-    <!--
                         <div class="row">
                             <div class="col-sm-9">
                                 <h3 class="title-wrapper">Upcoming Conventions</h3>
@@ -183,5 +172,4 @@
             </div>
         </div>
     {% endif %}
-
 {% endblock %}
