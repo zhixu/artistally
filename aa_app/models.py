@@ -120,11 +120,11 @@ class User(AbstractBaseUser):
 
 class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
-    name = models.TextField(unique = True)
+    name = models.CharField(unique = True, max_length = 50)
     startDate = models.DateField()
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
-    location = models.TextField()
+    location = models.CharField(max_length = 50)
     website = models.URLField(max_length = 200)
     image = models.URLField(max_length = 200, blank = True, default = "")
     prevCon = models.OneToOneField("self", related_name = "_nextCon", blank = True, null = True, default = None)
@@ -237,7 +237,8 @@ class Writeup(ValidatedModel):
         return self.user.__str__() + " writeup for " + self.convention.__str__()
 
 class Fandom(ValidatedModel):
-    name = models.TextField(primary_key = True)
+    ID = models.AutoField(primary_key = True)
+    name = models.CharField(unique = True, max_length = 50)
 
     # SETTERS
     def setName(self, name):
@@ -249,7 +250,8 @@ class Fandom(ValidatedModel):
         return self.name
 
 class Kind(ValidatedModel):
-    name = models.TextField(primary_key = True)
+    ID = models.AutoField(primary_key = True)
+    name = models.CharField(unique = True, max_length = 50)
 
     # SETTERS
     def setName(self, name):
@@ -264,7 +266,7 @@ class Item(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "items")
     convention = models.ForeignKey(Convention, related_name = "items")
-    name = models.TextField()
+    name = models.CharField(max_length = 50)
     fandom = models.ForeignKey(Fandom, related_name = "items")
     kind = models.ForeignKey(Kind, related_name = "items")
     price = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
