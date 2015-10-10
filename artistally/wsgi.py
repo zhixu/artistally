@@ -16,9 +16,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "artistally.settings")
 application = get_wsgi_application()
 
 # HEROKU
-'''
+
 from django.core.wsgi import get_wsgi_application
 from dj_static import Cling
 
 application = Cling(get_wsgi_application())
-'''

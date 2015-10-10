@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Avg, Q, Sum
 from django.db.utils import OperationalError, ProgrammingError
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -379,6 +379,6 @@ try:
         INV_CON = Convention.objects.get(name = "INV_CON")
     else:
         INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
-except (OperationalError, ProgrammingError) as e:   # django currently migrating
+except (OperationalError, ProgrammingError, ImproperlyConfigured) as e:   # django currently migrating
     pass
     
