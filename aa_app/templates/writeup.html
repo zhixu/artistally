@@ -11,10 +11,10 @@
             function updateWriteup() {
                 var jsonDict = new Object();
                 jsonDict.writeupID = "{{writeup.ID}}";
-                jsonDict.rating = $("#ratingField").val();
+                jsonDict.rating = $('input[name="ratingField"]:checked').val();
                 jsonDict.review = $("#reviewField").val();
                 jsonDict.miscCosts = $("#miscCostsField").val();
-                if (jsonDict.rating != $("#ratingField").prop("defaultValue")) {
+                if (jsonDict.rating != {{writeup.rating}}) {
                     var ajaxObj = $.ajax({
                         url: "/api/writeup/setRating",
                         type: "POST",
@@ -90,8 +90,34 @@
                     </div>
                 </div>
             {% else %}
-
-            <!-- ============ 404 page ============-->
+                <p class="text-center"><sub><a href="/convention/{{writeup.convention.ID}}">&laquo; Return to {{writeup.convention}} Overview</a></sub></p>
+                <br/>
+                <h1 class="text-center title-wrapper">{{writeup.user}}'s review for <b>{{writeup.convention}}</b></h1>
+                <div class="review-entry">
+                    <div class="side-entry">
+                        <a href="/user/{{writeup.user}}">
+                        {% if writeup.user.image %}
+                            <img src="{{writeup.user.image}}" class="user-icon-large">
+                        {% else %}
+                            <img src="/static/images/icon-default.png" class="user-icon-large">
+                        {% endif %}</a>
+                        <br/>
+                        <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
+                        <br/>
+                        {{writeup.editTime|date:"M d, Y"}}
+                        {% if writeup.user == currUser %}
+                            <br/>
+                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                        {% endif %}
+                    </div>
+                    <div class="main-entry">
+                        <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                        <div class="main-entry-text">
+                            {{writeup.review}}
+                        </div>
+                        <br/>
+                    </div>
+                </div>
 
             {% endif %}
         </div>
