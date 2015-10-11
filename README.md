@@ -15,6 +15,9 @@ To initialize for local, do:
     echo "DATABASE_URL=postgres:///postgres" > .env
     heroku local:run python manage.py migrate
     heroku local:run python manage.py createsuperuser
+    
+To clear local database, do:
+    heroku pg:reset DATABASE_URL
 
 To run locally, do:
     heroku local
