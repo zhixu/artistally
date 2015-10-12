@@ -219,15 +219,6 @@
 
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Overview</h2>
-<!--
-            Show data from:
-            <select>
-                <option value="1">Last year</option>
-                <option value="2">Last 2 years</option>
-                <option value="3">Last 5 years</option>
-                <option value="4">Beginning of time</option>
-            </select>
--->
             A total of {{convention.numAttenders}} attendees were at {{convention}}.
             <br/>We have data from a total of {{convention.users.count}} people from this period in time.
             {% if convention.avgUserProfit != None %}
@@ -269,14 +260,6 @@
                 There's currently no merchandise data for this convention! Help us by adding this convention to your list and adding your inventory data.       
             {% endif %}
         </div>
-<!--
-        {% if convention.prevCon %}
-            prev con is: {{convention.prevCon}}
-        {% endif %}
-        {% if convention.nextCon %}
-            next con is: {{convention.nextCon}}
-        {% endif %}
--->
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>
             {% for writeup in convention.writeups.all|slice:":5" %}
@@ -305,7 +288,7 @@
                         <br/>
                     </div>
                 </div>
-                <hr>
+                <hr/>
             {% empty %}
                 No one has reviewed this convention yet.
             {% endfor %}

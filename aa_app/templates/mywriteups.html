@@ -7,18 +7,18 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-2 sidebar">
+            <div class="col-md-2 sidebar">
                 <div class="fixed">
                     {% include "includes/sidebar.html" %}
                 </div>
             </div>
-            <div class="col-sm-10">
+            <div class="col-md-10">
                 <div class="my-section-wrapper border-wrapper">
                     <h1 class="title-wrapper">My Reviews</h1>
                     {% if currUser.writeups.exists %}
                         {% for writeup in currUser.writeups.all %}
                             <div class="review-entry">
-                                <sub>Review for <a href="/convention/{{writeup.convention.ID}}">{{writeup.convention}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</sub>
+                                <small>Review for <a href="/convention/{{writeup.convention.ID}}">{{writeup.convention}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</small>
                                 <br/>
                                 <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
                                 <div class="main-entry-text">

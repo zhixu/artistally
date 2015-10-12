@@ -204,10 +204,10 @@
 {% block body %}
     {% if currUser and currUser == pageUser %}
         <div class="container">
-            <div class="convention-form-wrapper form-wrapper">
+            <div class="form-wrapper border-wrapper">
                 <h1 class="text-center title-wrapper">Edit Profile</h1>
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-md-3">
                         <div class="text-center">
                             {% if pageUser.image %}
                                 <img src="{{pageUser.image}}" class="user-icon-large"/>
@@ -225,7 +225,7 @@
                             Max 10 MiB
                         </div>
                     </div>
-                    <div class="col-sm-9">
+                    <div class="col-md-9">
                         <div class="form-group">
                             <label for="oldPassField">Current Password: (Needed to change password)</label>
                             <div class="input-group input-group-lg">
@@ -253,18 +253,31 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="emailField">New Email:</label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="emailField">Old Email:</label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                                        <input type="email" class="form-control" aria-describedby="login-addon" value="{{pageUser.email}}" disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="emailField">New Email:</label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr/>
                         <div class="form-group">
                             <label for="startYearField">Year Starting Artist Alley:</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="email-addon"><i class="fa fa-calendar-check-o"></i></span>
+                                <span class="input-group-addon" id="startYear-addon"><i class="fa fa-calendar-check-o"></i></span>
                                 <input class="form-control" type="number" min="1990" max="{% now 'Y' %}" placeholder="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
                             </div>
                         </div>
@@ -289,6 +302,7 @@
                                 <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{pageUser.website3}}"/>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="url3">Description:</label>
                                 <textarea class="form-control" rows="5" placeholder="Put anything you want here..." class="form-control" id="descField">{{pageUser.description}}</textarea>
@@ -302,7 +316,7 @@
         </div>
     {% else %}
         <div class="container">
-            <div class="convention-form-wrapper form-wrapper">
+            <div class="form-wrapper border-wrapper">
                 <h1 class="text-center title-wrapper">{{pageUser}}'s Profile</h1>
                 <div class="row">
                     <div class="col-sm-3">
