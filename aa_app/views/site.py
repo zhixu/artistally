@@ -25,6 +25,7 @@ def about(request):
         context["currUser"] = u
     return render_to_response("about.html", context)
 
+@ensure_csrf_cookie
 def signup(request):
     context = RequestContext(request)
     if request.user.is_authenticated():
