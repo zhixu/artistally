@@ -12,6 +12,7 @@ If postgres is not installed:
     sudo -u postgres createuser $(whoami)
     
 To initialize for local, first create a file .env containing:
+    DEBUG = True
     DATABASE_URL = postgres:///postgres
     SECRET_KEY = YOUR_RANDOM_KEY_GOES_HERE
 ( use this website to generate a secret key: miniwebtool.com/django-secret-key-generator )
@@ -32,6 +33,7 @@ To run locally, do:
     
 To initialize for heroku cloud, do:
     heroku create
+    heroku config:set DEBUG=False
     heroku config:set SECRET_KEY='YOUR_RANDOM_KEY_GOES_HERE'
 ( again, use this website to generate a secret key: miniwebtool.com/django-secret-key-generator )
 ( put it in single quotes or bash will complain )
