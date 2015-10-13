@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 
-DEBUG = os.environ["DEBUG"]
+DEBUG = True if os.environ["DEBUG"] == "True" else False
 
 APPEND_SLASH = True
 
