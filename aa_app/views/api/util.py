@@ -9,8 +9,6 @@ import base64, json
 
 import requests # python-requests.org
 
-EMPTY_JSON_200 = JsonResponse({})
-
 @login_required
 def uploadFile(request):
     d = json.loads(bytes.decode(request.body))

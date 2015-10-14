@@ -25,7 +25,7 @@
                     window.location.href = "/";
                 },
                 error: function(response) {
-                    alert("Please sign in! \n Error - " + JSON.parse(response.responseText).error);
+                    alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
                 },
             });
         }
@@ -72,7 +72,7 @@
             <label for="userField" class="required">Username</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control" id="userField" aria-describedby="login-addon"/>
+                <input type="text" class="form-control" id="userField" aria-describedby="login-addon" spellcheck=false/>
             </div>
         </div>
         <div class="form-group">

@@ -7,8 +7,6 @@ from aa_app import models
 
 import json, datetime
 
-EMPTY_JSON_200 = JsonResponse({})
-
 @login_required
 def newConvention(request):
     d = json.loads(bytes.decode(request.body))
@@ -36,7 +34,7 @@ def setName(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setNumAttenders(request):
@@ -49,7 +47,7 @@ def setNumAttenders(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setLocation(request):
@@ -62,7 +60,7 @@ def setLocation(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setStartDate(request):
@@ -75,7 +73,7 @@ def setStartDate(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setEndDate(request):
@@ -88,7 +86,7 @@ def setEndDate(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setWebsite(request):
@@ -101,7 +99,7 @@ def setWebsite(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setImage(request):
@@ -114,7 +112,7 @@ def setImage(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setPrevCon(request):
@@ -127,7 +125,7 @@ def setPrevCon(request):
         return JsonResponse({"error": "couldn't find one or both conventions"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setUser(request):
@@ -140,7 +138,7 @@ def setUser(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def unsetUser(request):
@@ -153,7 +151,7 @@ def unsetUser(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def copyInventory(request):
@@ -171,4 +169,4 @@ def copyInventory(request):
         return JsonResponse({"error": "couldn't find the convention"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})

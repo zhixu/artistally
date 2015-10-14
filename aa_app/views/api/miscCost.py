@@ -8,8 +8,6 @@ from aa_app import models
 from decimal import Decimal
 import json
 
-EMPTY_JSON_200 = JsonResponse({})
-
 @login_required
 def newMiscCost(request):
     d = json.loads(bytes.decode(request.body))
@@ -36,4 +34,4 @@ def setAmount(request):
         return JsonResponse({"error": "couldn't find the miscCost"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})

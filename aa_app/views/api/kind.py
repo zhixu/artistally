@@ -7,8 +7,6 @@ from aa_app import models
 
 import json
 
-EMPTY_JSON_200 = JsonResponse({})
-
 @login_required
 def newKind(request):
     d = json.loads(bytes.decode(request.body))
@@ -17,7 +15,7 @@ def newKind(request):
         k = models.newKind(d["name"])
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setName(request):
@@ -30,4 +28,4 @@ def setName(request):
         return JsonResponse({"error": "couldn't find the kind"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})

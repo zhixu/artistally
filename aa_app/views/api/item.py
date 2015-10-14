@@ -8,8 +8,6 @@ from aa_app import models
 from decimal import Decimal
 import json
 
-EMPTY_JSON_200 = JsonResponse({})
-
 @login_required
 def newItem(request):
     d = json.loads(bytes.decode(request.body))
@@ -42,7 +40,7 @@ def deleteItem(request):
         i.delete()
     except models.Item.DoesNotExist as e:
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setNumSold(request):
@@ -57,7 +55,7 @@ def setNumSold(request):
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setNumLeft(request):
@@ -72,7 +70,7 @@ def setNumLeft(request):
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setName(request):
@@ -87,7 +85,7 @@ def setName(request):
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setImage(request):
@@ -102,7 +100,7 @@ def setImage(request):
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setPrice(request):
@@ -117,7 +115,7 @@ def setPrice(request):
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setCost(request):
@@ -132,7 +130,7 @@ def setCost(request):
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setFandom(request):
@@ -149,7 +147,7 @@ def setFandom(request):
         return JsonResponse({"error": "invalid: fandom"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
 
 @login_required
 def setKind(request):
@@ -166,4 +164,4 @@ def setKind(request):
         return JsonResponse({"error": "invalid: kind"}, status = 400)
     except ValidationError as e:
         return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
-    return EMPTY_JSON_200
+    return JsonResponse({})
