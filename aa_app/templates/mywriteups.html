@@ -18,7 +18,7 @@
                     {% if currUser.writeups.exists %}
                         {% for writeup in currUser.writeups.all %}
                             <div class="review-entry">
-                                <small>Review for <a href="/convention/{{writeup.convention.ID}}">{{writeup.convention}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</small>
+                                <small>Review for <a href="/event/{{writeup.event.ID}}">{{writeup.event.convention}} {{writeup.event}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</small>
                                 <br/>
                                 <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
                                 <div class="main-entry-text">

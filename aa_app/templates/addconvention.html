@@ -3,18 +3,7 @@
 {% block head %}
     <title>Artistally Create Convention</title>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script>
-        $(function() {
-            $(".date-picker").datepicker();
-            
-            KEYUP = function(event) {
-                if (event.keyCode == 13) {
-                    $("#submitButton").click();
-                }
-            }
-            $("#imageField").keyup(KEYUP);
-        });
-        
+    <script>        
         function isURL(str) {
             if(str.substring(0, 7) == 'http://' || str.substring(0, 8) == 'https://') {
                 return true;
@@ -28,18 +17,11 @@
             $("#submitButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.name = $("#nameField").val();
-            jsonDict.startDate = $("#startDateField").val();
-            jsonDict.endDate = $("#endDateField").val();
-            jsonDict.numAttenders = $("#numAttendersField").val();
-            jsonDict.location = $("#locationField").val();
             jsonDict.website = $("#websiteField").val();
             jsonDict.image = $("#imageField").val();
             
             if (!isURL(jsonDict.website)) { jsonDict.website = 'http://' + jsonDict.website }
             
-            if ($("#prevConIDField").val() != "") {
-                jsonDict.prevConID = $("#prevConIDField").val();
-            }
             $.ajax({
                 url: "/api/convention/newConvention",
                 type: "POST",
@@ -61,7 +43,7 @@
     <div class="container">
         <div class="form-wrapper border-wrapper">
             <h1 class="text-center">Add New Convention</h1>
-            <p class="text-center">Please enter convention info for the latest year.
+            <p class="text-center">Please enter convention info.
                 <br/>We will review and approve your information as soon as possible.</p>
             <br/>
             <br/>
@@ -74,47 +56,10 @@
             </div>
             <br/>
             <div class="form-group">
-                <label for="numAttendersField" class="required">Number of Attendees</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="numAttenders-addon"><i class="fa fa-user"></i></span>
-                    <input type="number" class="form-control" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>
-                </div>
-            </div>
-            <br/>
-            <div class="form-group">
-                <label for="locationField" class="required">Location</label>
-                <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="location-addon"><i class="fa fa-map-marker"></i></span>
-                    <input type="text" class="form-control" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon"/>
-                </div>
-            </div>
-            <br/>
-            <div class="form-group">
                 <label for="websiteField" class="required">Website</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="website-addon"><i class="fa fa-link"></i></span>
                     <input type="url" class="form-control" id="websiteField" placeholder="http://www.artistal.ly" aria-describedby="website-addon"/>
-                </div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="startDateField" class="required">Start Date</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="startDate-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" class="form-control date-picker" id="startDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="startDate-addon"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="endDateField" class="required">End Date</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-addon" id="endDate-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" class="form-control date-picker" id="endDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="endDate-addon"/>
-                        </div>
-                    </div>
                 </div>
             </div>
             <br/>
@@ -126,17 +71,6 @@
                 </div>
             </div>
             <br/>
-            <div class="form-group">
-                <label for="prevConIDField">Previous Convention</label>
-                <div class="input-group input-group-lg">
-                <select class="form-control" id="prevConIDField">
-                    <option value selected>None</option>
-                    {% for con in cons %}
-                        <option value="{{con.ID}}">{{con}}</option>
-                    {% endfor %}
-                </select>
-                </div>
-            </div>
 
             <br/>
             <sub class="required text-center">Required</sub>

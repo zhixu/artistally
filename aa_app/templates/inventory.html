@@ -1,16 +1,16 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    {% if invCon %}
+    {% if invEvent %}
         <title>ArtisTally | My Inventory</title>
     {% else %}
-        <title>ArtisTally | My {{convention}} Inventory</title>
+        <title>ArtisTally | My {{event.convention}} {{event}} Inventory</title>
     {% endif %}
     
     <script src="/static/js/editablegrid/all_min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
-        {% if not invCon %}
+        {% if not invEvent %}
             {% if miscCost %}
                 function updateMiscCost() {
                     var jsonDict = new Object();
@@ -32,7 +32,7 @@
             {% else %}
                 function updateMiscCost() {
                     var jsonDict = new Object();
-                    jsonDict.conID = "{{convention.ID}}";
+                    jsonDict.eventID = "{{event.ID}}";
                     jsonDict.amount = $("#miscCostsField").val();
                     $.ajax({
                         url: "/api/miscCost/newMiscCost",
@@ -49,9 +49,9 @@
             function copyInventory() {
                 $("#copyInventoryButton").attr("disabled", true);
                 var jsonDict = new Object();
-                jsonDict.conID = {{convention.ID}};
+                jsonDict.eventID = {{event.ID}};
                 $.ajax({
-                    url: "/api/convention/copyInventory",
+                    url: "/api/event/copyInventory",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
@@ -83,7 +83,7 @@
                 { name: "price", datatype: "double($,2,dot,comma,1)", editable: true },
                 { name: "cost", datatype: "double($,2,dot,comma,1)", editable: true },
                 { name: "remaining", datatype: "integer(,-1,dot,comma,1)", editable: true },
-                {% if not invCon %}
+                {% if not invEvent %}
                     { name: "sold", datatype: "integer(,-1,dot,comma,1)", editable: true },
                 {% endif %}
                 { name: "action", datatype: "html", editable: false }
@@ -96,7 +96,6 @@
             }})); 
             
             editableGrid.attachToHTMLTable("inventory");
-            
             editableGrid.renderGrid();
         }
          
@@ -151,13 +150,13 @@
         
         function makeNewItem() {
             makeItem($("#new-name").val(), 
-                     "{{convention.ID}}", 
+                     "{{event.ID}}", 
                      $("#new-fandom").val(), 
                      $("#new-kind").val(), 
                      roundDecimal($("#new-price").val()), 
                      roundDecimal($("#new-cost").val()), 
                      $("#new-numLeft").val(), 
-                     {% if invCon %}
+                     {% if invEvent %}
                         0);
                      {% else %}
                         $("#new-numSold").val());
@@ -167,7 +166,7 @@
         function duplicateItem(rowID) {
             var rowIndex = editableGrid.getRowIndex(rowID);
             makeItem(editableGrid.getValueAt(rowIndex, 0), 
-                    "{{convention.ID}}", 
+                    "{{event.ID}}", 
                     editableGrid.getValueAt(rowIndex, 1), 
                     editableGrid.getValueAt(rowIndex, 2), 
                     editableGrid.getValueAt(rowIndex, 3), 
@@ -180,11 +179,11 @@
                     {% endif %}
         }
         
-        function makeItem(itemName, conID, itemFandom, itemKind, itemPrice, itemCost, itemNumLeft, itemNumSold) {
+        function makeItem(itemName, eventID, itemFandom, itemKind, itemPrice, itemCost, itemNumLeft, itemNumSold) {
             
             var jsonDict = new Object();
             jsonDict.name = itemName;
-            jsonDict.conID = conID;
+            jsonDict.eventID = eventID;
             jsonDict.fandom = itemFandom;
             jsonDict.kind = itemKind;
             jsonDict.price = itemPrice;
@@ -198,7 +197,7 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    editableGrid.append(response.itemID, {"name": itemName, "fandom": itemFandom, "kind": itemKind, "price": itemPrice, "cost": itemCost, "remaining": itemNumLeft{% if not invCon %}, "sold": itemNumSold{% endif %}}, true);
+                    editableGrid.append(response.itemID, {"name": itemName, "fandom": itemFandom, "kind": itemKind, "price": itemPrice, "cost": itemCost, "remaining": itemNumLeft{% if not invEvent %}, "sold": itemNumSold{% endif %}}, true);
                     editableGrid.refreshGrid();
                 },
                 error: function(response) {
@@ -214,7 +213,7 @@
                 price = 3,
                 cost = 4,
                 numLeft = 5
-                {% if not invCon %}
+                {% if not invEvent %}
                     , numSold = 6
                 {% endif %};
             
@@ -300,7 +299,7 @@
                         },
                     });
                     break;
-                {% if not invCon %}
+                {% if not invEvent %}
                     case numSold:
                         jsonDict.numSold = newValue;
                         var ajaxObj = $.ajax({
@@ -342,7 +341,7 @@
         }
                     
         function toggleItemForm() {
-            {% if invCon %}
+            {% if invEvent %}
                 var buttonStr = "#new-numLeft";
             {% else %}
                 var buttonStr = "#new-numSold";
@@ -410,13 +409,13 @@
 
             <div class="col-md-10">
                 <div class="my-section-wrapper border-wrapper">
-                    <h1 class="title-wrapper">{% if not invCon %}{{convention}} {% endif %}Inventory</h1>
+                    <h1 class="title-wrapper">{% if not invEvent %}{{event.convention}} {{event}} {% endif %}Inventory</h1>
                     <div id="inventory-page">
                         Click cell to edit.
                         <br/>
                         <br/>
                     <div>
-                        {% if not invCon %}
+                        {% if not invEvent %}
                             <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
                         {% endif %}
                         <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
@@ -451,7 +450,7 @@
                                         <label class="control-label required" for="new-numLeft">In Stock:</label>
                                         <input type="text" class="form-control" placeholder="0" id="new-numLeft" autocomplete="off">
                                     </div>
-                                    {% if not invCon %}
+                                    {% if not invEvent %}
                                         <div class="form-group">
                                             <label class="control-label required" for="new-numSold">Sold:</label>
                                             <input type="text" class="form-control" placeholder="0" id="new-numSold" autocomplete="off">
@@ -473,14 +472,14 @@
                                 <th>Price</th>
                                 <th>Cost</th>
                                 <th>In Stock</th>
-                                {% if not invCon %}
+                                {% if not invEvent %}
                                     <th>Sold</th>
                                 {% endif %}
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="inventory-body">
-                        {% for item in conItems %}
+                        {% for item in eventItems %}
                             <tr id="{{item.ID}}">
                                 <td>{{item.name}}</td>
                                 <td>{{item.fandom}}</td>
@@ -488,7 +487,7 @@
                                 <td>{{item.price|floatformat:2}}</td>
                                 <td>{{item.cost|floatformat:2}}</td>
                                 <td>{{item.numLeft}}</td>
-                                {% if not invCon %}
+                                {% if not invEvent %}
                                     <td>{{item.numSold}}</td>
                                 {% endif %}
                                 <td></td>
@@ -496,7 +495,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    {% if not invCon %}
+                    {% if not invEvent %}
                         <br/>
                         <div class="form-group">
                             <label for="miscCostsField">Miscellaneous Costs:</label>

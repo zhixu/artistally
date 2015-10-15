@@ -25,8 +25,8 @@ def newUser(request):
             u.setWebsite2(d["website2"])
         if "website3" in d:
             u.setWebsite3(d["website3"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @user_passes_test(lambda u: u.is_anonymous())
@@ -49,8 +49,8 @@ def setEmail(request):
     u = request.user
     try:
         u.setEmail(d["email"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -71,8 +71,8 @@ def setStartYear(request):
             u.setStartYear(None)
         else:
             u.setStartYear(int(d["startYear"]))
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -81,8 +81,8 @@ def setImage(request):
     u = request.user
     try:
         u.setImage(d["image"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -91,8 +91,8 @@ def setDescription(request):
     u = request.user
     try:
         u.setDescription(d["description"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -101,8 +101,8 @@ def setWebsite1(request):
     u = request.user
     try:
         u.setWebsite1(d["website1"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -111,8 +111,8 @@ def setWebsite2(request):
     u = request.user
     try:
         u.setWebsite2(d["website2"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -121,6 +121,6 @@ def setWebsite3(request):
     u = request.user
     try:
         u.setWebsite3(d["website3"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})

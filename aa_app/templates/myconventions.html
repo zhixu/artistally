@@ -28,18 +28,20 @@
 -->
                     {% if currUser.conventions.exists %}
                         {% for con in currUser.conventions.all %}
-                            <div class="convention-preview-wrapper">
+                            {% for event in con.events.all %}
+                                <div class="convention-preview-wrapper">
                                     <div class="convention-preview-date">
-                                        <p><span>{{con.startDate|date:"M"}}</span>
-                                        {{con.startDate|date:"d"}}</p>
+                                        <p><span>{{event.startDate|date:"M"}}</span>
+                                        {{event.startDate|date:"d"}}</p>
                                     </div>
                                     <div class="convention-preview-info">
-                                        <h4>{{con}}</h4>
+                                        <h4>{{con}} {{event}}</h4>
                                         <a href="/convention/{{con.ID}}">View Convention Page &raquo;</a>
                                         <br/>
-                                        <a href="/inventory/{{con.ID}}">View Convention Inventory &raquo;</a>
+                                        <a href="/inventory/{{event.ID}}">View Convention Inventory &raquo;</a>
                                     </div>
-                            </div>
+                                </div>
+                            {% endfor %}
                         {% endfor %}
                     {% else %}
                         No conventions to display.

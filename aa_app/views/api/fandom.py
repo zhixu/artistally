@@ -13,8 +13,8 @@ def newFandom(request):
     u = request.user
     try:
         f = models.newFandom(d["name"])
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -24,8 +24,8 @@ def setName(request):
     try:
         f = models.Fandom.objects.get(name__iexact = d["oldName"])
         f.setName(d["name"])
-    except models.Fandom.DoesNotExist as e:
+    except models.Fandom.DoesNotExist as ex:
         return JsonResponse({"error": "couldn't find the fandom"}, status = 400)
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})

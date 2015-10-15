@@ -1,11 +1,11 @@
 from django.db import models
 from django.db.models import Avg, Q, Sum
 from django.db.utils import OperationalError, ProgrammingError
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.exceptions import ValidationError, ImproperlyConfigured, AppRegistryNotReady
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-import datetime, random
+import datetime, random, statistics
 
 
 class UserManager(BaseUserManager):
@@ -22,6 +22,7 @@ class UserManager(BaseUserManager):
 class ValidatedModel(models.Model):
     class Meta:
         abstract = True
+        app_label = "aa_app"
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -31,9 +32,9 @@ class ValidatedModel(models.Model):
 class User(AbstractBaseUser):
     username = models.SlugField(primary_key = True, max_length = 50)
     email = models.EmailField(unique = True, max_length = 254)
+    superuser = models.BooleanField(default = False)
     startYear = models.PositiveSmallIntegerField(null = True, blank = True, default = None)
     image = models.URLField(max_length = 200, blank = True, default = "")
-    superuser = models.BooleanField(default = False)
     description = models.TextField(blank = True, default = "")
     website1 = models.URLField(max_length = 200, blank = True, default = "")
     website2 = models.URLField(max_length = 200, blank = True, default = "")
@@ -48,12 +49,16 @@ class User(AbstractBaseUser):
         return profit
 
     # SETTERS
+    def setPassword(self, newPassword):
+        self.set_password(newPassword)
+        self.save()
+
     def setEmail(self, newEmail):
         self.email = newEmail
         self.save()
 
-    def setPassword(self, newPass):
-        self.password = newPass
+    def setSuperuser(self, newSuperuser):
+        self.superuser = newSuperuser
         self.save()
 
     def setStartYear(self, newStartYear):
@@ -63,7 +68,7 @@ class User(AbstractBaseUser):
     def setImage(self, newImage):
         self.image = newImage
         self.save()
-        
+
     def setDescription(self, newDescription):
         self.description = newDescription
         self.save()
@@ -78,14 +83,6 @@ class User(AbstractBaseUser):
         
     def setWebsite3(self, newWebsite3):
         self.website3 = newWebsite3
-        self.save()
-        
-    def setSuperuser(self, newSuperuser):
-        self.superuser = newSuperuser
-        self.save()
-        
-    def setPassword(self, newPassword):
-        self.set_password(newPassword)
         self.save()
         
     # UTIL
@@ -103,7 +100,7 @@ class User(AbstractBaseUser):
         return self.superuser
     
     def is_active(self):
-        return self.is_active
+        return True
     
     def has_perm(self, perm, obj = None):
         return self.superuser
@@ -114,6 +111,9 @@ class User(AbstractBaseUser):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(args, kwargs)
+        
+    class Meta(ValidatedModel.Meta):
+        pass
     
     def __str__(self):
         return self.username
@@ -121,14 +121,62 @@ class User(AbstractBaseUser):
 class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     name = models.CharField(unique = True, max_length = 50)
+    website = models.URLField(max_length = 200)
+    users = models.ManyToManyField(User, related_name = "conventions", blank = True, default = None)
+    image = models.URLField(max_length = 200, blank = True, default = "")
+    
+    @property
+    def avgRating(self):
+        return statistics.mean(e.avgRating for e in self.events)
+    
+    @property
+    def avgUserProfit(self):
+        return statistics.mean(e.avgUserProfit for e in self.events)
+
+    # SETTERS
+    def setName(self, newName):
+        self.name = newName
+        self.save()
+
+    def setWebsite(self, newWebsite):
+        self.website = newWebsite
+        self.save()
+        
+    def setUser(self, newUser):
+        self.users.add(newUser)
+        self.save()
+            
+    def unsetUser(self, newUser):
+        self.users.remove(newUser)
+        self.save()
+
+    def setImage(self, newImage):
+        self.image = newImage
+        self.save()
+
+    # UTIL
+    def clean(self):
+        super().clean()
+        if INV_CON is not None and self == INV_CON:
+            if self.users.exists():
+                raise ValidationError({"users": ["you can't have a user favorite the INV_CON"]})
+            elif self.events.exists():
+                if self.events.count() > 1:
+                    raise ValidationError({"events": ["badly attached extra events in the INV_CON"]})
+                elif self.events.first() != INV_EVENT:
+                    raise ValidationError({"events": ["event attached to the INV_CON is not INV_EVENT"]})
+
+    def __str__(self):
+        return self.name
+    
+class Event(ValidatedModel):
+    ID = models.AutoField(primary_key = True)
+    convention = models.ForeignKey(Convention, related_name = "events")
+    name = models.CharField(max_length = 50)
     startDate = models.DateField()
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField()
     location = models.CharField(max_length = 50)
-    website = models.URLField(max_length = 200)
-    image = models.URLField(max_length = 200, blank = True, default = "")
-    prevCon = models.OneToOneField("self", related_name = "_nextCon", blank = True, null = True, default = None)
-    users = models.ManyToManyField(User, related_name = "conventions", blank = True, default = None)
     
     @property
     def avgRating(self):
@@ -142,21 +190,9 @@ class Convention(ValidatedModel):
             profit -= item.cost * item.numSold  # numSold or numLeft?
         return profit / self.users().count()
     
-    @property
-    def nextCon(self):
-        return getattr(self, "_nextCon", None)
-
     # SETTERS
     def setName(self, newName):
         self.name = newName
-        self.save()
-
-    def setNumAttenders(self, newNumAttenders):
-        self.numAttenders = newNumAttenders
-        self.save()
-
-    def setLocation(self, newLocation):
-        self.location = newLocation
         self.save()
 
     def setStartDate(self, newStartDate):
@@ -167,49 +203,33 @@ class Convention(ValidatedModel):
         self.endDate = newEndDate
         self.save()
 
-    def setWebsite(self, newWebsite):
-        self.website = newWebsite
-        self.save()
-
-    def setImage(self, newImage):
-        self.image = newImage
+    def setNumAttenders(self, newNumAttenders):
+        self.numAttenders = newNumAttenders
         self.save()
         
-    def setPrevCon(self, newPrevCon):
-        self.prevCon = newPrevCon
+    def setLocation(self, newLocation):
+        self.location = newLocation
         self.save()
-        
-    def setUser(self, newUser):
-        self.users.add(newUser)
-        self.save()
-            
-    def unsetUser(self, newUser):
-        self.users.remove(newUser)
-        self.save()
-
+    
     # UTIL
+    class Meta(ValidatedModel.Meta):
+        ordering = ["startDate"]
+
     def clean(self):
         super().clean()
         if (self.endDate - self.startDate).days < 0:
             raise ValidationError("endDate cannot be before startDate")
-        if INV_CON is not None:
-            if self is INV_CON:
-                if self.prevCon:
-                    raise ValidationError({"prevCon": ["you can't link the INV_CON to other cons"]})
-                if self.users.exists():
-                    raise ValidationError({"users": ["you can't have a user favorite the INV_CON"]})
-            if self.prevCon == INV_CON:
-                raise ValidationError({"prevCon": ["you can't link the INV_CON to other cons"]})
-        if self is self.prevCon:
-            raise ValidationError({"prevCon": ["you can't link a con to itself"]})
-
+        #filtered = self.convention.events.filter(name = self.name)
+        #if filtered.exists() and filtered.get().ID is not self.ID:
+        #    raise ValidationError({"name": ["there is already an event in this convention with that name"]})
+            
     def __str__(self):
         return self.name
 
 class Writeup(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "writeups")
-    convention = models.ForeignKey(Convention, related_name = "writeups")
+    event = models.ForeignKey(Event, related_name = "writeups")
     rating = models.PositiveSmallIntegerField(validators = [MaxValueValidator(5)])
     review = models.TextField()
     writeTime = models.DateTimeField(auto_now_add = True)
@@ -227,14 +247,14 @@ class Writeup(ValidatedModel):
     # UTIL
     def clean(self):
         super().clean()
-        if self.convention is INV_CON:
-            raise ValidationError({"convention": ["you can't make a writeup for the INV_CON"]})
-        filtered = self.user.writeups.filter(convention = self.convention)
+        if self.event == INV_EVENT:
+            raise ValidationError({"convention": ["you can't make a writeup for the INV_EVENT"]})
+        filtered = self.user.writeups.filter(event = self.event)
         if filtered.exists() and filtered.get().ID is not self.ID:
-            raise ValidationError("user already has a writeup for that convention")
+            raise ValidationError("user already has a writeup for that event")
 
     def __str__(self):
-        return self.user.__str__() + " writeup for " + self.convention.__str__()
+        return "%s writeup for %s %s" % (self.user, self.convention, self.event)
 
 class Fandom(ValidatedModel):
     ID = models.AutoField(primary_key = True)
@@ -265,7 +285,7 @@ class Kind(ValidatedModel):
 class Item(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "items")
-    convention = models.ForeignKey(Convention, related_name = "items")
+    event = models.ForeignKey(Event, related_name = "items")
     name = models.CharField(max_length = 50)
     fandom = models.ForeignKey(Fandom, related_name = "items")
     kind = models.ForeignKey(Kind, related_name = "items")
@@ -311,8 +331,8 @@ class Item(ValidatedModel):
     # UTIL
     def clean(self):
         super().clean()
-        if self.convention is INV_CON and self.numSold != 0:
-            raise ValidationError({"numSold": ["you can't have a nonzero numSold for the INV_CON"]})
+        if self.event == INV_EVENT and self.numSold != 0:
+            raise ValidationError({"numSold": ["you can't have a nonzero numSold for the INV_EVENT"]})
 
     def __str__(self):
         return self.name
@@ -320,7 +340,7 @@ class Item(ValidatedModel):
 class MiscCost(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "miscCosts")
-    convention = models.ForeignKey(Convention, related_name = "miscCosts")
+    event = models.ForeignKey(Event, related_name = "miscCosts")
     amount = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
     
     # SETTERS
@@ -331,11 +351,11 @@ class MiscCost(ValidatedModel):
     # UTIL
     def clean(self):
         super().clean()
-        if self.convention is INV_CON:
-            raise ValidationError({"convention": ["you can't make a miscCost for the INV_CON"]})
-        filtered = self.user.miscCosts.filter(convention = self.convention)
+        if self.event == INV_EVENT:
+            raise ValidationError({"convention": ["you can't make a miscCost for the INV_EVENT"]})
+        filtered = self.user.miscCosts.filter(event = self.event)
         if filtered.exists() and filtered.get().ID is not self.ID:
-            raise ValidationError("user already has a miscCost for that convention")
+            raise ValidationError("user already has a miscCost for that event")
     
     def __str__(self):
         return str(self.amount)
@@ -343,8 +363,8 @@ class MiscCost(ValidatedModel):
 def newUser(username, password, email):
     return User.objects.create_user(username = username, password = password, email = email)
 
-def newWriteup(user, convention, rating, review):
-    k = Writeup(user = user, convention = convention, rating = rating, review = review)
+def newWriteup(user, event, rating, review):
+    k = Writeup(user = user, event = event, rating = rating, review = review)
     k.save()
     return k
 
@@ -358,27 +378,38 @@ def newKind(name):
     k.save()
     return k
 
-def newMiscCost(user, convention, amount):
-    k = MiscCost(user = user, convention = convention, amount = amount)
+def newMiscCost(user, event, amount):
+    k = MiscCost(user = user, event = event, amount = amount)
     k.save()
     return k
 
-def newItem(user, convention, name, fandom, kind, price, cost, numSold, numLeft):
-    k = Item(user = user, convention = convention, name = name, fandom = fandom, kind = kind, price = price, cost = cost, numSold = numSold, numLeft = numLeft)
+def newItem(user, event, name, fandom, kind, price, cost, numSold, numLeft):
+    k = Item(user = user, event = event, name = name, fandom = fandom, kind = kind, price = price, cost = cost, numSold = numSold, numLeft = numLeft)
     k.save()
     return k
 
-def newConvention(name, startDate, endDate, numAttenders, location, website):
-    k = Convention(name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location, website = website)
+def newConvention(name, website):
+    k = Convention(name = name, website = website)
     k.save()
     return k
+
+def newEvent(convention, name, startDate, endDate, numAttenders, location):
+    k = Event(convention = convention, name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location)
+    k.save()
+    return k
+
 
 INV_CON = None
+INV_EVENT = None
 try:
     if Convention.objects.filter(name = "INV_CON").exists():
         INV_CON = Convention.objects.get(name = "INV_CON")
     else:
-        INV_CON = newConvention("INV_CON", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally", "https://artistal.ly")
-except (OperationalError, ProgrammingError, ImproperlyConfigured) as e:   # django currently migrating
+        INV_CON = newConvention("INV_CON", "https://artistal.ly")
+    try:
+        INV_EVENT = Event.objects.get(ID = 1)
+    except Event.DoesNotExist:
+        INV_EVENT = newEvent(INV_CON, "INV_EVENT", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally")
+        assert INV_EVENT.ID == 1
+except (OperationalError, ProgrammingError, ImproperlyConfigured):   # django currently migrating
     pass
-    

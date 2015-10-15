@@ -1,0 +1,106 @@
+{% extends "includes/helper.html" %}
+
+{% block head %}
+    <title>Artistally Create Event for {{convention}}</title>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $(".date-picker").datepicker();
+            $(".date-picker").datepicker("option", "dateFormat", "yy-mm-dd");
+            
+            KEYUP = function(event) {
+                if (event.keyCode == 13) {
+                    $("#submitButton").click();
+                }
+            }
+            $("#imageField").keyup(KEYUP);
+        });
+        
+        function makeEvent() {
+            $("#submitButton").attr("disabled", true);
+            var jsonDict = new Object();
+            jsonDict.conID = {{convention.ID}}
+            jsonDict.name = $("#nameField").val();
+            jsonDict.startDate = $("#startDateField").val();
+            jsonDict.endDate = $("#endDateField").val();
+            jsonDict.numAttenders = $("#numAttendersField").val();
+            jsonDict.location = $("#locationField").val();
+            
+            $.ajax({
+                url: "/api/event/newEvent",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    window.location.href = "/event/" + response.eventID;
+                },
+                error: function(response) {
+                    alert("Could not add new event! \n Error - " + JSON.parse(response.responseText).error);
+                    $("#submitButton").attr("disabled", false);
+                },
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="form-wrapper border-wrapper">
+            <h1 class="text-center">Add New Event</h1>
+            <p class="text-center">Please enter event info for this convention.
+                <br/>We will review and approve your information as soon as possible.</p>
+            <br/>
+            <br/>
+            <div class="form-group">
+                <label for="nameField" class="required">Event Name DON'T PUT THE CONVENTION NAME AS PART OF IT</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="name-addon"><i class="fa fa-building"></i></span>
+                    <input type="text" class="form-control" id="nameField" placeholder="Name" aria-describedby="name-addon"/>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="numAttendersField" class="required">Number of Attendees</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="numAttenders-addon"><i class="fa fa-user"></i></span>
+                    <input type="number" class="form-control" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="locationField" class="required">Location</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="location-addon"><i class="fa fa-map-marker"></i></span>
+                    <input type="text" class="form-control" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon"/>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="startDateField" class="required">Start Date</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="startDate-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control date-picker" id="startDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="startDate-addon"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="endDateField" class="required">End Date</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon" id="endDate-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control date-picker" id="endDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="endDate-addon"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            <br/>
+            <sub class="required text-center">Required</sub>
+            <br/>
+            <p class="text-center"><a onclick="makeEvent()" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
+        </div>
+    </div>
+{% endblock %}

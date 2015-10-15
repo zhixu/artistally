@@ -13,12 +13,12 @@ def newWriteup(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
     try:
-        c = models.Convention.objects.get(ID = int(d["conID"]))
-        w = models.newWriteup(u, c, int(d["rating"]), d["review"])
-    except models.Convention.DoesNotExist as e:
-        return JsonResponse({"error": "invalid: convention"}, status = 400)
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+        e = models.Event.objects.get(ID = int(d["eventID"]))
+        w = models.newWriteup(u, e, int(d["rating"]), d["review"])
+    except models.Event.DoesNotExist as ex:
+        return JsonResponse({"error": "invalid: event"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({"writeupID": w.ID})
 
 @login_required
@@ -30,10 +30,10 @@ def setRating(request):
         if w.user != u:
             return JsonResponse({"error": "not your writeup"}, status = 400)
         w.setRating(int(d["rating"]))
-    except models.Writeup.DoesNotExist as e:
+    except models.Writeup.DoesNotExist as ex:
         return JsonResponse({"error": "couldn't find the writeup"}, status = 400)
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required
@@ -45,8 +45,8 @@ def setReview(request):
         if w.user != u:
             return JsonResponse({"error": "not your writeup"}, status = 400)
         w.setReview(d["review"])
-    except models.Writeup.DoesNotExist as e:
+    except models.Writeup.DoesNotExist as ex:
         return JsonResponse({"error": "couldn't find the writeup"}, status = 400)
-    except ValidationError as e:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(e.message_dict.keys())}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})

@@ -1,20 +1,20 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    <title>ArtisTally | {{convention}} Reviews</title>
+    <title>ArtisTally | {{event.convention}} {{event}} Reviews</title>
     <script>
         $(function() {
-            {% if convention.avgRating != None %}
+            {% if event.avgRating != None %}
                 setStars();
             {% endif %}
             
-            {% if convention.image %}
-                $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
+            {% if event.image %}
+                $(".jumbotron-convention").css("background-image", "url({{event.image}})");
             {% endif %}
         });
              
         function setStars() {
-            var rating = {{convention.avgRating}};
+            var rating = {{event.avgRating}};
             var percent = (rating/5)*100;
             $("#average-rating").width(percent + "%");
         }
@@ -22,7 +22,7 @@
         {% if currUser %}
             function setFavorite() {
                 var jsonDict = new Object();
-                jsonDict.conID = "{{convention.ID}}";
+                jsonDict.conID = "{{event.convention.ID}}";
                 var ajaxObj = $.ajax({
                     url: "/api/convention/setUser",
                     type: "POST",
@@ -32,14 +32,14 @@
                          $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert('Could not add to your conventions! \n Error - ' + JSON.parse(response.responseText).error);
+                        alert("Could not add to your conventions! \n Error - " + JSON.parse(response.responseText).error);
                     },
                 });
             }
 
             function unsetFavorite() {
                 var jsonDict = new Object();
-                jsonDict.conID = "{{convention.ID}}";
+                jsonDict.conID = "{{event.convention.ID}}";
                 var ajaxObj = $.ajax({
                     url: "/api/convention/unsetUser",
                     type: "POST",
@@ -49,7 +49,7 @@
                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert('Could not remove from your conventions! \n Error - ' + JSON.parse(response.responseText).error);
+                        alert("Could not remove from your conventions! \n Error - " + JSON.parse(response.responseText).error);
                     },
                 });
             }
@@ -63,41 +63,41 @@
         </div>
         <div class="con-header">
             <div class="main-info">
-                <h2>{{convention}}</h2>
-                {{convention.location}} | {{convention.startDate}} - {{convention.endDate}} | <a href="{{convention.website}}">{{convention.website}}</a>
+                <h2>{{event.convention}} {{event}}</h2>
+                {{event.location}} | {{event.startDate}} - {{event.endDate}} | <a href="{{convention.website}}">{{event.convention.website}}</a>
             </div>
             {% if currUser %}
-            <div class="cell text-center">
-                <div class="containery">
-                    <div class="centery">
-                        <div id="setFavoriteButtonWrapper">
-                        {% if currUser not in convention.users.all %}
-                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
-                        {% else %}
-                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
-                        {% endif %}
+                <div class="cell text-center">
+                    <div class="containery">
+                        <div class="centery">
+                            <div id="setFavoriteButtonWrapper">
+                            {% if currUser not in event.convention.users.all %}
+                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
+                            {% else %}
+                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
+                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="cell text-center">
-                <div class="containery">
-                    <div class="centery">
-                        {% if currUserConWriteup %}
-                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
-                        {% else %}
-                            <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
-                        {% endif %}
+
+                <div class="cell text-center">
+                    <div class="containery">
+                        <div class="centery">
+                            {% if currUserEventWriteup %}
+                                <a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                            {% else %}
+                                <a href="#add-review" class="btn btn-custom-blue">Add Review</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
             <div class="cell text-center">
                 <div class="containery">
                     <div class="centery">
                         <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:0%"></span></div>
-                        {{convention.writeups.count}} review{{convention.writeups.count|pluralize}}
+                        {{event.convention.writeups.count}} review{{event.convention.writeups.count|pluralize}}
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
         
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>
-            {% for writeup in convention.writeups.all %}
+            {% for writeup in event.convention.writeups.all %}
                 <div class="review-entry">
                     <div class="side-entry">
                         <a href="/user/{{writeup.user}}">
@@ -120,7 +120,7 @@
                         {{writeup.editTime|date:"M d, Y"}}
                         {% if writeup.user == currUser %}
                             <br/>
-                            <a href="/writeup/{{currUserConWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                            <a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
                         {% endif %}
                     </div>
                     <div class="main-entry">
@@ -132,7 +132,7 @@
                 </div>
                 <hr>
             {% empty %}
-                No one has reviewed this convention yet.
+                No one has reviewed this event yet.
             {% endfor %}
             <p class="text-center">
             </p>

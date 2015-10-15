@@ -21,15 +21,15 @@ Then do:
     heroku local:run python manage.py createsuperuser
     heroku local:run python manage.py collectstatic
     
-To clear local database, do:
-    heroku pg:reset DATABASE_URL
-    
 If you have added new files to /aa_app/static, re-run:
     heroku local:run python manage.py collectstatic
 ( do NOT put files yourself into /staticfiles! they will get overwritten! )
 
 To run locally, do:
     heroku local
+    
+To clear local database, do:
+    heroku local:run python manage.py flush
     
 To initialize for heroku cloud, do:
     heroku create
@@ -41,3 +41,6 @@ To initialize for heroku cloud, do:
     heroku run python manage.py migrate
     heroku run python manage.py createsuperuser
     heroku ps:restart
+    
+To clear heroku cloud database, do:
+    heroku pg:reset DATABASE_URL

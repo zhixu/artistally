@@ -15,17 +15,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(verbose_name='last login', blank=True, null=True)),
+                ('password', models.CharField(verbose_name='password', max_length=128)),
+                ('last_login', models.DateTimeField(verbose_name='last login', null=True, blank=True)),
                 ('username', models.SlugField(primary_key=True, serialize=False)),
                 ('email', models.EmailField(max_length=254, unique=True)),
-                ('startYear', models.PositiveSmallIntegerField(default=None, null=True, blank=True)),
-                ('image', models.URLField(default='', blank=True)),
                 ('superuser', models.BooleanField(default=False)),
-                ('description', models.TextField(default='', blank=True)),
-                ('website1', models.URLField(default='', blank=True)),
-                ('website2', models.URLField(default='', blank=True)),
-                ('website3', models.URLField(default='', blank=True)),
+                ('startYear', models.PositiveSmallIntegerField(blank=True, null=True, default=None)),
+                ('image', models.URLField(blank=True, default='')),
+                ('description', models.TextField(blank=True, default='')),
+                ('website1', models.URLField(blank=True, default='')),
+                ('website2', models.URLField(blank=True, default='')),
+                ('website3', models.URLField(blank=True, default='')),
             ],
             options={
                 'abstract': False,
@@ -36,17 +36,27 @@ class Migration(migrations.Migration):
             fields=[
                 ('ID', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=50, unique=True)),
+                ('website', models.URLField()),
+                ('image', models.URLField(blank=True, default='')),
+                ('users', models.ManyToManyField(related_name='conventions', blank=True, to=settings.AUTH_USER_MODEL, default=None)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='Event',
+            fields=[
+                ('ID', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=50)),
                 ('startDate', models.DateField()),
                 ('endDate', models.DateField()),
                 ('numAttenders', models.PositiveIntegerField()),
                 ('location', models.CharField(max_length=50)),
-                ('website', models.URLField()),
-                ('image', models.URLField(default='', blank=True)),
-                ('prevCon', models.OneToOneField(null=True, blank=True, related_name='_nextCon', to='aa_app.Convention', default=None)),
-                ('users', models.ManyToManyField(to=settings.AUTH_USER_MODEL, default=None, blank=True, related_name='conventions')),
+                ('convention', models.ForeignKey(related_name='events', to='aa_app.Convention')),
             ],
             options={
-                'abstract': False,
+                'ordering': ['startDate'],
             },
         ),
         migrations.CreateModel(
@@ -64,13 +74,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('ID', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=50)),
-                ('price', models.DecimalField(max_digits=10, decimal_places=2, validators=[django.core.validators.MinValueValidator(0)])),
-                ('cost', models.DecimalField(max_digits=10, decimal_places=2, validators=[django.core.validators.MinValueValidator(0)])),
+                ('price', models.DecimalField(decimal_places=2, max_digits=10, validators=[django.core.validators.MinValueValidator(0)])),
+                ('cost', models.DecimalField(decimal_places=2, max_digits=10, validators=[django.core.validators.MinValueValidator(0)])),
                 ('numSold', models.PositiveIntegerField()),
                 ('numLeft', models.PositiveIntegerField()),
-                ('image', models.URLField(default='', blank=True)),
-                ('convention', models.ForeignKey(to='aa_app.Convention', related_name='items')),
-                ('fandom', models.ForeignKey(to='aa_app.Fandom', related_name='items')),
+                ('image', models.URLField(blank=True, default='')),
+                ('event', models.ForeignKey(related_name='items', to='aa_app.Event')),
+                ('fandom', models.ForeignKey(related_name='items', to='aa_app.Fandom')),
             ],
             options={
                 'abstract': False,
@@ -90,9 +100,9 @@ class Migration(migrations.Migration):
             name='MiscCost',
             fields=[
                 ('ID', models.AutoField(primary_key=True, serialize=False)),
-                ('amount', models.DecimalField(max_digits=10, decimal_places=2, validators=[django.core.validators.MinValueValidator(0)])),
-                ('convention', models.ForeignKey(to='aa_app.Convention', related_name='miscCosts')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='miscCosts')),
+                ('amount', models.DecimalField(decimal_places=2, max_digits=10, validators=[django.core.validators.MinValueValidator(0)])),
+                ('event', models.ForeignKey(related_name='miscCosts', to='aa_app.Event')),
+                ('user', models.ForeignKey(related_name='miscCosts', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -106,8 +116,8 @@ class Migration(migrations.Migration):
                 ('review', models.TextField()),
                 ('writeTime', models.DateTimeField(auto_now_add=True)),
                 ('editTime', models.DateTimeField(auto_now=True)),
-                ('convention', models.ForeignKey(to='aa_app.Convention', related_name='writeups')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='writeups')),
+                ('event', models.ForeignKey(related_name='writeups', to='aa_app.Event')),
+                ('user', models.ForeignKey(related_name='writeups', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -116,11 +126,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='item',
             name='kind',
-            field=models.ForeignKey(to='aa_app.Kind', related_name='items'),
+            field=models.ForeignKey(related_name='items', to='aa_app.Kind'),
         ),
         migrations.AddField(
             model_name='item',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='items'),
+            field=models.ForeignKey(related_name='items', to=settings.AUTH_USER_MODEL),
         ),
     ]
