@@ -1,7 +1,93 @@
-{{convention}}
-<br/>
-{% for event in convention.events.all %}
-    <a href="/event/{{event.ID}}">{{convention}} {{event}}</a>
-{% endfor %}
 
-make a new event <a href="/addevent/{{convention.ID}}">link</a>
+
+{% extends "includes/helper.html" %}
+
+{% block head %}
+    <title>Artistally | {{convention}} Info Page</title>
+    <script>
+        {% if currUser %}
+            function setFavorite() {
+                var jsonDict = new Object();
+                jsonDict.conID = "{{convention.ID}}";
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/setUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
+                    },
+                    error: function(response) {
+                        alert("Could not add to your conventions! \n Error - " + JSON.parse(response.responseText).error);
+                    },
+                });
+            }
+
+            function unsetFavorite() {
+                var jsonDict = new Object();
+                jsonDict.conID = "{{convention.ID}}";
+                var ajaxObj = $.ajax({
+                    url: "/api/convention/unsetUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
+                    },
+                    error: function(response) {
+                        alert("Could not remove from your conventions! \n Error - " + JSON.parse(response.responseText).error);
+                    },
+                });
+            }
+         {% endif %}
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <!--
+    {{convention}}
+    <br/>
+    {% for event in convention.events.all %}
+        <a href="/event/{{event.ID}}">{{convention}} {{event}}</a>
+    {% endfor %}
+
+   
+    -->
+    <div class="jumbotron-convention"></div>
+    <div class="con-header">
+        <div class="main-info">
+            <h2><a href="{{convention.website}}">{{convention}}</a></h2>
+        </div>
+        {% if currUser %}
+        <div class="cell text-center">
+            <div class="containery">
+                <div class="centery">
+                    <span id="setFavoriteButtonWrapper">
+                        {% if currUser not in convention.users.all %}
+                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
+                        {% else %}
+                            <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="section-wrapper border-wrapper">
+        <h2 class="title-wrapper">Events</h2>
+        {{ convention.events.count }} found.
+        <br/>
+        {% for event in convention.events.all %}
+            <a href="/event/{{event.ID}}">{{convention}} {{event}}</a>
+            <br/>
+        {% endfor %}
+        <br/>
+        Not seeing the right event on the list?
+        <br/>
+        <a href="/addevent/{{convention.ID}}">Make a new event.</a>
+    </div>
+</div>
+{% endblock %}

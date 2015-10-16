@@ -29,7 +29,8 @@ To run locally, do:
     heroku local
     
 To clear local database, do:
-    heroku local:run python manage.py flush
+    sudo -u postgres psql dropdb postgres
+    sudo -u postgres psql createdb postgres
     
 To initialize for heroku cloud, do:
     heroku create

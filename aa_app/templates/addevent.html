@@ -4,6 +4,7 @@
     <title>Artistally Create Event for {{convention}}</title>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
+        
         $(function() {
             $(".date-picker").datepicker();
             $(".date-picker").datepicker("option", "dateFormat", "yy-mm-dd");
@@ -16,11 +17,24 @@
             $("#imageField").keyup(KEYUP);
         });
         
+        function toggleSeason() {
+            if ($('input[name="seasonRadio"]:checked').val() == "yes") {
+                $("#seasonFieldHolder").removeClass("hidden");
+            } else {
+                $("#seasonFieldHolder").addClass("hidden");
+            }
+        }
+        
         function makeEvent() {
             $("#submitButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.conID = {{convention.ID}}
-            jsonDict.name = $("#nameField").val();
+        
+            if ($('input[name="seasonRadio"]:checked').val() == "yes") {
+                jsonDict.name = $("#seasonField").val() + " " + $("#yearField").val();
+            } else {
+                jsonDict.name = $("#yearField").val();
+            }
             jsonDict.startDate = $("#startDateField").val();
             jsonDict.endDate = $("#endDateField").val();
             jsonDict.numAttenders = $("#numAttendersField").val();
@@ -48,14 +62,34 @@
         <div class="form-wrapper border-wrapper">
             <h1 class="text-center">Add New Event</h1>
             <p class="text-center">Please enter event info for this convention.
-                <br/>We will review and approve your information as soon as possible.</p>
+            <br/>We will review and approve your information as soon as possible.</p>
             <br/>
             <br/>
             <div class="form-group">
-                <label for="nameField" class="required">Event Name DON'T PUT THE CONVENTION NAME AS PART OF IT</label>
+                <label class="required">Does this event happen more than once a year?</label>
+                <br/>
+                <label class="radio-inline"><input type="radio" name="seasonRadio" value="yes" onclick="toggleSeason()">Yes</label>
+                <label class="radio-inline"><input type="radio" name="seasonRadio" value="no" onclick="toggleSeason()">No</label>
+            </div>
+            <br/>
+            <div class="form-group input-group-lg hidden" id="seasonFieldHolder">
+                <label for="seasonField" class="required">Event Season</label>
+<!--                <div class="input-group">-->
+                    <select class="form-control" id="seasonField">
+                      <option value="Spring">Spring</option>
+                      <option value="Summer">Summer</option>
+                      <option value="Fall">Fall</option>
+                      <option value="Winter">Winter</option>
+                    </select>
+<!--                </div>-->
+                <br/>
+            </div>
+            
+            <div class="form-group">
+                <label for="yearField" class="required">Event Year</label>
                 <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="name-addon"><i class="fa fa-building"></i></span>
-                    <input type="text" class="form-control" id="nameField" placeholder="Name" aria-describedby="name-addon"/>
+                    <span class="input-group-addon" id="name-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" class="form-control" id="yearField" placeholder="{% now 'Y' %}" aria-describedby="name-addon"/>
                 </div>
             </div>
             <br/>

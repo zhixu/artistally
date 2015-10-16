@@ -184,8 +184,8 @@
         <div class="jumbotron-convention"></div>
         <div class="con-header">
             <div class="main-info">
-                <h2>{{event.convention}} {{event}}</h2>
-                {{event.location}} | {{event.startDate}} - {{event.endDate}} | <a href="{{convention.website}}">{{event.convention.website}}</a>
+                <h2><a href="{{event.convention.website}}">{{event.convention}} {{event}}</a></h2>
+                {{event.location}} | {{event.startDate}} - {{event.endDate}}
             </div>
             {% if currUser %}
             <div class="cell text-center">

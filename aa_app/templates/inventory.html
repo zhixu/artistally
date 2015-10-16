@@ -100,7 +100,7 @@
         }
          
         function appendAutoComplete() {
-            var fandomResults = [
+            fandomResults = [
                 {% for fandom in fandoms %}
                     "{{fandom}}",
                 {% endfor %}
@@ -120,14 +120,14 @@
                 }
             });
             
-            var kindsResults = [
+            kindResults = [
                 {% for kind in kinds %}
                     "{{kind}}",
                 {% endfor %}
             ];
             
             $("#new-kind").autocomplete({
-                source: kindsResults,
+                source: kindResults,
                 open: function(){
                     $(".ui-autocomplete").append('<li class="ui-menu-item" data-toggle="modal" data-target="#kindModal" aria-label="Add New">+ New Kind</li>');
                 },
@@ -370,7 +370,10 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    location.reload();
+                    fandomResults.push(jsonDict.name);
+                    $("#fandomModal").modal("hide");
+                    $("#new-fandom").val(jsonDict.name);
+                    $("#add-new-fandom").addClass("hidden");
                 },
                 error: function(response) {
                     alert("Could not make new fandom! \n Error - " + JSON.parse(response.responseText).error);
@@ -388,7 +391,10 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    location.reload();
+                    kindResults.push(jsonDict.name);
+                    $("#kindModal").modal("hide");
+                    $("#new-kind").val(jsonDict.name);
+                    $("#add-new-kind").addClass("hidden");
                 },
                 error: function(response) {
                     alert("Could not set new kind! \n Error - " + JSON.parse(response.responseText).error);
@@ -428,11 +434,11 @@
                                         <input type="text" class="form-control" placeholder="Name" id="new-name" autocomplete="off">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-fandom">Fandom:</label><small class="hidden" id="add-new-fandom"><sub>&nbsp;&nbsp;&nbsp;Fandom not found. <a data-toggle="modal" data-target="#fandomModal" aria-label="Add New">Add new fandom?</a></sub></small>
+                                        <label class="control-label required" for="new-fandom">Fandom:</label><small class="hidden" id="add-new-fandom">&nbsp;&nbsp;&nbsp;Fandom not found. <a data-toggle="modal" data-target="#fandomModal" aria-label="Add New" style="cursor:pointer">Add new fandom?</a></small>
                                         <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-kind">Kind:</label><small class="hidden" id="add-new-kind"><sub>&nbsp;&nbsp;&nbsp;Kind not found. <a data-toggle="modal" data-target="#kindModal" aria-label="Add New">Add new kind?</a></sub></small>
+                                        <label class="control-label required" for="new-kind">Kind:</label><small class="hidden" id="add-new-kind">&nbsp;&nbsp;&nbsp;Kind not found. <a data-toggle="modal" data-target="#kindModal" aria-label="Add New" style="cursor:pointer">Add new kind?</a></small>
                                         <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
                                         <div id="add-new-kind"></div>
                                     </div>
