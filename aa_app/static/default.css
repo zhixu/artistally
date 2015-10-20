@@ -146,14 +146,27 @@ th, td {
 }
 
 .required:before{
- content:"* " ;
-color:red    
+    content:"* " ;
+    color:red    
 }
 
+.alert {
+    background-image: none;
+    margin-top: 10px;
+    z-index: 10;
+    position: absolute;
+    left: 30%;
+    right: 30%;
+}
 
 /* ------------------------------------------------- */
 /* ----------------- NAVBAR COLORS ----------------- */
 /* ------------------------------------------------- */
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+ }
 
 .navbar-default {
   background-image: none;
@@ -266,6 +279,23 @@ color:red
 
 .nav.nav-sidebar {
     padding: 15px;
+}
+
+#menu-small>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.25)
+}
+
+#menu-small>li>a:link, #menu-small>li>a:visited {
+    color: #ffffff;
+    text-decoration: none;   
+}
+
+#menu-small>li>a:hover, #menu-small>li>a:active {
+    text-decoration: none;
+    color: #605063;
 }
 
 /* BOOTSTRAP OVERRIDES */
@@ -407,8 +437,8 @@ color:red
 
 .form-wrapper {
     padding: 30px 50px;
-    margin-top: 100px;
-    margin-bottom: 100px;
+    margin-top: 70px;
+    margin-bottom: 70px;
     background-color: #ffffff;
 }
 
@@ -848,11 +878,22 @@ color:red
     .splash-text {
         font-size: 60px;
     }
+    
+    #menu-large {
+        height: 0px;
+        overflow: hidden;
+    }
 }
 
-
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
     .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
         margin-left: 0px !important;
     }
+
+    #menu-small {
+        height: 0px !important;
+        width: 0px;
+        overflow: hidden !important;
+    }
+    
 }

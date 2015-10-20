@@ -3,7 +3,7 @@
 {% block head %}
     <title>Artistally Login</title>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function() {            
             KEYUP = function(event) {
                 if (event.keyCode == 13) {
                     $("#loginButton").click();
@@ -39,6 +39,7 @@
 {% endblock %}
 
 {% block body %}
+    <div class="alert alert-danger hidden" role="alert" id="error-message">Profile did not update.</div>
     <div class="form-wrapper reg-form-wrapper border-wrapper">
         <p class="text-center"><sup><a href="/">&laquo; Go back home</a></sup></p>
         <br/>
@@ -47,14 +48,14 @@
         <div class="form-group">
             <label for="userField" class="required">Username</label>
             <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="login-addon"><i class="fa fa-user"></i></span>
+                <span class="input-group-addon" id="login-addon"><i class="fa fa-user fa-fw"></i></span>
                 <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon" spellcheck=false/>
             </div>
         </div>
         <div class="form-group">
             <label for="passField" class="required">Password</label>
             <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="password-addon"><i class="fa fa-key"></i></span>
+                <span class="input-group-addon" id="password-addon"><i class="fa fa-key fa-fw"></i></span>
                 <input type="password" class="form-control" id="passField" placeholder="Password" aria-describedby="password-addon"/>
             </div>
         </div>

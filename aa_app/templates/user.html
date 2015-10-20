@@ -183,7 +183,8 @@
                     if (hasNewFile) {
                         uploadFile();
                     } else {
-                        window.location.reload(true);
+                        $("#error-message").removeClass("hidden");
+                        $("html, body").animate({ scrollTop: 0 }, "slow");
                     }
                 }
             }
@@ -204,6 +205,7 @@
 {% block body %}
     {% if currUser and currUser == pageUser %}
         <div class="container">
+            <div class="alert alert-success hidden" role="alert" id="error-message"><b>Success!</b> Profile changes have been saved.</div>
             <div class="form-wrapper border-wrapper">
                 <h1 class="text-center title-wrapper">Edit Profile</h1>
                 <div class="row">
@@ -229,7 +231,7 @@
                         <div class="form-group">
                             <label for="oldPassField">Current Password: (Needed to change password)</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key"></i></span>
+                                <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key fa-fw"></i></span>
                                 <input type="password" class="form-control" id="oldPassField" aria-describedby="oldpassword-addon"/>
                             </div>
                         </div>
@@ -238,7 +240,7 @@
                                 <div class="form-group">
                                     <label for="passField1">New Password:</label>
                                     <div class="input-group input-group-lg">
-                                        <span class="input-group-addon" id="password1-addon"><i class="fa fa-key"></i></span>
+                                        <span class="input-group-addon" id="password1-addon"><i class="fa fa-key fa-fw"></i></span>
                                         <input type="password" class="form-control" id="passField1" aria-describedby="password1-addon"/>
                                     </div>
                                 </div>
@@ -247,7 +249,7 @@
                                 <div class="form-group">
                                     <label for="passField2">Re-enter New Password:</label>
                                     <div class="input-group input-group-lg">
-                                        <span class="input-group-addon" id="password2-addon"><i class="fa fa-key"></i></span>
+                                        <span class="input-group-addon" id="password2-addon"><i class="fa fa-key fa-fw"></i></span>
                                         <input type="password" class="form-control" id="passField2" aria-describedby="password2-addon"/>
                                     </div>
                                 </div>
@@ -258,7 +260,7 @@
                                 <div class="form-group">
                                     <label for="emailField">Old Email:</label>
                                     <div class="input-group input-group-lg">
-                                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope fa-fw"></i></span>
                                         <input type="email" class="form-control" aria-describedby="login-addon" value="{{pageUser.email}}" disabled/>
                                     </div>
                                 </div>
@@ -267,7 +269,7 @@
                                 <div class="form-group">
                                     <label for="emailField">New Email:</label>
                                     <div class="input-group input-group-lg">
-                                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope"></i></span>
+                                        <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope fa-fw"></i></span>
                                         <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
                                     </div>
                                 </div>
@@ -277,28 +279,28 @@
                         <div class="form-group">
                             <label for="startYearField">Year Starting Artist Alley:</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="startYear-addon"><i class="fa fa-calendar-check-o"></i></span>
+                                <span class="input-group-addon" id="startYear-addon"><i class="fa fa-calendar-check-o fa-fw"></i></span>
                                 <input class="form-control" type="number" min="1990" max="{% now 'Y' %}" placeholder="{% now 'Y' %}" class="form-control" id="startYearField" value="{{pageUser.startYear}}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="url1">URL1:</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="url1-addon"><i class="fa fa-link"></i></span>
+                                <span class="input-group-addon" id="url1-addon"><i class="fa fa-link fa-fw"></i></span>
                                 <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url1Field" value="{{pageUser.website1}}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="url2">URL2:</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="url2-addon"><i class="fa fa-link"></i></span>
+                                <span class="input-group-addon" id="url2-addon"><i class="fa fa-link fa-fw"></i></span>
                                 <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url2Field" value="{{pageUser.website2}}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="url3">URL3:</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-addon" id="url3-addon"><i class="fa fa-link"></i></span>
+                                <span class="input-group-addon" id="url3-addon"><i class="fa fa-link fa-fw"></i></span>
                                 <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{pageUser.website3}}"/>
                             </div>
                         </div>

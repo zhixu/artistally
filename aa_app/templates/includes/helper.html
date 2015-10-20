@@ -2,6 +2,7 @@
 
 <head>    
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -38,14 +39,15 @@
             $("#conSearch").keyup(KEYUP);
         });
         
-        {% if currUser %}
-//            $(window).load(function() {
-//                if ($(window).width() > 767) {
-//                    $("#userMenuFull").css("display", "block");
-//                    $("#userMenuSmall").css("display", "none");
+        {% if currUser %}        
+//            $(window).resize(function() {
+//                if ($(document).width() > 767) {
+//                    $("#menu-small").addClass("hidden");
+//                    $("#menu-large").removeClass("hidden");
 //                } else {
-//                    $("#userMenuFull").css("display", "none");
-//                    $("#userMenuSmall").css("display", "block");
+//                    console.log($(document).width());
+//                    $("#menu-large").addClass("hidden");
+//                    $("#menu-small").removeClass("hidden");
 //                }
 //            });
         {% endif %}
@@ -99,26 +101,25 @@
                         </div>
                         </div>
                         <li><a href="/search/">Browse All</a></li>
+                        {% if currUser %}
+                        <div id="menu-small">
+                            {% include "includes/links.html" %}
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#" onclick="logout()"><i class="fa fa-sign-out"></i>&nbsp; Logout</a></li>
+                        </div>
+                        {% endif %}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
                         {% if currUser %}
-                            <li class="dropdown">
+                            <li class="dropdown" id="menu-large">
                                 <a href="#" id="userMenuButton" class="dropdown-toggle img-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if currUser.image %}<img src="{{currUser.image}}" class="user-icon"/>{% else %}<img src="/static/images/icon-default.png" class="user-icon"/>{% endif %}<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     {% include "includes/links.html" %}
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="#" onclick="logout()">Logout</a></li>
+                                    <li><a href="#" onclick="logout()"><i class="fa fa-sign-out"></i>&nbsp; Logout</a></li>
                                 </ul>
                             </li>
-                        
-<!--
-                            <div id="userMenuSmall" css="display: none">
-                                {% include "includes/links.html" %}
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#" onclick="logout()">Logout</a></li>
-                            </div>
--->
                         {% else %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/signup">Register</a></li>
