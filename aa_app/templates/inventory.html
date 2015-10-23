@@ -9,14 +9,16 @@
     
     <script src="/static/js/editablegrid/all_min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
     <script>
         {% if not invEvent %}
             {% if miscCost %}
                 function updateMiscCost() {
                     var jsonDict = new Object();
                     jsonDict.miscCostID = "{{miscCost.ID}}";
-                    jsonDict.amount = $("#miscCostsField").val();
-                    if (jsonDict.amount != $("#miscCostsField").prop("defaultValue")) {
+                    jsonDict.name = $().val();
+                    jsonDict.amount = $("#mcAmountField").val();
+                    if (jsonDict.amount != $("#mcAmountField").prop("defaultValue")) {
                         $.ajax({
                             url: "/api/miscCost/setAmount",
                             type: "POST",
@@ -33,7 +35,7 @@
                 function updateMiscCost() {
                     var jsonDict = new Object();
                     jsonDict.eventID = "{{event.ID}}";
-                    jsonDict.amount = $("#miscCostsField").val();
+                    jsonDict.amount = $("#mcAmountField").val();
                     $.ajax({
                         url: "/api/miscCost/newMiscCost",
                         type: "POST",
@@ -503,14 +505,25 @@
                     </table>
                     {% if not invEvent %}
                         <br/>
+                        {% for mc in miscCosts %}
+                            <div class="form-group">
+                                <label for="mc{{mc.ID}}AmountField">Miscellaneous Costs:</label>
+                                <br/>
+                                Table, transportation, hotel, printing costs, etc...
+                                Misc costs <input type="number" class="form-control" min="0" step="0.01" id="mc{{mc.ID}}AmountField" placeholder="0.00" {% if mc %} value="{{mc.amount}}" {% endif %}/>
+                                Name of misc cost, what was it for <input type="text" class="form-control" id="mc{{md.ID}}NameField" placeholder="hookers" {% if mc %} value="{{mc.name}}" {% endif %}/>
+                            </div>
+                            <br/>
+                        {% endfor %}
                         <div class="form-group">
-                            <label for="miscCostsField">Miscellaneous Costs:</label>
+                            <label for="mcAmountField">Make a new one:</label>
                             <br/>
                             Table, transportation, hotel, printing costs, etc...
-                            Misc costs <input type="number" class="form-control" min="0" step="0.01" id="miscCostsField" placeholder="0.00" {% if miscCost %} value="{{miscCost}}" {% endif %}/>
+                            Misc costs <input type="number" class="form-control" min="0" step="0.01" id="mcAmountField" placeholder="0.00"/>
+                            Name of misc cost, what was it for <input type="text" class="form-control" id="mcNameField" placeholder="hookers"/>
                         </div>
                         <br/>
-                        <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">update misccost</a>
+                        <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">TODO update misccost</a>
                     {% endif %}
                     </div>
                 </div>
