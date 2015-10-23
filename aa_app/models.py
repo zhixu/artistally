@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Avg, Q, Sum
+from django.db.models import Avg, Sum
 from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ValidationError, ImproperlyConfigured, AppRegistryNotReady
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -294,6 +294,7 @@ class Item(ValidatedModel):
     numSold = models.PositiveIntegerField()
     numLeft = models.PositiveIntegerField()
     image = models.URLField(max_length = 200, blank = True, default = "")
+    tag = models.UUIDField(blank = True, null = True, default = None)
 
     # SETTERS
     def setNumSold(self, newNumSold):
@@ -327,6 +328,10 @@ class Item(ValidatedModel):
     def setKind(self, newKind):
         self.kind = newKind
         self.save()
+        
+    def setTag(self, newTag):
+        self.tag = newTag
+        self.save()
     
     # UTIL
     def clean(self):
@@ -342,10 +347,15 @@ class MiscCost(ValidatedModel):
     user = models.ForeignKey(User, related_name = "miscCosts")
     event = models.ForeignKey(Event, related_name = "miscCosts")
     amount = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
+    name = models.CharField(max_length = 50)
     
     # SETTERS
     def setAmount(self, newAmount):
         self.amount = newAmount
+        self.save()
+        
+    def setName(self, newName):
+        self.name = newName
         self.save()
 
     # UTIL
@@ -353,12 +363,9 @@ class MiscCost(ValidatedModel):
         super().clean()
         if self.event == INV_EVENT:
             raise ValidationError({"convention": ["you can't make a miscCost for the INV_EVENT"]})
-        filtered = self.user.miscCosts.filter(event = self.event)
-        if filtered.exists() and filtered.get().ID is not self.ID:
-            raise ValidationError("user already has a miscCost for that event")
     
     def __str__(self):
-        return str(self.amount)
+        return "%s spent %s for %s at %s %s" % (self.user, self.amount, self.name, self.event.convention, self.event)
 
 def newUser(username, password, email):
     return User.objects.create_user(username = username, password = password, email = email)
@@ -378,8 +385,8 @@ def newKind(name):
     k.save()
     return k
 
-def newMiscCost(user, event, amount):
-    k = MiscCost(user = user, event = event, amount = amount)
+def newMiscCost(user, event, amount, name):
+    k = MiscCost(user = user, event = event, amount = amount, name = name)
     k.save()
     return k
 

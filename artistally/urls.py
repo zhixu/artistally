@@ -3,7 +3,7 @@ from django.contrib import admin
 
 import datetime
 
-    
+
 urlpatterns = [
     url(r"^$", "aa_app.views.site.root"),
     url(r"^404$", "django.views.defaults.page_not_found"),
@@ -66,6 +66,9 @@ urlpatterns = [
     url(r"^api/event/setStartDate$", "aa_app.views.api.event.setStartDate"),
     url(r"^api/event/setEndDate$", "aa_app.views.api.event.setEndDate"),
     url(r"^api/event/copyInventory$", "aa_app.views.api.event.copyInventory"),
+    url(r"^api/event/recopyInventory$", "aa_app.views.api.event.recopyInventory"),
+    url(r"^api/event/spillInventory$", "aa_app.views.api.event.spillInventory"),
+    url(r"^api/event/respillInventory$", "aa_app.views.api.event.respillInventory"),
     url(r"^api/util/uploadFile$", "aa_app.views.api.util.uploadFile"),
     url(r"^api/util/findFandom$", "aa_app.views.api.util.findFandom"),
     url(r"^api/util/findKind$", "aa_app.views.api.util.findKind"),

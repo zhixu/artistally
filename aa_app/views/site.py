@@ -113,8 +113,7 @@ def inventory(request, eventID = None):
     if eventID != None and get_object_or_404(models.Event, ID = int(eventID)) != models.INV_EVENT:
         eventID = int(eventID)
         context["event"] = get_object_or_404(models.Event, ID = int(eventID))
-        if u.miscCosts.filter(event = context["event"]).exists():
-            context["miscCost"] = u.miscCosts.get(event = context["event"])
+        context["miscCosts"] = u.miscCosts.filter(event = context["event"])
     else:
         context["event"] = models.INV_EVENT
         context["invEvent"] = True

@@ -35,3 +35,18 @@ def setAmount(request):
     except ValidationError as ex:
         return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
+
+@login_required
+def setName(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    try:
+        m = models.MiscCost.objects.get(ID = int(d["miscCostID"]))
+        if m.user != u:
+            return JsonResponse({"error": "not your miscCost"}, status = 400)
+        m.setName(d["name"])
+    except models.MiscCost.DoesNotExist as ex:
+        return JsonResponse({"error": "couldn't find the miscCost"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    return JsonResponse({})
