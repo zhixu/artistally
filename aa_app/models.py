@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Avg, Q, Sum
+from django.db.models import Avg, Sum
 from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ValidationError, ImproperlyConfigured, AppRegistryNotReady
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -294,6 +294,7 @@ class Item(ValidatedModel):
     numSold = models.PositiveIntegerField()
     numLeft = models.PositiveIntegerField()
     image = models.URLField(max_length = 200, blank = True, default = "")
+    tag = models.UUIDField(blank = True, null = True, default = None)
 
     # SETTERS
     def setNumSold(self, newNumSold):
@@ -326,6 +327,10 @@ class Item(ValidatedModel):
     
     def setKind(self, newKind):
         self.kind = newKind
+        self.save()
+        
+    def setTag(self, newTag):
+        self.tag = newTag
         self.save()
     
     # UTIL
