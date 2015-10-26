@@ -22,6 +22,20 @@ def newMiscCost(request):
     return JsonResponse({"miscCostID": m.ID})
 
 @login_required
+def deleteMiscCost(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    try:
+        m = models.Item.objects.get(ID = int(d["miscCostID"]))
+        if m.user != u:
+            return JsonResponse({"error": "not your miscCost"}, status = 400)
+        m.delete()
+    except models.MiscCost.DoesNotExist as ex:
+        return JsonResponse({"error": "couldn't find the item"}, status = 400)
+    return JsonResponse({})
+
+
+@login_required
 def setAmount(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user

@@ -49,6 +49,8 @@ urlpatterns = [
     url(r"^api/writeup/setRating$", "aa_app.views.api.writeup.setRating"),
     url(r"^api/writeup/setReview$", "aa_app.views.api.writeup.setReview"),
     url(r"^api/miscCost/newMiscCost$", "aa_app.views.api.miscCost.newMiscCost"),
+    url(r"^api/miscCost/deleteMiscCost$", "aa_app.views.api.miscCost.deleteMiscCost"),
+    url(r"^api/miscCost/setName$", "aa_app.views.api.miscCost.setName"),
     url(r"^api/miscCost/setAmount$", "aa_app.views.api.miscCost.setAmount"),
     url(r"^api/fandom/newFandom$", "aa_app.views.api.fandom.newFandom"),
     url(r"^api/fandom/setName$", "aa_app.views.api.fandom.setName"),
