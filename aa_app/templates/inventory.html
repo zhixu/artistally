@@ -12,23 +12,6 @@
 
     <script>
         {% if not invEvent %}
-        
-            function toggleCostForm() {
-                //$("#cost-form")
-                if ($("#cost-form").css("display") == "none") {
-                    $("#cost-form").show("slow", function() {});
-                    var KEYUP = function(event) {
-                        if (event.keyCode == 13) {
-                            $("#add-cost").click();
-                        }
-                    }
-                    $("#mcAmountField").keyup(KEYUP);
-                } else {
-                    $("#cost-form").hide("slow", function() {});
-                    $("#mcAmountField").unbind("keyup", KEYUP);
-                }
-            }
-        
             function updateMiscCost(itemID, rowID, colID, newValue, oldValue) {
                 var jsonDict = new Object();
                 jsonDict.miscCostID = itemID.slice(0, -4);
@@ -519,12 +502,9 @@
                     {% if not invEvent%}
                         <br/>
                         At this convention you have # cost, # profit, # items sold
-                        <br/>
-                        <br/>
-                        <a href="#inventory-wrapper" class="btn btn-custom-blue">Update Inventory</a> <a href="#costs-wrapper" class="btn btn-custom-blue">Update Event Costs</a>
                     {% endif %}
                 </div>
-                <div class="my-section-wrapper border-wrapper" id="inventory-wrapper">
+                <div class="my-section-wrapper border-wrapper">
                     <h3 class="title-wrapper">Inventory <small>Click cell to edit.</small></h3>
                     <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
                     {% if not invEvent %}
@@ -609,11 +589,11 @@
                     </table>
                 </div>
                     {% if not invEvent %}
-                        <div class="my-section-wrapper border-wrapper" id="costs-wrapper">
+                        <div class="my-section-wrapper border-wrapper">
                             <h3 class="title-wrapper">Event Costs <small>Click cell to edit.</small></h3>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <a onclick="toggleCostForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add New Cost</a>
+                                    <h4>Add New Cost</h4>
                                     <div class="row" id="cost-form">
                                         <div class="col-sm-6">
                                             <div class="form-group">
@@ -627,7 +607,7 @@
                                                 <input type="number" class="form-control" placeholder="0.00" id="mcAmountField">
                                             </div>
                                         </div>
-                                        <div class="text-right"><a onclick="toggleCostForm()" class="btn btn-custom-blue">Cancel</a> <a onclick="addMiscCost()" class="btn btn-custom-blue" id="add-cost">Add</a></div>
+                                        <div class="text-right"><a onclick="addMiscCost()" class="btn btn-custom-blue" id="add-cost">Add</a></div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

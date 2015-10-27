@@ -27,9 +27,12 @@
                     <br/>
 -->
                     {% if currUser.conventions.exists %}
+                    <div class="row">
                         {% for con in currUser.conventions.all %}
                             {% for event in con.events.all %}
-                                <div class="convention-preview-wrapper">
+<!--                                <div class="convention-preview-wrapper">-->
+                                    <div class="col-sm-6">
+                                    <div class="convention-preview-wrapper">
                                     <div class="convention-preview-date">
                                         <p><span>{{event.startDate|date:"M"}}</span>
                                         {{event.startDate|date:"d"}}</p>
@@ -40,15 +43,18 @@
                                         <br/>
                                         <a href="/inventory/{{event.ID}}">View Convention Inventory &raquo;</a>
                                     </div>
-                                </div>
+                                    </div>
+                                    </div>
+<!--                                </div>-->
                             {% endfor %}
                         {% endfor %}
+                    </div>
                     {% else %}
                         No conventions to display.
                     {% endif %}
                     <br/>
                     <br/>
-                    <a href="/search">Browse conventions</a> to add them to your conventions.
+                    <a href="/search">Browse conventions</a> to add more events to your list.
                 </div>
             </div>
         </div>
