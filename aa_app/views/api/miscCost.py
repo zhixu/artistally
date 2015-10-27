@@ -14,7 +14,7 @@ def newMiscCost(request):
     u = request.user
     try:
         e = models.Event.objects.get(ID = int(d["eventID"]))
-        m = models.newMiscCost(u, e, Decimal(d["amount"]))
+        m = models.newMiscCost(u, e, Decimal(d["amount"]), d["name"])
     except models.Event.DoesNotExist as ex:
         return JsonResponse({"error": "invalid: event"}, status = 400)
     except ValidationError as ex:
@@ -26,7 +26,7 @@ def deleteMiscCost(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
     try:
-        m = models.Item.objects.get(ID = int(d["miscCostID"]))
+        m = models.MiscCost.objects.get(ID = int(d["miscCostID"]))
         if m.user != u:
             return JsonResponse({"error": "not your miscCost"}, status = 400)
         m.delete()

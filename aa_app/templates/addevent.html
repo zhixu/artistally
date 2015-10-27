@@ -37,7 +37,9 @@
             }
             jsonDict.startDate = $("#startDateField").val();
             jsonDict.endDate = $("#endDateField").val();
-            jsonDict.numAttenders = $("#numAttendersField").val();
+            if ($("#numAttendersField").val()) {
+                jsonDict.numAttenders = $("#numAttendersField").val();
+            }
             jsonDict.location = $("#locationField").val();
             
             $.ajax({
@@ -94,7 +96,7 @@
             </div>
             <br/>
             <div class="form-group">
-                <label for="numAttendersField" class="required">Number of Attendees</label>
+                <label for="numAttendersField">Number of Attendees</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="numAttenders-addon"><i class="fa fa-user fa-fw"></i></span>
                     <input type="number" class="form-control" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>

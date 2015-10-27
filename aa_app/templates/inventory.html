@@ -12,13 +12,46 @@
 
     <script>
         {% if not invEvent %}
-            {% if miscCost %}
-                function updateMiscCost() {
-                    var jsonDict = new Object();
-                    jsonDict.miscCostID = "{{miscCost.ID}}";
-                    jsonDict.name = $().val();
-                    jsonDict.amount = $("#mcAmountField").val();
-                    if (jsonDict.amount != $("#mcAmountField").prop("defaultValue")) {
+        
+            function toggleCostForm() {
+                //$("#cost-form")
+                if ($("#cost-form").css("display") == "none") {
+                    $("#cost-form").show("slow", function() {});
+                    var KEYUP = function(event) {
+                        if (event.keyCode == 13) {
+                            $("#add-cost").click();
+                        }
+                    }
+                    $("#mcAmountField").keyup(KEYUP);
+                } else {
+                    $("#cost-form").hide("slow", function() {});
+                    $("#mcAmountField").unbind("keyup", KEYUP);
+                }
+            }
+        
+            function updateMiscCost(itemID, rowID, colID, newValue, oldValue) {
+                var jsonDict = new Object();
+                jsonDict.miscCostID = itemID.slice(0, -4);
+                var costName = 0,
+                    costAmount = 1;
+
+                switch(colID) {
+                    case costName:
+                        jsonDict.name = newValue;
+                        $.ajax({
+                            url: "/api/miscCost/setName",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            async: false,
+                            error: function(response) {
+                                alert("Could not set miscellaneous costs! \n Error - " + JSON.parse(response.responseText).error);
+                                costGrid.setValueAt(rowID, colID, oldValue, true);
+                            },
+                        });
+                        break;
+                    case costAmount:
+                        jsonDict.amount = newValue;
                         $.ajax({
                             url: "/api/miscCost/setAmount",
                             type: "POST",
@@ -27,26 +60,57 @@
                             async: false,
                             error: function(response) {
                                 alert("Could not set miscellaneous costs! \n Error - " + JSON.parse(response.responseText).error);
+                                costGrid.setValueAt(rowID, colID, oldValue, true);
                             },
                         });
-                    }
+                        break;
                 }
-            {% else %}
-                function updateMiscCost() {
+            }
+
+            function addMiscCost() {
+                if ($("#mcAmountField").val() && $("#mcNameField").val()) {
                     var jsonDict = new Object();
                     jsonDict.eventID = "{{event.ID}}";
+                    jsonDict.name = $("#mcNameField").val();
                     jsonDict.amount = $("#mcAmountField").val();
+
                     $.ajax({
                         url: "/api/miscCost/newMiscCost",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            costGrid.append(response.miscCostID + "cost", {"cost name": jsonDict.name, "amount": jsonDict.amount}, true);
+                            costGrid.refreshGrid();
+                        },
                         error: function(response) {
                             alert("Could not set miscellaneous costs! \n Error - " + JSON.parse(response.responseText).error);
                         },
                     });
+                } else {
+                    alert("Please fill in all necessary information.");
                 }
-            {% endif %}
+            }
+         
+            function deleteMiscCost(costID) {
+                var jsonDict = new Object;
+                console.log("costID: " + costID);
+                jsonDict.miscCostID = costID.slice(0, -4);
+                console.log("actual ID " + jsonDict.miscCostID);
+                $.ajax({
+                    url: "/api/miscCost/deleteMiscCost",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        var rowIndex = costGrid.getRowIndex(costID);
+                        costGrid.remove(rowIndex);
+                    },
+                    error: function(response) {
+                        alert("Could not remove cost! \n Error - " + response.responseText);
+                    },
+                });
+            }
             
             function copyInventory() {
                 $("#copyInventoryButton").attr("disabled", true);
@@ -76,8 +140,7 @@
                 { sortIconUp: "/static/images/up.png", 
                 sortIconDown: "/static/images/down.png",
                 modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateItem(row.id, rowIdx, colIdx, newValue, oldValue); }});
-        
-            // we build and load the metadata in Javascript
+
             editableGrid.load({ metadata: [
                 { name: "name", datatype: "string", editable: true },
                 { name: "fandom", datatype: "string", editable: true },
@@ -99,6 +162,28 @@
             
             editableGrid.attachToHTMLTable("inventory");
             editableGrid.renderGrid();
+            
+            {% if not invEvent %}
+                costGrid = new EditableGrid("CostEditableGrid",
+                    { sortIconUp: "/static/images/up.png", 
+                    sortIconDown: "/static/images/down.png",
+                    modelChanged: function(rowIdx, colIdx, oldValue, newValue, row) { updateMiscCost(row.id, rowIdx, colIdx, newValue, oldValue); }});
+                
+                costGrid.load({ metadata: [
+                    { name: "cost name", datatype: "string", editable: true },
+                    { name: "amount", datatype: "double($,2,dot,comma,1)", editable: true },
+                    { name: "action", datatype: "html", editable: false }
+                ]});
+            
+                costGrid.setCellRenderer("action", new CellRenderer({render: function(cell, value) {
+                    var rowID = costGrid.getRowId(cell.rowIndex);
+                    //cell.innerHTML = '<a onclick="deleteMiscCost()" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
+                    cell.innerHTML = '<a onclick="deleteMiscCost(\'' + rowID.toString() + '\')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
+                }}));
+             
+                costGrid.attachToHTMLTable("cost-chart");
+                costGrid.renderGrid();
+            {% endif %}
         }
          
         function appendAutoComplete() {
@@ -167,14 +252,14 @@
          
         function duplicateItem(rowID) {
             var rowIndex = editableGrid.getRowIndex(rowID);
-            makeItem(editableGrid.getValueAt(rowIndex, 0), 
+            makeItem(editableGrid.getValueAt(rowIndex, 0),
                     "{{event.ID}}", 
                     editableGrid.getValueAt(rowIndex, 1), 
                     editableGrid.getValueAt(rowIndex, 2), 
                     editableGrid.getValueAt(rowIndex, 3), 
                     editableGrid.getValueAt(rowIndex, 4), 
                     editableGrid.getValueAt(rowIndex, 5), 
-                    {% if invCon %}
+                    {% if invEvent %}
                         0);
                     {% else %}
                        editableGrid.getValueAt(rowIndex, 6));
@@ -408,6 +493,10 @@
 
 {% block body %}
     <div class="container">
+        <div class="alert alert-success alert-dismissible hidden" role="alert" id="error-message">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <b>Success!</b> Miscellaneous costs have been updated.
+        </div>
         <div class="row">
             <div class="col-md-2 sidebar">
                 <div class="fixed">
@@ -417,17 +506,33 @@
 
             <div class="col-md-10">
                 <div class="my-section-wrapper border-wrapper">
-                    <h1 class="title-wrapper">{% if not invEvent %}{{event.convention}} {{event}} {% endif %}Inventory</h1>
-                    <div id="inventory-page">
-                        Click cell to edit.
+                    <h1 class="title-wrapper">{% if invEvent %}Main {% else %}{{event.convention}} {{event}} {% endif %}Inventory</h1>
+                    {% if invEvent %}
+                        This is your main inventory, designed to keep track of what you have in stock at all times. To keep track of an individual event's inventory, hop on over to <a href="/myconventions">your conventions</a>.
+                    {% else %}
+                        This inventory is specific to {{event.convention}} {{event}}. Help us maintain correct information by filling out your convention costs as well as your inventory. Thank you, we really appreciate it!
+                    {% endif %}
+                    <br/>
+                    <br/>
+                    <h3 class="title-wrapper">Summary</h3>
+                    # types of items, # fandoms, # kinds
+                    {% if not invEvent%}
+                        <br/>
+                        At this convention you have # cost, # profit, # items sold
                         <br/>
                         <br/>
-                    <div>
-                        {% if not invEvent %}
-                            <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
-                        {% endif %}
-                        <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
-                        <div id="item-form">
+                        <a href="#inventory-wrapper" class="btn btn-custom-blue">Update Inventory</a> <a href="#costs-wrapper" class="btn btn-custom-blue">Update Event Costs</a>
+                    {% endif %}
+                </div>
+                <div class="my-section-wrapper border-wrapper" id="inventory-wrapper">
+                    <h3 class="title-wrapper">Inventory <small>Click cell to edit.</small></h3>
+                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
+                    {% if not invEvent %}
+                        
+                        <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
+                    {% endif %}
+                        
+                    <div id="item-form">
                             <br/>
                             <div class="row">
                                 <div class="col-sm-6">
@@ -448,28 +553,27 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="control-label required" for="new-price">Price:</label>
-                                        <input type="text" class="form-control" placeholder="0" id="new-price">
+                                        <input type="number" class="form-control" placeholder="0" id="new-price">
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label required" for="new-cost">Cost:</label>
-                                        <input type="text" class="form-control" placeholder="0" id="new-cost" autocomplete="off">
+                                        <input type="number" class="form-control" placeholder="0" id="new-cost" autocomplete="off">
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label required" for="new-numLeft">In Stock:</label>
-                                        <input type="text" class="form-control" placeholder="0" id="new-numLeft" autocomplete="off">
+                                        <input type="number" class="form-control" placeholder="0" id="new-numLeft" autocomplete="off">
                                     </div>
                                     {% if not invEvent %}
                                         <div class="form-group">
                                             <label class="control-label required" for="new-numSold">Sold:</label>
-                                            <input type="text" class="form-control" placeholder="0" id="new-numSold" autocomplete="off">
+                                            <input type="number" class="form-control" placeholder="0" id="new-numSold" autocomplete="off">
                                         </div>
                                     {% endif %}
                                 </div>
                             </div>
-                            <p class="text-center"><a onclick="makeNewItem()" class="btn btn-custom-blue" id="add-item">Add Item</a></p> 
+                            <p class="text-right"><a onclick="toggleItemForm()" class="btn btn-custom-blue">Cancel</a> <a onclick="makeNewItem()" class="btn btn-custom-blue" id="add-item">Add Item</a></p> 
                             <hr>
                         </div>
-                    </div>
 
                     <table class="table table-hover" id="inventory">
                         <thead>
@@ -479,11 +583,11 @@
                                 <th>Kind</th>
                                 <th>Price</th>
                                 <th>Cost</th>
-                                <th>In Stock</th>
+                                <th class="text-right">In Stock</th>
                                 {% if not invEvent %}
-                                    <th>Sold</th>
+                                    <th class="text-right">Sold</th>
                                 {% endif %}
-                                <th>Action</th>
+                                <th class="text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody id="inventory-body">
@@ -494,38 +598,60 @@
                                 <td>{{item.kind}}</td>
                                 <td>{{item.price|floatformat:2}}</td>
                                 <td>{{item.cost|floatformat:2}}</td>
-                                <td>{{item.numLeft}}</td>
+                                <td class="text-right">{{item.numLeft}}</td>
                                 {% if not invEvent %}
-                                    <td>{{item.numSold}}</td>
+                                    <td class="text-right">{{item.numSold}}</td>
                                 {% endif %}
-                                <td></td>
+                                <td class="text-right"></td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+                </div>
                     {% if not invEvent %}
-                        <br/>
-                        {% for mc in miscCosts %}
-                            <div class="form-group">
-                                <label for="mc{{mc.ID}}AmountField">Miscellaneous Costs:</label>
-                                <br/>
-                                Table, transportation, hotel, printing costs, etc...
-                                Misc costs <input type="number" class="form-control" min="0" step="0.01" id="mc{{mc.ID}}AmountField" placeholder="0.00" {% if mc %} value="{{mc.amount}}" {% endif %}/>
-                                Name of misc cost, what was it for <input type="text" class="form-control" id="mc{{md.ID}}NameField" placeholder="hookers" {% if mc %} value="{{mc.name}}" {% endif %}/>
+                        <div class="my-section-wrapper border-wrapper" id="costs-wrapper">
+                            <h3 class="title-wrapper">Event Costs <small>Click cell to edit.</small></h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a onclick="toggleCostForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add New Cost</a>
+                                    <div class="row" id="cost-form">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label required" for="mcNameField">Cost Type</label>
+                                                <input type="text" class="form-control" placeholder="Table, hotel, transportation, etc..." id="mcNameField">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label required" for="mcAmountField">Amount</label>
+                                                <input type="number" class="form-control" placeholder="0.00" id="mcAmountField">
+                                            </div>
+                                        </div>
+                                        <div class="text-right"><a onclick="toggleCostForm()" class="btn btn-custom-blue">Cancel</a> <a onclick="addMiscCost()" class="btn btn-custom-blue" id="add-cost">Add</a></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-hover" id="cost-chart">
+                                        <thead>
+                                            <th>Cost Name</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </thead>
+                                        <tbody>
+                                            {% for mc in miscCosts %}
+                                                <tr id="{{mc.ID}}cost">
+                                                    <td>{{mc.name}}</td>
+                                                    <td>{{mc.amount}}</td>
+                                                    <td></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <br/>
-                        {% endfor %}
-                        <div class="form-group">
-                            <label for="mcAmountField">Make a new one:</label>
-                            <br/>
-                            Table, transportation, hotel, printing costs, etc...
-                            Misc costs <input type="number" class="form-control" min="0" step="0.01" id="mcAmountField" placeholder="0.00"/>
-                            Name of misc cost, what was it for <input type="text" class="form-control" id="mcNameField" placeholder="hookers"/>
                         </div>
-                        <br/>
-                        <a class="btn btn-custom-blue" onclick="updateMiscCost()" href="#">TODO update misccost</a>
                     {% endif %}
-                    </div>
+                    
                 </div>
             </div>
         </div>

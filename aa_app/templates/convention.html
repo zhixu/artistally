@@ -58,11 +58,15 @@
     <div class="con-header">
         <div class="main-info">
             <h2><a href="{{convention.website}}">{{convention}}</a></h2>
+            <a href="{{convention.website}}">{{convention.website}}</a>
         </div>
         {% if currUser %}
         <div class="cell text-center">
             <div class="containery">
                 <div class="centery">
+                    {% if currUser %}
+                    <span><a href="#" class="btn btn-custom-blue">Edit Convention Info</a></span>
+                    {% endif %}
                     <span id="setFavoriteButtonWrapper">
                         {% if currUser not in convention.users.all %}
                             <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>

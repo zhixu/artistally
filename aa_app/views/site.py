@@ -53,6 +53,13 @@ def user(request, username):
     context["pageUser"] = get_object_or_404(models.User, username = username)
     return render_to_response("user.html", context)
 
+@login_required
+def edituser(request):
+    context = RequestContext(request)
+    u = request.user
+    context["currUser"] = u
+    return render_to_response("edituser.html", context)
+
 def convention(request, conID):
     context = RequestContext(request)
     context["convention"] = get_object_or_404(models.Convention, ID = int(conID))

@@ -18,6 +18,7 @@ urlpatterns = [
     url(r"^addconvention$", "aa_app.views.site.addconvention"),
     url(r"^addevent/([0-9]+)$", "aa_app.views.site.addevent"),
     url(r"^user/([0-9A-Za-z_\-]+)$", "aa_app.views.site.user"),
+    url(r"^edituser$", "aa_app.views.site.edituser"),
     url(r"^convention/([0-9]+)$", "aa_app.views.site.convention"),
     url(r"^event/([0-9]+)$", "aa_app.views.site.event"),
     url(r"^eventreviews/([0-9]+)$", "aa_app.views.site.eventreviews"),

@@ -175,7 +175,7 @@ class Event(ValidatedModel):
     name = models.CharField(max_length = 50)
     startDate = models.DateField()
     endDate = models.DateField()
-    numAttenders = models.PositiveIntegerField()
+    numAttenders = models.PositiveIntegerField(blank = True, null = True, default = None)
     location = models.CharField(max_length = 50)
     
     @property
@@ -400,8 +400,8 @@ def newConvention(name, website):
     k.save()
     return k
 
-def newEvent(convention, name, startDate, endDate, numAttenders, location):
-    k = Event(convention = convention, name = name, startDate = startDate, endDate = endDate, numAttenders = numAttenders, location = location)
+def newEvent(convention, name, startDate, endDate, location):
+    k = Event(convention = convention, name = name, startDate = startDate, endDate = endDate, location = location)
     k.save()
     return k
 
