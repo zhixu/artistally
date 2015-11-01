@@ -7,8 +7,9 @@
         <title>ArtisTally | My {{event.convention}} {{event}} Inventory</title>
     {% endif %}
     
+    <link rel="stylesheet" href="/static/jquery-ui.css"/>
     <script src="/static/js/editablegrid/all_min.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="/static/js/jquery-ui.js"></script>
 
     <script>
         {% if not invEvent %}
@@ -139,8 +140,8 @@
             
             editableGrid.setCellRenderer("action", new CellRenderer({render: function(cell, value) {
                 var rowID = editableGrid.getRowId(cell.rowIndex);
-                cell.innerHTML = '<a onclick="duplicateItem(' + rowID + ')" style="cursor:pointer"><i class="fa fa-clone"></i></a>';
-                cell.innerHTML += '&nbsp;<a onclick="deleteItem(' + rowID + ')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
+                cell.innerHTML = '<a data-toggle="tooltip" title="Duplicate" onclick="duplicateItem(' + rowID + ')" style="cursor:pointer"><i class="fa fa-clone"></i></a>';
+                cell.innerHTML += '&nbsp;<a data-toggle="tooltip" title="Delete" onclick="deleteItem(' + rowID + ')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
             }})); 
             
             editableGrid.attachToHTMLTable("inventory");
@@ -160,8 +161,7 @@
             
                 costGrid.setCellRenderer("action", new CellRenderer({render: function(cell, value) {
                     var rowID = costGrid.getRowId(cell.rowIndex);
-                    //cell.innerHTML = '<a onclick="deleteMiscCost()" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
-                    cell.innerHTML = '<a onclick="deleteMiscCost(\'' + rowID.toString() + '\')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
+                    cell.innerHTML = '<a data-toggle="tooltip" title="Delete" onclick="deleteMiscCost(\'' + rowID.toString() + '\')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
                 }}));
              
                 costGrid.attachToHTMLTable("cost-chart");
@@ -216,6 +216,7 @@
             makeEditableGrid();
             // make new fandom and new kinds in add new form searchable
             appendAutoComplete();
+            $('[data-toggle="tooltip"]').tooltip();
         });
         
         function makeNewItem() {
@@ -269,6 +270,11 @@
                 success: function(response) {
                     editableGrid.append(response.itemID, {"name": itemName, "fandom": itemFandom, "kind": itemKind, "price": itemPrice, "cost": itemCost, "remaining": itemNumLeft{% if not invEvent %}, "sold": itemNumSold{% endif %}}, true);
                     editableGrid.refreshGrid();
+                    $("#" + response.itemID + " td:nth-child(6)").addClass("text-right");
+                    $("#" + response.itemID + " td:nth-child(7)").addClass("text-right");
+                    {% if not invEvent %}
+                        $("#" + response.itemID + " td:nth-child(8)").addClass("text-right");
+                    {% endif %}
                 },
                 error: function(response) {
                     alert('Error: \n' + JSON.parse(response.responseText).error);
@@ -506,7 +512,8 @@
                 </div>
                 <div class="my-section-wrapper border-wrapper">
                     <h3 class="title-wrapper">Inventory <small>Click cell to edit.</small></h3>
-                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
+                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a> 
+                    <a onclick="" class="btn btn-custom-blue">Copy Convention Inventory</a>
                     {% if not invEvent %}
                         
                         <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
@@ -517,26 +524,30 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-name">Name:</label>
+                                        <label class="control-label required" for="new-name">Name:</label> 
                                         <input type="text" class="form-control" placeholder="Name" id="new-name" autocomplete="off">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-fandom">Fandom:</label><small class="hidden" id="add-new-fandom">&nbsp;&nbsp;&nbsp;Fandom not found. <a data-toggle="modal" data-target="#fandomModal" aria-label="Add New" style="cursor:pointer">Add new fandom?</a></small>
+                                        <label class="control-label required" for="new-fandom">Fandom:</label> 
+                                        <a href="#" data-toggle="tooltip" title="The fandom your item is for. If original, just put in 'original'."><i class="fa fa-question-circle"></i></a>
+                                        <small class="hidden" id="add-new-fandom">&nbsp;&nbsp;&nbsp;Fandom not found. <a data-toggle="modal" data-target="#fandomModal" aria-label="Add New" style="cursor:pointer">Add new fandom?</a></small>
                                         <input type="text" class="form-control" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-kind">Kind:</label><small class="hidden" id="add-new-kind">&nbsp;&nbsp;&nbsp;Kind not found. <a data-toggle="modal" data-target="#kindModal" aria-label="Add New" style="cursor:pointer">Add new kind?</a></small>
+                                        <label class="control-label required" for="new-kind">Kind:</label>
+                                        <a data-toggle="tooltip" title="The type of merchandise this item is."><i class="fa fa-question-circle"></i></a>
+                                        <small class="hidden" id="add-new-kind">&nbsp;&nbsp;&nbsp;Kind not found. <a data-toggle="modal" data-target="#kindModal" aria-label="Add New" style="cursor:pointer">Add new kind?</a></small>
                                         <input type="text" class="form-control" placeholder="Acrylic keychain, print, etc..." id="new-kind">
                                         <div id="add-new-kind"></div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-price">Price:</label>
+                                        <label class="control-label required" for="new-price">Price:</label> <a data-toggle="tooltip" title="The price at which you are selling this item"><i class="fa fa-question-circle"></i></a>
                                         <input type="number" class="form-control" placeholder="0" id="new-price">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-cost">Cost:</label>
+                                        <label class="control-label required" for="new-cost">Cost:</label> <a data-toggle="tooltip" title="The price at which the item cost you to make"><i class="fa fa-question-circle"></i></a>
                                         <input type="number" class="form-control" placeholder="0" id="new-cost" autocomplete="off">
                                     </div>
                                     <div class="form-group">
@@ -631,7 +642,6 @@
                             </div>
                         </div>
                     {% endif %}
-                    
                 </div>
             </div>
         </div>
