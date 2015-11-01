@@ -14,7 +14,7 @@ def uploadFile(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
     f = base64.b64decode(d["file"])
-    r = requests.post("https://fuwa.se/api/upload", files = {"file[]": f}).json()[0]
+    r = requests.post("https://m.fuwa.se/api/upload", files = {"file[]": f}).json()[0]
     url = "https://fuwa.se" + r["url"] if r["status"] == "error" and r["error"] == "exists" else r["url"] 
     print(url)
     return JsonResponse({"url": url})
