@@ -3,17 +3,15 @@
 {% block head %}
     <title>Artistally Login</title>
     <script>
-        $(document).ready(function() {            
-            KEYUP = function(event) {
+        $(document).ready(function() {
+            $(".login-field").keydown(function(event) {
                 if (event.keyCode == 13) {
                     $("#loginButton").click();
-                }
-            }
-            $("#passField").keyup(KEYUP);
+                 }
+            });
         });
 
         function login() {
-            $("#passField").unbind("keyup", KEYUP);
             $("#loginButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.username = $("#userField").val();
@@ -27,11 +25,12 @@
                     window.location.href = "/";
                 },
                 error: function(response) {
-                    alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                    try {
+                        alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Login failed! An unknown error has occurred.");
+                    }
                     $("#loginButton").attr("disabled", false);
-                    setTimeout(function() {
-                        $("#passField").keyup(KEYUP);
-                    }, 222);
                 },
             });
         }
@@ -49,14 +48,14 @@
             <label for="userField" class="required">Username</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="login-addon"><i class="fa fa-user fa-fw"></i></span>
-                <input type="text" class="form-control" id="userField" placeholder="Username" aria-describedby="login-addon" spellcheck=false/>
+                <input type="text" class="form-control login-field" id="userField" placeholder="Username" aria-describedby="login-addon" spellcheck=false/>
             </div>
         </div>
         <div class="form-group">
             <label for="passField" class="required">Password</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="password-addon"><i class="fa fa-key fa-fw"></i></span>
-                <input type="password" class="form-control" id="passField" placeholder="Password" aria-describedby="password-addon"/>
+                <input type="password" class="form-control login-field" id="passField" placeholder="Password" aria-describedby="password-addon"/>
             </div>
         </div>
         <p class="text-center">

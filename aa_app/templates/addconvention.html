@@ -3,7 +3,15 @@
 {% block head %}
     <title>Artistally Create Convention</title>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script>        
+    <script>
+        $(function() {
+            $(".convention-field").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#submitButton").click();
+                 }
+            });
+        });
+        
         function isURL(str) {
             if(str.substring(0, 7) == 'http://' || str.substring(0, 8) == 'https://') {
                 return true;
@@ -13,7 +21,6 @@
         }
         
         function makeConvention() {
-            $("#imageField").unbind("keyup", KEYUP);
             $("#submitButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.name = $("#nameField").val();
@@ -31,7 +38,11 @@
                     window.location.href = "/convention/" + response.conID;
                 },
                 error: function(response) {
-                    alert("Could not add new convention! \n Error - " + JSON.parse(response.responseText).error);
+                    try {
+                        alert("Could not add new convention! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Could not add new convention! An unknown error has occurred.");
+                    }
                     $("#submitButton").attr("disabled", false);
                 },
             });
@@ -51,7 +62,7 @@
                 <label for="nameField" class="required">Convention Name</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="name-addon"><i class="fa fa-building fa-fw"></i></span>
-                    <input type="text" class="form-control" id="nameField" placeholder="Name" aria-describedby="name-addon"/>
+                    <input type="text" class="form-control convention-field" id="nameField" placeholder="Name" aria-describedby="name-addon"/>
                 </div>
             </div>
             <br/>
@@ -59,7 +70,7 @@
                 <label for="websiteField" class="required">Website</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="website-addon"><i class="fa fa-link fa-fw"></i></span>
-                    <input type="url" class="form-control" id="websiteField" placeholder="http://www.artistal.ly" aria-describedby="website-addon"/>
+                    <input type="url" class="form-control convention-field" id="websiteField" placeholder="http://www.artistal.ly" aria-describedby="website-addon"/>
                 </div>
             </div>
             <br/>
@@ -67,7 +78,7 @@
                 <label for="imageField">Banner Image URL</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="image-addon"><i class="fa fa-link fa-fw"></i></span>
-                    <input type="url" class="form-control" id="imageField" placeholder="Banner image" aria-describedby="image-addon"/>
+                    <input type="url" class="form-control convention-field" id="imageField" placeholder="Banner image" aria-describedby="image-addon"/>
                 </div>
             </div>
             <br/>

@@ -3,6 +3,14 @@
 {% block head %}
     <title>Artistally | Edit Profile</title>
     <script>
+        $(function() {
+            $(".profile-field").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#updateProfileButton").click();
+                 }
+            });
+        });
+        
         var hasNewFile = false;
 
         function uploadFile() {
@@ -20,7 +28,11 @@
                         updateImage(response.url);
                     },
                     error: function(response) {
-                        alert("Could not change profile picture! \n Error - " + JSON.parse(response.responseText).error);
+                        try {
+                            alert("Could not change profile picture! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not change profile picture! An unknown error has occurred.");
+                        }
                     },
                 });
             }
@@ -39,7 +51,11 @@
                 data: JSON.stringify(jsonDict),
                 async: false,
                 error: function(response) {
-                    alert("Could not change profile picture! \n Error - " + JSON.parse(response.responseText).error);
+                    try {
+                        alert("Could not change profile picture! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Could not change profile picture! An unknown error has occurred.");
+                    }
                 },
             });
             if (ajaxObj.status == 200) {
@@ -78,7 +94,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert("Could not change year starting artist alley! \n Error - " + JSON.parse(response.responseText).error);
+                            try {
+                                alert("Could not change year starting artist alley! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change year starting artist alley! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -93,7 +113,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not change email! \n Error - ' + JSON.parse(response.responseText).error);
+                            try {
+                                alert('Could not change email! \n Error - ' + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change email! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -108,7 +132,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not change password! \n Error - ' + JSON.parse(response.responseText).error);
+                            try {
+                                alert('Could not change password! \n Error - ' + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change password! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -123,7 +151,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not change description! \n Error - ' + JSON.parse(response.responseText).error);
+                            try {
+                                alert('Could not change description! \n Error - ' + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change description! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -139,7 +171,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
+                            try {
+                                alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change website URL! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -155,7 +191,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
+                            try {
+                                alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change website URL! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -171,7 +211,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
+                            try {
+                                alert('Could not change website URL! \n Error - ' + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change website URL! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -231,7 +275,7 @@
                         <label for="oldPassField">Current Password: (Needed to change password)</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="oldpassword-addon"><i class="fa fa-key fa-fw"></i></span>
-                            <input type="password" class="form-control" id="oldPassField" aria-describedby="oldpassword-addon"/>
+                            <input type="password" class="form-control profile-field" id="oldPassField" aria-describedby="oldpassword-addon"/>
                         </div>
                     </div>
                     <div class="row">
@@ -240,7 +284,7 @@
                                 <label for="passField1">New Password:</label>
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-addon" id="password1-addon"><i class="fa fa-key fa-fw"></i></span>
-                                    <input type="password" class="form-control" id="passField1" aria-describedby="password1-addon"/>
+                                    <input type="password" class="form-control profile-field" id="passField1" aria-describedby="password1-addon"/>
                                 </div>
                             </div>
                         </div>
@@ -249,7 +293,7 @@
                                 <label for="passField2">Re-enter New Password:</label>
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-addon" id="password2-addon"><i class="fa fa-key fa-fw"></i></span>
-                                    <input type="password" class="form-control" id="passField2" aria-describedby="password2-addon"/>
+                                    <input type="password" class="form-control profile-field" id="passField2" aria-describedby="password2-addon"/>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +313,7 @@
                                 <label for="emailField">New Email:</label>
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope fa-fw"></i></span>
-                                    <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
+                                    <input type="email" class="form-control profile-field" id="emailField" aria-describedby="login-addon"/>
                                 </div>
                             </div>
                         </div>
@@ -279,28 +323,28 @@
                         <label for="startYearField">Year Starting Artist Alley:</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="startYear-addon"><i class="fa fa-calendar-check-o fa-fw"></i></span>
-                            <input class="form-control" type="number" min="1990" max="{% now 'Y' %}" placeholder="{% now 'Y' %}" class="form-control" id="startYearField" value="{{currUser.startYear}}"/>
+                            <input class="form-control profile-field" type="number" min="1990" max="{% now 'Y' %}" placeholder="{% now 'Y' %}" class="form-control" id="startYearField" value="{{currUser.startYear}}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="url1">URL1:</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="url1-addon"><i class="fa fa-link fa-fw"></i></span>
-                            <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url1Field" value="{{currUser.website1}}"/>
+                            <input class="form-control profile-field" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url1Field" value="{{currUser.website1}}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="url2">URL2:</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="url2-addon"><i class="fa fa-link fa-fw"></i></span>
-                            <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url2Field" value="{{currUser.website2}}"/>
+                            <input class="form-control profile-field" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url2Field" value="{{currUser.website2}}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="url3">URL3:</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="url3-addon"><i class="fa fa-link fa-fw"></i></span>
-                            <input class="form-control" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{currUser.website3}}"/>
+                            <input class="form-control profile-field" type="text" placeholder="http://www.artistal.ly/" class="form-control" id="url3Field" value="{{currUser.website3}}"/>
                         </div>
                     </div>
 
@@ -312,7 +356,7 @@
             </div>
             <br/>
             <br/>
-            <p class="text-right"><a href="user/{{currUser}}" class="btn btn-custom-blue wide">View Profile</a> <a onclick="updateProfile()" class="btn btn-custom-blue wide">Update Profile</a></p>
+            <p class="text-right"><a href="user/{{currUser}}" class="btn btn-custom-blue wide">View Profile</a> <a onclick="updateProfile()" id="updateProfileButton" class="btn btn-custom-blue wide">Update Profile</a></p>
         </div>
     </div>
 {% endblock %}

@@ -116,7 +116,6 @@
                   });
                   $("#fandomsChart")[0].parentNode.parentNode.appendChild(legendHolder.firstChild);
 
-
                   fandomsChart.generateLegend();
                   $("#fandomsLegend").innerHTML = fandomsChart.generateLegend();
         }
@@ -134,7 +133,11 @@
                          $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert("Could not add to your conventions! \n Error - " + JSON.parse(response.responseText).error);
+                        try {
+                            alert("Could not add to your conventions! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not add to your conventions! An unknown error has occurred.");
+                        }
                     },
                 });
             }
@@ -151,7 +154,11 @@
                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
                     },
                     error: function(response) {
-                        alert("Could not remove from your conventions! \n Error - " + JSON.parse(response.responseText).error);
+                        try {
+                            alert("Could not remove from your conventions! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not remove from your conventions! An unknown error has occurred.");
+                        }
                     },
                 });
             }
@@ -170,7 +177,11 @@
                         location.reload();
                     },
                     error: function(response) {
-                        alert("Could not add new review! \n Error - " + JSON.parse(response.responseText).error);
+                        try {
+                            alert("Could not add new review! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not add new review! An unknown error has occurred.");
+                        }
                     },
                 });
             }

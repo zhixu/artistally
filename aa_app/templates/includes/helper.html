@@ -31,29 +31,14 @@
     
     <script>
         $(function() {
-            KEYUP = function(event) {
+            $("#conSearch").keydown(function(event) {
                 if (event.keyCode == 13) {
                     $("#conSearchButton").click();
-                }
-            }
-            $("#conSearch").keyup(KEYUP);
+                 }
+            });
         });
         
-        {% if currUser %}        
-//            $(window).resize(function() {
-//                if ($(document).width() > 767) {
-//                    $("#menu-small").addClass("hidden");
-//                    $("#menu-large").removeClass("hidden");
-//                } else {
-//                    console.log($(document).width());
-//                    $("#menu-large").addClass("hidden");
-//                    $("#menu-small").removeClass("hidden");
-//                }
-//            });
-        {% endif %}
-        
         function search() {
-            console.log("in here");
             var searchstring = $("#conSearch").val();
             window.location = "/search/" + searchstring;
         }

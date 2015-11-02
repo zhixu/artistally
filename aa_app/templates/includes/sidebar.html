@@ -1,14 +1,13 @@
 <div class="sidebar-wrapper border-wrapper">
     <div class="containery">
         <div class="centery">
-            <a href="/user/{{currUser}}">
-                {% if currUser.image %}
-                    <img src="{{currUser.image}}" class="user-icon-large">
-                {% else %}
-                    <img src="/static/images/icon-default.png" class="user-icon-large">
-                {% endif %}
-                <br/>{{currUser}}
-            </a>
+            {% if currUser.image %}
+                <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"></a>
+            {% else %}
+                <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"></a>
+            {% endif %}
+            <br/>
+            <a href="/user/{{currUser}}">{{currUser}}</a>
         </div>
     </div>
     <ul class="nav nav-sidebar">

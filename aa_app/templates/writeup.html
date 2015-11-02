@@ -22,7 +22,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert("Could not edit review! \n Error - " + JSON.parse(response.responseText).error);
+                            try {
+                                alert("Could not set review rating! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set review rating! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {
@@ -37,7 +41,11 @@
                         data: JSON.stringify(jsonDict),
                         async: false,
                         error: function(response) {
-                            alert("Could not edit review! \n Error - " + JSON.parse(response.responseText).error);
+                            try {
+                                alert("Could not edit review! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not edit review! An unknown error has occurred.");
+                            }
                         },
                     });
                     if (ajaxObj.status != 200) {

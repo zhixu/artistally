@@ -11,12 +11,11 @@
             $(".date-picker").datepicker();
             $(".date-picker").datepicker("option", "dateFormat", "yy-mm-dd");
             
-            KEYUP = function(event) {
+            $(".event-field").keydown(function(event) {
                 if (event.keyCode == 13) {
                     $("#submitButton").click();
-                }
-            }
-            $("#imageField").keyup(KEYUP);
+                 }
+            });
         });
         
         function toggleSeason() {
@@ -53,7 +52,11 @@
                     window.location.href = "/event/" + response.eventID;
                 },
                 error: function(response) {
-                    alert("Could not add new event! \n Error - " + JSON.parse(response.responseText).error);
+                    try {
+                        alert("Could not add new event! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Could not add new event! An unknown error has occurred.");
+                    }
                     $("#submitButton").attr("disabled", false);
                 },
             });
@@ -93,7 +96,7 @@
                 <label for="yearField" class="required">Event Year</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="name-addon"><i class="fa fa-calendar fa-fw"></i></span>
-                    <input type="text" class="form-control" id="yearField" placeholder="{% now 'Y' %}" aria-describedby="name-addon"/>
+                    <input type="text" class="form-control event-field" id="yearField" placeholder="{% now 'Y' %}" aria-describedby="name-addon"/>
                 </div>
             </div>
             <br/>
@@ -101,7 +104,7 @@
                 <label for="numAttendersField">Number of Attendees</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="numAttenders-addon"><i class="fa fa-user fa-fw"></i></span>
-                    <input type="number" class="form-control" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>
+                    <input type="number" class="form-control event-field" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>
                 </div>
             </div>
             <br/>
@@ -109,7 +112,7 @@
                 <label for="locationField" class="required">Location</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="location-addon"><i class="fa fa-map-marker fa-fw"></i></span>
-                    <input type="text" class="form-control" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon"/>
+                    <input type="text" class="form-control event-field" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon"/>
                 </div>
             </div>
             <br/>
@@ -119,7 +122,7 @@
                         <label for="startDateField" class="required">Start Date</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="startDate-addon"><i class="fa fa-calendar fa-fw"></i></span>
-                            <input type="text" class="form-control date-picker" id="startDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="startDate-addon"/>
+                            <input type="text" class="form-control date-picker event-field" id="startDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="startDate-addon"/>
                         </div>
                     </div>
                 </div>
@@ -128,7 +131,7 @@
                         <label for="endDateField" class="required">End Date</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="endDate-addon"><i class="fa fa-calendar fa-fw"></i></span>
-                            <input type="text" class="form-control date-picker" id="endDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="endDate-addon"/>
+                            <input type="text" class="form-control date-picker event-field" id="endDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="endDate-addon"/>
                         </div>
                     </div>
                 </div>

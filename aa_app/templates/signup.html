@@ -4,12 +4,11 @@
     <title>Artistally Signup</title>
     <script>
         $(function() {
-            KEYUP = function(event) {
+            $(".register-field").keydown(function(event) {
                 if (event.keyCode == 13) {
                     $("#registerButton").click();
-                }
-            }
-            $("#emailField").keyup(KEYUP);
+                 }
+            });
         });
 
         function login() {
@@ -25,13 +24,16 @@
                     window.location.href = "/";
                 },
                 error: function(response) {
-                    alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                    try {
+                        alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Login failed! An unknown error has occurred.");
+                    }
                 },
             });
         }
         
         function signup() {
-            $("#emailField").unbind("keyup", KEYUP);
             $("#registerButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.username = $("#userField").val();
@@ -50,11 +52,12 @@
                         login();
                     },
                     error: function(response) {
-                        alert("Registration failed! \n Error - " + JSON.parse(response.responseText).error);
+                        try {
+                            alert("Registration failed! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Registration failed! An unknown error has occurred.");
+                        }
                         $("#registerButton").attr("disabled", false);
-                        setTimeout(function() {
-                            $("#emailField").keyup(KEYUP);
-                        }, 222);
                     },
                 });
             }
@@ -72,28 +75,28 @@
             <label for="userField" class="required">Username</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="login-addon"><i class="fa fa-user fa-fw"></i></span>
-                <input type="text" class="form-control" id="userField" aria-describedby="login-addon" spellcheck=false/>
+                <input type="text" class="form-control register-field" id="userField" aria-describedby="login-addon" spellcheck=false/>
             </div>
         </div>
         <div class="form-group">
             <label for="passField2" class="required">Password</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="password1-addon"><i class="fa fa-key fa-fw"></i></span>
-                <input type="password" class="form-control" id="passField1" aria-describedby="password1-addon"/>
+                <input type="password" class="form-control register-field" id="passField1" aria-describedby="password1-addon"/>
             </div>
         </div>
         <div class="form-group">
             <label for="passField2" class="required">Confirm Password</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="password2-addon"><i class="fa fa-key fa-fw"></i></span>
-                <input type="password" class="form-control" id="passField2" aria-describedby="password2-addon"/>
+                <input type="password" class="form-control register-field" id="passField2" aria-describedby="password2-addon"/>
             </div>
         </div>
         <div class="form-group">
             <label for="emailField" class="required">Email Address</label>
             <div class="input-group input-group-lg">
                 <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope fa-fw"></i></span>
-                <input type="email" class="form-control" id="emailField" aria-describedby="login-addon"/>
+                <input type="email" class="form-control register-field" id="emailField" aria-describedby="login-addon"/>
             </div>
         </div>
         <br/>
