@@ -6,7 +6,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-import operator
+import operator, datetime, collections
 
 from aa_app import models
 
@@ -68,6 +68,74 @@ def convention(request, conID):
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
+    
+    year = datetime.timedelta(days = 365, hours = 6)
+    voteSum_1Y = collections.Counter()
+    voteSum_2Y = collections.Counter()
+    voteSum_5Y = collections.Counter()
+    voteSum_All = collections.Counter()
+    valueSoldSum_1Y = collections.Counter()
+    valueSoldSum_2Y = collections.Counter()
+    valueSoldSum_5Y = collections.Counter()
+    valueSoldSum_All = collections.Counter()
+    numSoldSum_1Y = collections.Counter()
+    numSoldSum_2Y = collections.Counter()
+    numSoldSum_5Y = collections.Counter()
+    numSoldSum_All = collections.Counter()
+    
+    for event in context["convention"].events.all():
+        if datetime.date.today() - event.endDate <= year:
+            voteSum_1Y += event.kindUserVotes
+            valueSoldSum_1Y += event.kindValueSold
+            numSoldSum_1Y += event.kindNumSold
+        if datetime.date.today() - event.endDate <= 2 * year:
+            voteSum_2Y += event.kindUserVotes
+            valueSoldSum_2Y += event.kindValueSold
+            numSoldSum_2Y += event.kindNumSold
+        if datetime.date.today() - event.endDate <= 5 * year:
+            voteSum_5Y += event.kindUserVotes
+            valueSoldSum_5Y += event.kindValueSold
+            numSoldSum_5Y += event.kindNumSold
+        voteSum_All += event.kindUserVotes
+        valueSoldSum_All += event.kindValueSold
+        numSoldSum_All += event.kindNumSold
+        
+    avgKindPrice_1Y = collections.Counter()
+    for kind in valueSoldSum_1Y:
+        if numSoldSum_1Y[kind] == 0:
+            avgKindPrice_1Y[kind] = None
+        else:
+            avgKindPrice_1Y[kind] = valueSoldSum_1Y[kind] / numSoldSum_1Y[k]
+    avgKindPrice_2Y = collections.Counter()
+    for kind in valueSoldSum_2Y:
+        if numSoldSum_2Y[kind] == 0:
+            avgKindPrice_2Y[kind] = None
+        else:
+            avgKindPrice_2Y[kind] = valueSoldSum_2Y[kind] / numSoldSum_2Y[k]
+    avgKindPrice_5Y = collections.Counter()
+    for kind in valueSoldSum_5Y:
+        if numSoldSum_5Y[kind] == 0:
+            avgKindPrice_5Y[kind] = None
+        else:
+            avgKindPrice_5Y[kind] = valueSoldSum_5Y[kind] / numSoldSum_5Y[k]
+    avgKindPrice_All = collections.Counter()
+    for kind in valueSoldSum_1Y:
+        if numSoldSum_All[kind] == 0:
+            avgKindPrice_All[kind] = None
+        else:
+            avgKindPrice_All[kind] = valueSoldSum_All[kind] / numSoldSum_All[k]
+        
+    context["votedKinds"] = {}
+    context["votedKindPrices"] = {}
+    context["votedKinds"]["thisYear"] = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
+    context["votedKindPrices"]["thisYear"] = [avgKindPrice_1Y[k] for k in context["votedKinds"]["thisYear"]]
+    context["votedKinds"]["twoYears"] = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
+    context["votedKindPrices"]["twoYears"] = [avgKindPrice_2Y[k] for k in context["votedKinds"]["twoYears"]]
+    context["votedKinds"]["fiveYears"] = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
+    context["votedKindPrices"]["fiveYears"] = [avgKindPrice_5Y[k] for k in context["votedKinds"]["fiveYears"]]
+    context["votedKinds"]["all"] = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
+    context["votedKindPrices"]["all"] = [avgKindPrice_All[k] for k in context["votedKinds"]["all"]]
+
     return render_to_response("convention.html", context)
 
 def event(request, eventID):
@@ -75,25 +143,10 @@ def event(request, eventID):
     context["event"] = get_object_or_404(models.Event, ID = int(eventID))
     if context["event"] == models.INV_EVENT:
         raise Http404("Accessing the INV_EVENT is disallowed.")
-    itemKindsCounter = {}
-    itemFandomsCounter = {}
-    itemsSoldTotal = context["event"].items.aggregate(Sum("numSold"))["numSold__sum"] or 0
-    for k in context["event"].items.all():
-        if k.kind in itemKindsCounter:
-            itemKindsCounter[k.kind] += k.numSold
-        else:
-            itemKindsCounter[k.kind] = k.numSold
-        if k.fandom in itemFandomsCounter:
-            itemFandomsCounter[k.fandom] += k.numSold
-        else:
-            itemFandomsCounter[k.fandom] = k.numSold
-    if itemsSoldTotal:
-        for k in itemKindsCounter:
-            itemKindsCounter[k] /= itemsSoldTotal
-        for k in itemFandomsCounter:
-            itemFandomsCounter[k] /= itemsSoldTotal
-    context["eventTopItemKinds"] = sorted(itemKindsCounter.items(), key = operator.itemgetter(1), reverse = True)
-    context["eventTopItemFandoms"] = sorted(itemFandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
+    context["topKinds"] = context["event"].topKinds
+    context["topFandoms"] = context["event"].topFandoms
+    context["votedKinds"] = [k[0] for k in sorted(context["event"].kindUserVotes.items(), key=operator.itemgetter(1), reverse = True)]
+    context["votedKindPrices"] = [context["event"].avgKindPrice[k] for k in context["votedKinds"]]
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u

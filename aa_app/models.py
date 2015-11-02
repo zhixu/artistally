@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, ImproperlyConfigured, AppReg
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-import datetime, random, statistics
+import datetime, random, statistics, collections, operator
 
 
 class UserManager(BaseUserManager):
@@ -41,11 +41,11 @@ class User(AbstractBaseUser):
     website3 = models.URLField(max_length = 200, blank = True, default = "")
     
     @property
-    def profit(self):
+    def profit(self):    # does NOT include cost of items that weren't so
         profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
         for item in self.items.all():
             profit += item.price * item.numSold
-            profit -= item.cost * item.numSold  # numSold or numLeft?
+            profit -= item.cost * item.numSold
         return profit
 
     # SETTERS
@@ -183,12 +183,71 @@ class Event(ValidatedModel):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
     
     @property
-    def avgUserProfit(self):
+    def avgUserProfit(self):    # does NOT include cost of items that weren't sold
         profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
         for item in self.items.all():
             profit += item.price * item.numSold
-            profit -= item.cost * item.numSold  # numSold or numLeft?
+            profit -= item.cost * item.numSold
         return profit / self.users().count()
+    
+    @property
+    def itemsSoldTotal(self):
+        return self.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
+    
+    @property
+    def kindValueSold(self):
+        kindPrices = collections.Counter()
+        for item in self.items.all():
+            kindPrices[item] += item.price * item.numSold
+        return kindPrices
+    
+    @property
+    def kindNumSold(self):
+        kindNumSolds = collections.Counter()
+        for item in self.items.all():
+            kindNumSolds[item] += item.numSold
+        return kindNumSolds
+    
+    @property
+    def avgKindPrice(self):
+        result = self.kindValueSold
+        for k in result:
+            if self.kindNumSold[k] == 0:
+                result[k] = None
+            else:
+                result[k] /= self.kindNumSold[k]
+        return result
+    
+    @property
+    def kindUserVotes(self):
+        kindUsers = collections.Counter()
+        for item in self.items.all():
+            if item.kind not in kindUsers:
+                kindUsers[item.kind] = set()
+            kindUsers[item.kind].add(item.user)
+        for kind in kindUsers:
+            kindUsers[kind] = len(kindUsers[kind])
+        return kindUsers
+    
+    @property
+    def topKinds(self):
+        kindsCounter = collections.Counter()
+        for k in self.items.all():
+            kindsCounter[k.kind] += k.numSold
+        if self.itemsSoldTotal:
+            for k in kindsCounter:
+                kindsCounter[k] /= self.itemsSoldTotal
+        return sorted(kindsCounter.items(), key = operator.itemgetter(1), reverse = True)
+    
+    @property
+    def topFandoms(self):
+        fandomsCounter = collections.Counter()
+        for k in self.items.all():
+            fandomsCounter[k.fandom] += k.numSold
+        if self.itemsSoldTotal:
+            for k in fandomsCounter:
+                fandomsCounter[k] /= self.itemsSoldTotal
+        return sorted(fandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
     
     # SETTERS
     def setName(self, newName):

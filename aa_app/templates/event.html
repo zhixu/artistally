@@ -16,11 +16,11 @@
                 $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
             {% endif %}
 
-            {% if eventTopItemKinds %}
+            {% if topKinds %}
                 setKindsChart();
             {% endif %}
              
-            {% if eventTopItemFandoms %}
+            {% if topFandoms %}
                 setFandomsChart();
             {% endif %}
              
@@ -35,7 +35,7 @@
 
         function setKindsChart() {
             var kindsData = [
-                {% for kind in eventTopItemKinds|slice:":5" %}
+                {% for kind in topKinds|slice:":5" %}
                     {
                         value: {% widthratio kind.1 1 100 %},
                         color: colors[{{forloop.counter0}}],
@@ -79,7 +79,7 @@
             
         function setFandomsChart() {
             var fandomsData = [
-                    {% for fandom in eventTopItemFandoms|slice:":5" %}
+                    {% for fandom in topFandoms|slice:":5" %}
                         {
                             value: {% widthratio fandom.1 1 100 %},
                             color: colors[{{forloop.counter0}}],
@@ -246,7 +246,7 @@
             <!-- ------------------------ CHARTS ------------------------- -->
             
 <!--            <canvas id="profitChart" width="200" height="200"></canvas>-->
-            {% if eventTopItemKinds %}
+            {% if topKinds %}
                 
             {% else %}
                 <br/>
@@ -289,9 +289,9 @@
                     <div class="side-entry">
                         <a href="/user/{{writeup.user}}">
                         {% if writeup.user.image %}
-                            <img src="{{writeup.user.image}}" class="user-icon-large">
+                            <img src="{{writeup.user.image}}" class="user-icon-large"/>
                         {% else %}
-                            <img src="/static/images/icon-default.png" class="user-icon-large">
+                            <img src="/static/images/icon-default.png" class="user-icon-large"/>
                         {% endif %}</a>
                         <br/>
                         <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
@@ -331,20 +331,20 @@
                         <div class="side-entry">
                             <a href="/user/{{currUser}}">
                             {% if currUser.image %}
-                                <img src="{{currUser.image}}" class="user-icon-large">
+                                <img src="{{currUser.image}}" class="user-icon-large"/>
                             {% else %}
-                                <img src="/static/images/icon-default.png" class="user-icon-large">
+                                <img src="/static/images/icon-default.png" class="user-icon-large"/>
                             {% endif %}</a>
                             <br/>{{currUser}}
                         </div>
                         <div class="main-entry">
                             Rating:
                             <span class="star-rating">
-                                <input type="radio" name="ratingField" value="1"><i></i>
-                                <input type="radio" name="ratingField" value="2"><i></i>
-                                <input type="radio" name="ratingField" value="3"><i></i>
-                                <input type="radio" name="ratingField" value="4"><i></i>
-                                <input type="radio" name="ratingField" value="5"><i></i>
+                                <input type="radio" name="ratingField" value="1"/><i></i>
+                                <input type="radio" name="ratingField" value="2"/><i></i>
+                                <input type="radio" name="ratingField" value="3"/><i></i>
+                                <input type="radio" name="ratingField" value="4"/><i></i>
+                                <input type="radio" name="ratingField" value="5"/><i></i>
                             </span>
                             <br/>
                             <div class="form-group">

@@ -18,7 +18,7 @@ def newEvent(request):
         c = models.Convention.objects.get(ID = int(d["conID"]))
         e = models.newEvent(c, d["name"], startDate, endDate, d["location"])
         if "numAttenders" in d:
-            i.setNumAttenders(int(d["numAttenders"]))
+            e.setNumAttenders(int(d["numAttenders"]))
     except ValidationError as ex:
         return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({"eventID": e.ID})
