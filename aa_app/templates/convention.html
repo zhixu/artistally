@@ -45,8 +45,8 @@
                     },
                 });
             }
-         {% endif %}
-         var colors = new Array("#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360");
+        {% endif %}
+        var colors = new Array("#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360");
         var highlights = new Array("#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774");
         
         $(function() {
@@ -58,22 +58,20 @@
                 $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
             {% endif %}
 
-            {% if eventTopItemKinds %}
+            {% if eventTopItemKinds and eventTopItemFandoms %}
                 setKindsChart();
-            {% endif %}
-             
-            {% if eventTopItemFandoms %}
                 setFandomsChart();
+                //setProfitChart();
             {% endif %}
-             
-            //setProfitChart();
         });
-                                      
-        function setStars() {
-            var rating = {{event.avgRating}};
-            var percent = (rating/5)*100;
-            $("#average-rating").width(percent + "%");
-        }
+                       
+        {% if convention.avgRating != None %}
+            function setStars() {
+                var rating = {{convention.avgRating}};
+                var percent = (rating/5)*100;
+                $("#average-rating").width(percent + "%");
+            }
+        {% endif %}
 
         function setKindsChart() {
             var kindsData = [
@@ -162,11 +160,32 @@
                   $("#fandomsLegend").innerHTML = fandomsChart.generateLegend();
         }
         
+        function setProfitsChart() {
+            var data = {
+                labels: ["0-49", "50-99", "100-199", "200-399", "300-499", "500-899", "900+"],
+                datasets: [
+                    {
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.5)",
+                        strokeColor: "rgba(151,187,205,0.8)",
+                        highlightFill: "rgba(151,187,205,0.75)",
+                        highlightStroke: "rgba(151,187,205,1)",
+                        data: [28, 48, 40, 68, 86, 48, 4]
+                    }
+                ]
+            };
+            
+            var profitsCanvas = $("#profitsChart")[0].getContext("2d");
+            var profitsBarChart = new Chart(profitsCanvas).Bar(data, options);
+        }
+             
         {% if currUser %}
             function makeWriteup() {
                 var jsonDict = new Object();
                 jsonDict.rating = $('input[name="ratingField"]:checked').val();
-                jsonDict.eventID = "{{event.ID}}";
+                jsonDict.eventID = $("#event-list").val();
+                console.log("eventID " + jsonDict.eventID);
+//                jsonDict.eventID = "{{event.ID}}";
                 jsonDict.review = $("#reviewField").val();
                 $.ajax({
                     url: "/api/writeup/newWriteup",
@@ -229,11 +248,6 @@
             <br/>
             On average, each artist makes a total of ${{event.convention.avgUserProfit|floatformat:2}}.
         {% endif %}
-        <!--            <canvas id="moneyChart" width="400" height="400"></canvas>-->
-
-        <!-- ------------------------ CHARTS ------------------------- -->
-
-<!--            <canvas id="profitChart" width="200" height="200"></canvas>-->
         {% if eventTopItemKinds %}
 
         {% else %}
@@ -241,39 +255,55 @@
             There's currently no merchandise data for this event! Help us by adding this event to your list and adding your inventory data.       
         {% endif %}
     </div>
+    
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Events</h2>
-        {{ convention.events.count }} events found.
+        
+        {% if convention.events.count > 0 %}
+        There are {{ convention.events.count }} recorded events for {{convention}}. 
         <br/>
-        {% for event in convention.events.all %}
-            <a href="/event/{{event.ID}}">{{convention}} {{event}}</a> 
-            {{event.location}} 
-            {{event.startDate}} - {{event.endDate}}
-            Add to Favorites 
-            <br/>
-        {% endfor %}
         <br/>
-        Not seeing the right event on the list?
+        Not seeing the right event on the list? <a href="/addevent/{{convention.ID}}">Make a new event.</a>
         <br/>
-        <a href="/addevent/{{convention.ID}}">Make a new event.</a>
+        <br/>
+        <table class="table table-hover" id="cost-chart">
+            <thead>
+                <th>Event Name</th>
+                <th>Location</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Add to My Convention</th>
+            </thead>
+            <tbody>
+                {% for event in convention.events.all %}
+                    <tr>
+                        <td><a href="/event/{{event.ID}}">{{convention}} {{event}}</a></td>
+                        <td>{{event.location}}</td>
+                        <td>{{event.startDate}}</td>
+                        <td>{{event.endDate}}</td>
+                        <td><a>Add to Favorites</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        
+        There are currently no events listed for {{convention}}. <a href="/addevent/{{convention.ID}}">Make a new event here.</a>
+        
+        
+        {% endif %}
     </div>
+    {% if convention.events.count > 0 %}
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Analytics</h2>
         <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a href="#">This Year</a></li>
-            <li role="presentation"><a href="#">Last 2 Years</a></li>
+            <li role="presentation" class="active"><a href="#">All</a></li>
             <li role="presentation"><a href="#">Last 5 Years</a></li>
-            <li role="presentation"><a href="#">All</a></li>
+            <li role="presentation"><a href="#">Last 2 Years</a></li>
+            <li role="presentation"><a href="#">This Year</a></li>
         </ul>
+        <br/>
         <div class="analytics-tabs-content">
-            <div class="row">
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Profit Distribution</h3>
-                </div>
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Average Price</h3>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="chart-wrapper">
@@ -294,8 +324,34 @@
                     </div>
                 </div>
             </div>
-        
-        
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="title-wrapper">Profit Distribution</h3>
+                    <div class="chart-display">
+                        <canvas id="profitsChart" width="150" height="150"></canvas>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h3 class="title-wrapper">Average Price</h3>
+                    <table class="table table-hover">
+                        <thead>
+                            <th>Merch Kind</th>
+                            <th>Price</th>
+                        </thead>
+                        <tbody>
+                            {% for kind, price in votedKinds.all|slice:":5" %}
+                            <tr>
+                                <td>{{kind}}</td>
+                                <td>${{price}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if votedKinds.all.count > 5 %}
+                        <p class="text-right"><a href="#">See all...</a></p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <!-- check date, if hasn't happened yet then there's no data -->
         <!-- price of most popular items -->
@@ -306,10 +362,10 @@
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Reviews</h2>
         <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a href="#">This Year</a></li>
-            <li role="presentation"><a href="#">Last 2 Years</a></li>
+            <li role="presentation" class="active"><a href="#">All</a></li>
             <li role="presentation"><a href="#">Last 5 Years</a></li>
-            <li role="presentation"><a href="#">All</a></li>
+            <li role="presentation"><a href="#">Last 2 Years</a></li>
+            <li role="presentation"><a href="#">This Year</a></li>
         </ul>
         {% for writeup in event.writeups.all|slice:":5" %}
             <div class="review-entry">
@@ -347,57 +403,53 @@
         </p>
     </div>
     <div class="section-wrapper border-wrapper" id="add-review">
+        <h2 class="title-wrapper">Write Review</h2>
         {% if currUser %}
-            <h2 class="title-wrapper">Write Review</h2>
-            {% if currUserEventWriteup %}
-                You've already written a review.
-                <br/>
-                <a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
-            {% else %}
-                <div class="review-entry">
-                    <div class="side-entry">
-                        <a href="/user/{{currUser}}">
-                        {% if currUser.image %}
-                            <img src="{{currUser.image}}" class="user-icon-large"/>
-                        {% else %}
-                            <img src="/static/images/icon-default.png" class="user-icon-large"/>
-                        {% endif %}</a>
-                        <br/>{{currUser}}
+            <div class="review-entry">
+                <div class="side-entry">
+                    {% if currUser.image %}
+                        <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
+                    {% else %}
+                        <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"/></a>
+                    {% endif %}
+                    <br/>
+                    <a href="/user/{{currUser}}">{{currUser}}</a>
+                </div>
+                <div class="main-entry">
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label for="star-rating" class="required">Rating:</label>
+                            <br/>
+                            <span class="star-rating form-control" id="star-rating">
+                                <input type="radio" name="ratingField" value="1"/><i></i>
+                                <input type="radio" name="ratingField" value="2"/><i></i>
+                                <input type="radio" name="ratingField" value="3"/><i></i>
+                                <input type="radio" name="ratingField" value="4"/><i></i>
+                                <input type="radio" name="ratingField" value="5"/><i></i>
+                            </span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="event-list" class="required">Event:</label>
+                            <span>
+                                <select class="form-control" id="event-list">
+                                {% for event in convention.events.all %}
+                                    <option value="{{event.ID}}">{{convention}} {{event}}</option>
+                                {% endfor %}
+                                </select>
+                            </span>
+                        </div>
                     </div>
-                    <div class="main-entry">
-                        <div class="row">
-                            <div class="form-group col-sm-3">
-                                <label for="star-rating" class="required">Rating:</label>
-                                <br/>
-                                <span class="star-rating form-control" id="star-rating">
-                                    <input type="radio" name="ratingField" value="1"/><i></i>
-                                    <input type="radio" name="ratingField" value="2"/><i></i>
-                                    <input type="radio" name="ratingField" value="3"/><i></i>
-                                    <input type="radio" name="ratingField" value="4"/><i></i>
-                                    <input type="radio" name="ratingField" value="5"/><i></i>
-                                </span>
-                            </div>
-                            <div class="form-group col-sm-6">
-                                <label for="event-list" class="required">Event:</label>
-                                <span><select class="form-control" id="event-list">
-                                    {% for event in convention.events.all %}
-                                        <option value="volvo">{{convention}} {{event}}</option>
-                                    {% endfor %}
-
-                                </select></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" rows="6" id="reviewField"></textarea>
-                        </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="6" id="reviewField"></textarea>
                     </div>
                 </div>
-                <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
-            {% endif %}
+            </div>
+            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
         {% else %}
             <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
             </p>
         {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}

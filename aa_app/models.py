@@ -127,11 +127,11 @@ class Convention(ValidatedModel):
     
     @property
     def avgRating(self):
-        return statistics.mean(e.avgRating for e in self.events)
+        return statistics.mean(e.avgRating for e in self.events.all())
     
     @property
     def avgUserProfit(self):
-        return statistics.mean(e.avgUserProfit for e in self.events)
+        return statistics.mean(e.avgUserProfit for e in self.events.all())
 
     # SETTERS
     def setName(self, newName):
@@ -313,7 +313,7 @@ class Writeup(ValidatedModel):
             raise ValidationError("user already has a writeup for that event")
 
     def __str__(self):
-        return "%s writeup for %s %s" % (self.user, self.convention, self.event)
+        return "%s writeup for %s %s" % (self.user, self.event.convention, self.event)
 
 class Fandom(ValidatedModel):
     ID = models.AutoField(primary_key = True)

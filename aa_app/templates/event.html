@@ -8,7 +8,7 @@
         var highlights = new Array("#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774");
         
         $(function() {
-            {% if convention.avgRating != None %}
+            {% if event.avgRating != None %}
                 setStars();
             {% endif %}
 
@@ -329,13 +329,13 @@
                 {% else %}
                     <div class="review-entry">
                         <div class="side-entry">
-                            <a href="/user/{{currUser}}">
                             {% if currUser.image %}
-                                <img src="{{currUser.image}}" class="user-icon-large"/>
+                                <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
                             {% else %}
-                                <img src="/static/images/icon-default.png" class="user-icon-large"/>
-                            {% endif %}</a>
-                            <br/>{{currUser}}
+                                <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"/></a>
+                            {% endif %}
+                            <br/>
+                            <a href="/user/{{currUser}}">{{currUser}}</a>
                         </div>
                         <div class="main-entry">
                             Rating:

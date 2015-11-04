@@ -40,7 +40,7 @@
                                         </div>
                                         <div class="col-lg-7 text-center">
                                             <h3>{{currUserItemsSold}}</h3>
-                                            items sold
+                                            item{{currUserItemsSold|pluralize}} sold
                                         </div>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
                                         </div>
                                         <div class="col-lg-7 text-center">
                                             <h3>{{currUser.conventions.count}}</h3>
-                                            conventions
+                                            convention{{currUser.conventions.count|pluralize}}
                                         </div>
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                                         </div>
                                         <div class="col-lg-7 text-center">
                                             <h3>{{currUser.writeups.count}}</h3>
-                                            reviews
+                                            review{{currUser.writeups.count|pluralize}}
                                         </div>
                                     </div>
                                 </div>

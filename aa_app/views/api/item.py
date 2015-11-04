@@ -157,7 +157,7 @@ def setKind(request):
         i = models.Item.objects.get(ID = int(d["itemID"]))
         if i.user != u:
             return JsonResponse({"error": "not your item"}, status = 400)
-        i.setKind(models.Fandom.objects.get(name__iexact = d["kind"]))
+        i.setKind(models.Kind.objects.get(name__iexact = d["kind"]))
     except models.Item.DoesNotExist as ex:
         return JsonResponse({"error": "couldn't find the item"}, status = 400)
     except models.Kind.DoesNotExist as ex:
