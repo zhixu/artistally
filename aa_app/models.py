@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Sum, F, ExpressionWrapper
 from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ValidationError, ImproperlyConfigured, AppRegistryNotReady
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -123,11 +123,11 @@ class Convention(ValidatedModel):
     name = models.CharField(unique = True, max_length = 50)
     website = models.URLField(max_length = 200)
     image = models.URLField(max_length = 200, blank = True, default = "")
-    
+
     @property
     def avgRating(self):
         return statistics.mean(e.avgRating for e in self.events.all())
-    
+
     @property
     def avgUserProfit(self):
         return statistics.mean(e.avgUserProfit for e in self.events.all())
@@ -168,29 +168,38 @@ class Event(ValidatedModel):
     users = models.ManyToManyField(User, related_name = "events", blank = True)
     location = models.CharField(max_length = 50)
     
+    def userProfit(self, u):
+        expr = ExpressionWrapper((F("price") - F("cost")) * F("numSold"), output_field = models.DecimalField())
+        agg = self.items.filter(user = u).annotate(profit = expr).aggregate(Sum("profit"))
+        return agg["profit__sum"]
+
+    @property
+    def itemUsers(self):
+        return User.objects.filter(items__event = self).distinct()
+
     @property
     def avgRating(self):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
-    
+
     @property
     def avgUserProfit(self):    # does NOT include cost of items that weren't sold
         profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold
-        return profit / self.users().count()
-    
+        return profit / self.itemUsers.count()
+
     @property
     def itemsSoldTotal(self):
         return self.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
-    
+
     @property
     def kindValueSold(self):
         kindPrices = collections.Counter()
         for item in self.items.all():
             kindPrices[item] += item.price * item.numSold
         return kindPrices
-    
+
     @property
     def kindNumSold(self):
         kindNumSolds = collections.Counter()
