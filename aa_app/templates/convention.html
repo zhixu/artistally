@@ -347,6 +347,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {{votedKinds.all}}
                     {% if votedKinds.all.count > 5 %}
                         <p class="text-right"><a href="#">See all...</a></p>
                     {% endif %}

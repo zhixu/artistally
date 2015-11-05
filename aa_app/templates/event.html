@@ -281,6 +281,35 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="title-wrapper">Profit Distribution</h3>
+                    <div class="chart-display">
+                        <canvas id="profitsChart" width="150" height="150"></canvas>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h3 class="title-wrapper">Average Price</h3>
+                    <table class="table table-hover">
+                        <thead>
+                            <th>Merch Kind</th>
+                            <th>Price</th>
+                        </thead>
+                        <tbody>
+                            {% for kind, price in votedKinds.all|slice:":5" %}
+                            <tr>
+                                <td>{{kind}}</td>
+                                <td>${{price}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {{votedKinds.all}}
+                    {% if votedKinds.all.count > 5 %}
+                        <p class="text-right"><a href="#">See all...</a></p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>

@@ -137,7 +137,7 @@ def convention(request, conID):
 #    context["votedKindPrices"]["all"] = [avgKindPrice_All[k] for k in context["votedKinds"]["all"]]
 
     
-    votedKindsThisYear = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
+    votedKindsThisYear = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
     votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
     votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
     votedKindsAll = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
