@@ -72,13 +72,13 @@
                 <h1 class="text-center title-wrapper">Edit your review for <b>{{writeup.event.convention}} {{writeup.event}}</b></h1>
                 <div class="review-entry">
                     <div class="side-entry">
-                        <a href="/user/{{currUser}}">
                         {% if currUser.image %}
-                            <img src="{{currUser.image}}" class="user-icon-large">
+                            <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"></a>
                         {% else %}
-                            <img src="/static/images/icon-default.png" class="user-icon-large">
-                        {% endif %}</a>
-                        <br/><a href="/user/{{currUser}}"><b>{{currUser}}</b></a>
+                            <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"></a>
+                        {% endif %}
+                        <br/>
+                        <a href="/user/{{currUser}}"><b>{{currUser}}</b></a>
                         <br/>{{writeup.editTime|date:"M d, Y"}}
                         {% if writeup.editTime.timestamp > writeup.writeTime.timestamp|add:1 %}
                             <br/>

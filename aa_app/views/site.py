@@ -105,36 +105,53 @@ def convention(request, conID):
         if numSoldSum_1Y[kind] == 0:
             avgKindPrice_1Y[kind] = None
         else:
-            avgKindPrice_1Y[kind] = valueSoldSum_1Y[kind] / numSoldSum_1Y[k]
+            avgKindPrice_1Y[kind] = valueSoldSum_1Y[kind] / numSoldSum_1Y[kind]
     avgKindPrice_2Y = collections.Counter()
     for kind in valueSoldSum_2Y:
         if numSoldSum_2Y[kind] == 0:
             avgKindPrice_2Y[kind] = None
         else:
-            avgKindPrice_2Y[kind] = valueSoldSum_2Y[kind] / numSoldSum_2Y[k]
+            avgKindPrice_2Y[kind] = valueSoldSum_2Y[kind] / numSoldSum_2Y[kind]
     avgKindPrice_5Y = collections.Counter()
     for kind in valueSoldSum_5Y:
         if numSoldSum_5Y[kind] == 0:
             avgKindPrice_5Y[kind] = None
         else:
-            avgKindPrice_5Y[kind] = valueSoldSum_5Y[kind] / numSoldSum_5Y[k]
+            avgKindPrice_5Y[kind] = valueSoldSum_5Y[kind] / numSoldSum_5Y[kind]
     avgKindPrice_All = collections.Counter()
     for kind in valueSoldSum_1Y:
         if numSoldSum_All[kind] == 0:
             avgKindPrice_All[kind] = None
         else:
-            avgKindPrice_All[kind] = valueSoldSum_All[kind] / numSoldSum_All[k]
+            avgKindPrice_All[kind] = valueSoldSum_All[kind] / numSoldSum_All[kind]
         
+#    context["votedKinds"] = {}
+#    context["votedKindPrices"] = {}
+#    context["votedKinds"]["thisYear"] = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
+#    context["votedKindPrices"]["thisYear"] = [avgKindPrice_1Y[k] for k in context["votedKinds"]["thisYear"]]
+#    context["votedKinds"]["twoYears"] = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
+#    context["votedKindPrices"]["twoYears"] = [avgKindPrice_2Y[k] for k in context["votedKinds"]["twoYears"]]
+#    context["votedKinds"]["fiveYears"] = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
+#    context["votedKindPrices"]["fiveYears"] = [avgKindPrice_5Y[k] for k in context["votedKinds"]["fiveYears"]]
+#    context["votedKinds"]["all"] = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
+#    context["votedKindPrices"]["all"] = [avgKindPrice_All[k] for k in context["votedKinds"]["all"]]
+
+    
+    votedKindsThisYear = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
+    votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
+    votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
+    votedKindsAll = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
+    
+    votedKindPricesThisYear = [avgKindPrice_1Y[k] for k in votedKindsThisYear]
+    votedKindPricesTwoYears = [avgKindPrice_2Y[k] for k in votedKindsTwoYears]
+    votedKindPricesFiveYears = [avgKindPrice_5Y[k] for k in votedKindsFiveYears]
+    votedKindPricesAll = [avgKindPrice_All[k] for k in votedKindsAll]
+    
     context["votedKinds"] = {}
-    context["votedKindPrices"] = {}
-    context["votedKinds"]["thisYear"] = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
-    context["votedKindPrices"]["thisYear"] = [avgKindPrice_1Y[k] for k in context["votedKinds"]["thisYear"]]
-    context["votedKinds"]["twoYears"] = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
-    context["votedKindPrices"]["twoYears"] = [avgKindPrice_2Y[k] for k in context["votedKinds"]["twoYears"]]
-    context["votedKinds"]["fiveYears"] = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
-    context["votedKindPrices"]["fiveYears"] = [avgKindPrice_5Y[k] for k in context["votedKinds"]["fiveYears"]]
-    context["votedKinds"]["all"] = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
-    context["votedKindPrices"]["all"] = [avgKindPrice_All[k] for k in context["votedKinds"]["all"]]
+    context["votedKinds"]["thisYear"] = zip(votedKindsThisYear, votedKindPricesThisYear)
+    context["votedKinds"]["twoYears"] = zip(votedKindsTwoYears, votedKindPricesTwoYears)
+    context["votedKinds"]["fiveYears"] = zip(votedKindsFiveYears, votedKindPricesFiveYears)
+    context["votedKinds"]["all"] = zip(votedKindsAll, votedKindPricesAll)
 
     return render_to_response("convention.html", context)
 

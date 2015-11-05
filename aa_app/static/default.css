@@ -433,7 +433,7 @@ th, td {
 
 .section-wrapper {
     margin: 20px 0px;
-    padding: 20px 15px;
+    padding: 20px 30px;
 }
 
 .my-section-wrapper {
@@ -607,7 +607,6 @@ th, td {
     border: 1px solid #ccc;
     border-top: none;
     display: inline-block;
-/*    height: 76px;*/
     padding-left: 15px;
     padding-right: 15px;
     border-bottom-left-radius: 10px;
@@ -621,7 +620,6 @@ th, td {
 
 .con-header .cell {
     padding: 10px;
-    /*border-left: 1px solid #ccc;*/
     margin: 0 auto;
     float: right;
     height: 76px;
