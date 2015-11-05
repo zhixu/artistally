@@ -3,49 +3,6 @@
 {% block head %}
     <title>Artistally | {{convention}} Info Page</title>
     <script>
-        {% if currUser %}
-            function setFavorite() {
-                var jsonDict = new Object();
-                jsonDict.conID = "{{convention.ID}}";
-                var ajaxObj = $.ajax({
-                    url: "/api/convention/setUser",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonDict),
-                    success: function(response) {
-                         $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>');
-                    },
-                    error: function(response) {
-                        try {
-                            alert("Could not add to your conventions! \n Error - " + JSON.parse(response.responseText).error);
-                        } catch (e) {
-                            alert("Could not add to your conventions! An unknown error has occurred.");
-                        }
-                    },
-                });
-            }
-
-            function unsetFavorite() {
-                var jsonDict = new Object();
-                jsonDict.conID = "{{convention.ID}}";
-                var ajaxObj = $.ajax({
-                    url: "/api/convention/unsetUser",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonDict),
-                    success: function(response) {
-                        $("#setFavoriteButtonWrapper").html('<a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>');
-                    },
-                    error: function(response) {
-                        try {
-                            alert("Could not remove from your conventions! \n Error - " + JSON.parse(response.responseText).error);
-                        } catch (e) {
-                            alert("Could not remove from your conventions! An unknown error has occurred.");
-                        }
-                    },
-                });
-            }
-        {% endif %}
         var colors = new Array("#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360");
         var highlights = new Array("#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774");
         
@@ -223,13 +180,6 @@
                         {% if currUser %}
                             <span><a href="#" class="btn btn-custom-blue">Edit Convention Info</a></span>
                         {% endif %}
-                        <span id="setFavoriteButtonWrapper">
-                            {% if currUser not in convention.users.all %}
-                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
-                            {% else %}
-                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
-                            {% endif %}
-                        </span>
                     </div>
                 </div>
             </div>

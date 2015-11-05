@@ -26,27 +26,25 @@
                     </select>
                     <br/>
 -->
-                    {% if currUser.conventions.exists %}
+                    {% if currUser.events.exists %}
                     <div class="row">
-                        {% for con in currUser.conventions.all %}
-                            {% for event in con.events.all %}
-<!--                                <div class="convention-preview-wrapper">-->
-                                    <div class="col-sm-6">
-                                    <div class="convention-preview-wrapper">
-                                    <div class="convention-preview-date">
-                                        <p><span>{{event.startDate|date:"M"}}</span>
-                                        {{event.startDate|date:"d"}}</p>
-                                    </div>
-                                    <div class="convention-preview-info">
-                                        <h4>{{con}} {{event}}</h4>
-                                        <a href="/convention/{{con.ID}}">View Convention Page &raquo;</a>
-                                        <br/>
-                                        <a href="/inventory/{{event.ID}}">View Convention Inventory &raquo;</a>
-                                    </div>
-                                    </div>
-                                    </div>
-<!--                                </div>-->
-                            {% endfor %}
+                        {% for event in currUser.events.all %}
+<!--                        <div class="convention-preview-wrapper">-->
+                            <div class="col-sm-6">
+                                <div class="convention-preview-wrapper">
+                                <div class="convention-preview-date">
+                                    <p><span>{{event.startDate|date:"M"}}</span>
+                                    {{event.startDate|date:"d"}}</p>
+                                </div>
+                                <div class="convention-preview-info">
+                                    <h4>{{event.convention}} {{event}}</h4>
+                                    <a href="/convention/{{event.convention.ID}}">View Convention Page &raquo;</a>
+                                    <br/>
+                                    <a href="/inventory/{{event.ID}}">View Convention Inventory &raquo;</a>
+                                </div>
+                                </div>
+                            </div>
+<!--                        </div>-->
                         {% endfor %}
                     </div>
                     {% else %}

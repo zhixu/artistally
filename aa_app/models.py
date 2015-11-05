@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Sum, F, ExpressionWrapper
 from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ValidationError, ImproperlyConfigured, AppRegistryNotReady
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -122,13 +122,12 @@ class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     name = models.CharField(unique = True, max_length = 50)
     website = models.URLField(max_length = 200)
-    users = models.ManyToManyField(User, related_name = "conventions", blank = True, default = None)
     image = models.URLField(max_length = 200, blank = True, default = "")
-    
+
     @property
     def avgRating(self):
         return statistics.mean(e.avgRating for e in self.events.all())
-    
+
     @property
     def avgUserProfit(self):
         return statistics.mean(e.avgUserProfit for e in self.events.all())
@@ -141,14 +140,6 @@ class Convention(ValidatedModel):
     def setWebsite(self, newWebsite):
         self.website = newWebsite
         self.save()
-        
-    def setUser(self, newUser):
-        self.users.add(newUser)
-        self.save()
-            
-    def unsetUser(self, newUser):
-        self.users.remove(newUser)
-        self.save()
 
     def setImage(self, newImage):
         self.image = newImage
@@ -158,9 +149,7 @@ class Convention(ValidatedModel):
     def clean(self):
         super().clean()
         if INV_CON is not None and self == INV_CON:
-            if self.users.exists():
-                raise ValidationError({"users": ["you can't have a user favorite the INV_CON"]})
-            elif self.events.exists():
+            if self.events.exists():
                 if self.events.count() > 1:
                     raise ValidationError({"events": ["badly attached extra events in the INV_CON"]})
                 elif self.events.first() != INV_EVENT:
@@ -176,31 +165,41 @@ class Event(ValidatedModel):
     startDate = models.DateField()
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField(blank = True, null = True, default = None)
+    users = models.ManyToManyField(User, related_name = "events", blank = True)
     location = models.CharField(max_length = 50)
     
+    def userProfit(self, u):
+        expr = ExpressionWrapper((F("price") - F("cost")) * F("numSold"), output_field = models.DecimalField())
+        agg = self.items.filter(user = u).annotate(profit = expr).aggregate(Sum("profit"))
+        return agg["profit__sum"]
+
+    @property
+    def itemUsers(self):
+        return User.objects.filter(items__event = self).distinct()
+
     @property
     def avgRating(self):
         return self.writeups.aggregate(Avg("rating"))["rating__avg"]
-    
+
     @property
     def avgUserProfit(self):    # does NOT include cost of items that weren't sold
         profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold
-        return profit / self.users().count()
-    
+        return profit / self.itemUsers.count()
+
     @property
     def itemsSoldTotal(self):
         return self.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
-    
+
     @property
     def kindValueSold(self):
         kindPrices = collections.Counter()
         for item in self.items.all():
             kindPrices[item] += item.price * item.numSold
         return kindPrices
-    
+
     @property
     def kindNumSold(self):
         kindNumSolds = collections.Counter()
@@ -269,6 +268,14 @@ class Event(ValidatedModel):
     def setLocation(self, newLocation):
         self.location = newLocation
         self.save()
+        
+    def setUser(self, newUser):
+        self.users.add(newUser)
+        self.save()
+            
+    def unsetUser(self, newUser):
+        self.users.remove(newUser)
+        self.save()
     
     # UTIL
     class Meta(ValidatedModel.Meta):
@@ -278,6 +285,11 @@ class Event(ValidatedModel):
         super().clean()
         if (self.endDate - self.startDate).days < 0:
             raise ValidationError("endDate cannot be before startDate")
+        try:
+            if INV_EVENT is not None and self == INV_EVENT and self.users.exists():
+                raise ValidationError({"users": ["you can't have a user favorite the INV_EVENT"]})
+        except ValueError:  # can't access .users before instance gets saved
+            pass
         #filtered = self.convention.events.filter(name = self.name)
         #if filtered.exists() and filtered.get().ID is not self.ID:
         #    raise ValidationError({"name": ["there is already an event in this convention with that name"]})
@@ -475,7 +487,7 @@ try:
     try:
         INV_EVENT = Event.objects.get(ID = 1)
     except Event.DoesNotExist:
-        INV_EVENT = newEvent(INV_CON, "INV_EVENT", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally")
+        INV_EVENT = newEvent(INV_CON, "INV_EVENT", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), "artistally")
         assert INV_EVENT.ID == 1
 except (OperationalError, ProgrammingError, ImproperlyConfigured):   # django currently migrating
     pass

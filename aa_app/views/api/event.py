@@ -205,3 +205,29 @@ def respillInventory(request):
     except ValidationError as ex:
         return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
+
+@login_required
+def setUser(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    try:
+        e = models.Event.objects.get(ID = int(d["eventID"]))
+        e.setUser(u)
+    except models.Event.DoesNotExist as ex:
+        return JsonResponse({"error": "couldn't find the event"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    return JsonResponse({})
+
+@login_required
+def unsetUser(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    try:
+        e = models.Event.objects.get(ID = int(d["eventID"]))
+        e.unsetUser(u)
+    except models.Event.DoesNotExist as ex:
+        return JsonResponse({"error": "couldn't find the event"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    return JsonResponse({})

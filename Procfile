@@ -1,1 +1,1 @@
-web: gunicorn artistally.wsgi --log-file -
+web: gunicorn artistally.wsgi --reload --log-file -

@@ -8,6 +8,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 import operator, datetime, collections
 
+import numpy
+
 from aa_app import models
 
 def root(request):
@@ -135,8 +137,7 @@ def convention(request, conID):
 #    context["votedKindPrices"]["fiveYears"] = [avgKindPrice_5Y[k] for k in context["votedKinds"]["fiveYears"]]
 #    context["votedKinds"]["all"] = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
 #    context["votedKindPrices"]["all"] = [avgKindPrice_All[k] for k in context["votedKinds"]["all"]]
-
-    
+ 
     votedKindsThisYear = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
     votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
     votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
@@ -164,6 +165,7 @@ def event(request, eventID):
     context["topFandoms"] = context["event"].topFandoms
     context["votedKinds"] = [k[0] for k in sorted(context["event"].kindUserVotes.items(), key=operator.itemgetter(1), reverse = True)]
     context["votedKindPrices"] = [context["event"].avgKindPrice[k] for k in context["votedKinds"]]
+    context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([context["event"].userProfit(u) for u in context["event"].itemUsers], dtype = "float"), bins = min(10, context["event"].itemUsers.count()))
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u

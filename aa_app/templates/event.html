@@ -1,4 +1,5 @@
 {% extends "includes/helper.html" %}
+{% load index %}
 
 {% block head %}
     <title>ArtisTally | {{event.convention}} {{event}} Overview</title>
@@ -123,9 +124,9 @@
         {% if currUser %}
             function setFavorite() {
                 var jsonDict = new Object();
-                jsonDict.conID = "{{event.convention.ID}}";
+                jsonDict.eventID = "{{event.ID}}";
                 var ajaxObj = $.ajax({
-                    url: "/api/convention/setUser",
+                    url: "/api/event/setUser",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
@@ -144,9 +145,9 @@
 
             function unsetFavorite() {
                 var jsonDict = new Object();
-                jsonDict.conID = "{{event.convention.ID}}";
+                jsonDict.eventID = "{{event.ID}}";
                 var ajaxObj = $.ajax({
-                    url: "/api/convention/unsetUser",
+                    url: "/api/event/unsetUser",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
@@ -187,7 +188,6 @@
             }
         {% endif %}
     </script>
-    
 {% endblock %}
 
 {% block body %}
@@ -199,24 +199,24 @@
                 {{event.location}} | {{event.startDate}} - {{event.endDate}}
             </div>
             {% if currUser %}
-            <div class="cell text-center">
-                <div class="containery">
-                    <div class="centery">
-                        <span id="setFavoriteButtonWrapper">
-                            {% if currUser not in event.convention.users.all %}
-                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
+                <div class="cell text-center">
+                    <div class="containery">
+                        <div class="centery">
+                            <span id="setFavoriteButtonWrapper">
+                                {% if currUser not in event.users.all %}
+                                    <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="setFavorite()"><i class="fa fa-plus"></i> My Conventions</a>
+                                {% else %}
+                                    <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
+                                {% endif %}
+                            </span>
+                            {% if currUserEventWriteup %}
+                                <span><a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a></span>
                             {% else %}
-                                <a class="btn btn-custom-blue" id="setFavoriteButton" onclick="unsetFavorite()"><i class="fa fa-minus"></i> My Conventions</a>
+                                <span><a href="#add-review" class="btn btn-custom-blue">Add Review</a></span>
                             {% endif %}
-                        </span>
-                        {% if currUserEventWriteup %}
-                            <span><a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a></span>
-                        {% else %}
-                            <span><a href="#add-review" class="btn btn-custom-blue">Add Review</a></span>
-                        {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
             <div class="cell text-center">
                 <div class="containery">
@@ -236,10 +236,19 @@
             {% else %}
                 There were an unknown amount of attendees at {{event.convention}} {{event}}. If you know more information, please help us by <a href="#">adding it</a>.
             {% endif %}
-            <br/>We have data from a total of {{convention.users.count}} people from this period in time. (??? user count for convention, not for just this event - to fix)
-            {% if convention.avgUserProfit != None %}
+            <br/>We have data from a total of {{event.itemUsers.count}} people from this period in time.
+            {% if event.avgUserProfit != None %}
                 <br/>
-                On average, each artist makes a total of ${{event.convention.avgUserProfit|floatformat:2}}.
+                On average, each artist makes a total of ${{event.avgUserProfit|floatformat:2}}.
+                <br/>
+                {% for pCount in profitCounts %}
+                    {% if forloop.last %}
+                        {{pCount}} users profit at least {{profitBins|index:forloop.counter0}}
+                    {% else %}
+                        {{pCount}} users profit between {{profitBins|index:forloop.counter0}} and {{profitBins|index:forloop.counter}}
+                    {% endif %}
+                    <br/>
+                {% endfor %}
             {% endif %}
             <!--            <canvas id="moneyChart" width="400" height="400"></canvas>-->
             
