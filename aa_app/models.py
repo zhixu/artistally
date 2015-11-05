@@ -122,7 +122,6 @@ class Convention(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     name = models.CharField(unique = True, max_length = 50)
     website = models.URLField(max_length = 200)
-    users = models.ManyToManyField(User, related_name = "conventions", blank = True, default = None)
     image = models.URLField(max_length = 200, blank = True, default = "")
     
     @property
@@ -141,14 +140,6 @@ class Convention(ValidatedModel):
     def setWebsite(self, newWebsite):
         self.website = newWebsite
         self.save()
-        
-    def setUser(self, newUser):
-        self.users.add(newUser)
-        self.save()
-            
-    def unsetUser(self, newUser):
-        self.users.remove(newUser)
-        self.save()
 
     def setImage(self, newImage):
         self.image = newImage
@@ -158,9 +149,7 @@ class Convention(ValidatedModel):
     def clean(self):
         super().clean()
         if INV_CON is not None and self == INV_CON:
-            if self.users.exists():
-                raise ValidationError({"users": ["you can't have a user favorite the INV_CON"]})
-            elif self.events.exists():
+            if self.events.exists():
                 if self.events.count() > 1:
                     raise ValidationError({"events": ["badly attached extra events in the INV_CON"]})
                 elif self.events.first() != INV_EVENT:
@@ -176,6 +165,7 @@ class Event(ValidatedModel):
     startDate = models.DateField()
     endDate = models.DateField()
     numAttenders = models.PositiveIntegerField(blank = True, null = True, default = None)
+    users = models.ManyToManyField(User, related_name = "events", blank = True)
     location = models.CharField(max_length = 50)
     
     @property
@@ -269,6 +259,14 @@ class Event(ValidatedModel):
     def setLocation(self, newLocation):
         self.location = newLocation
         self.save()
+        
+    def setUser(self, newUser):
+        self.users.add(newUser)
+        self.save()
+            
+    def unsetUser(self, newUser):
+        self.users.remove(newUser)
+        self.save()
     
     # UTIL
     class Meta(ValidatedModel.Meta):
@@ -278,6 +276,11 @@ class Event(ValidatedModel):
         super().clean()
         if (self.endDate - self.startDate).days < 0:
             raise ValidationError("endDate cannot be before startDate")
+        try:
+            if INV_EVENT is not None and self == INV_EVENT and self.users.exists():
+                raise ValidationError({"users": ["you can't have a user favorite the INV_EVENT"]})
+        except ValueError:  # can't access .users before instance gets saved
+            pass
         #filtered = self.convention.events.filter(name = self.name)
         #if filtered.exists() and filtered.get().ID is not self.ID:
         #    raise ValidationError({"name": ["there is already an event in this convention with that name"]})
@@ -475,7 +478,7 @@ try:
     try:
         INV_EVENT = Event.objects.get(ID = 1)
     except Event.DoesNotExist:
-        INV_EVENT = newEvent(INV_CON, "INV_EVENT", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), 1, "artistally")
+        INV_EVENT = newEvent(INV_CON, "INV_EVENT", datetime.datetime(1, 1, 1), datetime.datetime(1, 1, 1), "artistally")
         assert INV_EVENT.ID == 1
 except (OperationalError, ProgrammingError, ImproperlyConfigured):   # django currently migrating
     pass
