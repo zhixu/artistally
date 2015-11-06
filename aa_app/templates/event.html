@@ -376,14 +376,17 @@
                             <a href="/user/{{currUser}}">{{currUser}}</a>
                         </div>
                         <div class="main-entry">
-                            Rating:
-                            <span class="star-rating">
-                                <input type="radio" name="ratingField" value="1"/><i></i>
-                                <input type="radio" name="ratingField" value="2"/><i></i>
-                                <input type="radio" name="ratingField" value="3"/><i></i>
-                                <input type="radio" name="ratingField" value="4"/><i></i>
-                                <input type="radio" name="ratingField" value="5"/><i></i>
-                            </span>
+                            <div class="form-group">
+                                <label for="star-rating" class="required">Rating:</label>
+                                <br/>
+                                <span class="star-rating form-control" id="star-rating">
+                                    <input type="radio" name="ratingField" value="1"/><i></i>
+                                    <input type="radio" name="ratingField" value="2"/><i></i>
+                                    <input type="radio" name="ratingField" value="3"/><i></i>
+                                    <input type="radio" name="ratingField" value="4"/><i></i>
+                                    <input type="radio" name="ratingField" value="5"/><i></i>
+                                </span>
+                            </div>
                             <br/>
                             <div class="form-group">
                                 <textarea class="form-control" rows="5" id="reviewField"></textarea>

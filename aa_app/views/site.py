@@ -165,7 +165,7 @@ def event(request, eventID):
     context["topFandoms"] = context["event"].topFandoms
     context["votedKinds"] = [k[0] for k in sorted(context["event"].kindUserVotes.items(), key=operator.itemgetter(1), reverse = True)]
     context["votedKindPrices"] = [context["event"].avgKindPrice[k] for k in context["votedKinds"]]
-    context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([context["event"].userProfit(u) for u in context["event"].itemUsers], dtype = "float"), bins = min(10, context["event"].itemUsers.count()))
+    context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([context["event"].userProfit(u) for u in context["event"].itemUsers], dtype = "float"), bins = max(1, min(10, context["event"].itemUsers.count())))
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u

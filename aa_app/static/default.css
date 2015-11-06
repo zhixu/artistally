@@ -17,12 +17,18 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 0px;
     margin-bottom: 4px;
     font-family: "Playfair Display", serif;
-/*    text-transform: uppercase;*/
     font-weight: 700;
 }
 
-a:link {
-    color: ##605063;
+a {
+    color: #c98069;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #605063;
+    text-decoration: none;
 }
 
 h3.lowercase {
@@ -345,7 +351,16 @@ th, td {
 
 .btn-custom-blue {
     background: #ccdee0;
-    color: #605063;
+    color: #605063 !important;
+    border-bottom: 4px solid #ccc;
+    border-radius: 10px;
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+}
+
+.btn-custom-purple {
+    background: #605063;
+    color: #fff !important;
     border-bottom: 4px solid #ccc;
     border-radius: 10px;
     -moz-border-radius: 10px; 
