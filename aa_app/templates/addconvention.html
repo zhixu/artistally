@@ -1,7 +1,11 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    <title>Artistally Create Convention</title>
+    {% if editCOn %}
+        <title>Artistally | Edit Convention</title>
+    {% else %}
+        <title>Artistally | Create Convention</title>
+    {% endif %}
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
         $(function() {
@@ -20,41 +24,126 @@
             }
         }
         
-        function makeConvention() {
-            $("#submitButton").attr("disabled", true);
-            var jsonDict = new Object();
-            jsonDict.name = $("#nameField").val();
-            jsonDict.website = $("#websiteField").val();
-            jsonDict.image = $("#imageField").val();
-            
-            if (!isURL(jsonDict.website)) { jsonDict.website = 'http://' + jsonDict.website }
-            
-            $.ajax({
-                url: "/api/convention/newConvention",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(jsonDict),
-                success: function(response) {
-                    window.location.href = "/convention/" + response.conID;
-                },
-                error: function(response) {
-                    try {
-                        alert("Could not add new convention! \n Error - " + JSON.parse(response.responseText).error);
-                    } catch (e) {
-                        alert("Could not add new convention! An unknown error has occurred.");
+        {% if editCon %}
+            function updateConvention() {
+                var jsonDict = new Object();
+                jsonDict.conID = {{convention.ID}};
+                jsonDict.name = $("#nameField").val();
+                jsonDict.website = $("#websiteField").val();
+                jsonDict.image = $("#imageField").val();
+         
+                if (!isURL(jsonDict.website)) { jsonDict.website = 'http://' + jsonDict.website }
+         
+                if (jsonDict.name != $("#nameField").prop("defaultValue")) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setName",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new name! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new name! An unknown error has occurred.");
+                            }
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
                     }
-                    $("#submitButton").attr("disabled", false);
-                },
-            });
-        }
+                }
+                if (jsonDict.website != $("#nameField").prop("defaultValue")) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setWebsite",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new website URL! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new website URL! An unknown error has occurred.");
+                            }
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.image) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/convention/setImage",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not change banner! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not change banner! An unknown error has occurred.");
+                            }
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+            }
+        {% else %}
+            function makeConvention() {
+                $("#submitButton").attr("disabled", true);
+                var jsonDict = new Object();
+                jsonDict.name = $("#nameField").val();
+                jsonDict.website = $("#websiteField").val();
+                jsonDict.image = $("#imageField").val();
+
+                if (!isURL(jsonDict.website)) { jsonDict.website = 'http://' + jsonDict.website }
+
+                $.ajax({
+                    url: "/api/convention/newConvention",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        window.location.href = "/convention/" + response.conID;
+                    },
+                    error: function(response) {
+                        try {
+                            alert("Could not add new convention! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not add new convention! An unknown error has occurred.");
+                        }
+                        $("#submitButton").attr("disabled", false);
+                    },
+                });
+            }
+         {% endif %}
     </script>
 {% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="form-wrapper border-wrapper">
-            <h1 class="text-center">Add New Convention</h1>
-            <p class="text-center">Please enter convention info.
+            {% if editCon %}
+                <h1 class="text-center">Edit Convention</h1>
+            {% else %}
+                <h1 class="text-center">Add New Convention</h1>
+            {% endif %}
+            <p class="text-center">
+                {% if editCon %}
+                    Please enter information for <b>{{convention}}</b>. 
+                {% else %}
+                    Please enter convention infomation.
+                {% endif %}
                 <br/>We will review and approve your information as soon as possible.</p>
             <br/>
             <br/>
@@ -62,7 +151,7 @@
                 <label for="nameField" class="required">Convention Name</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="name-addon"><i class="fa fa-building fa-fw"></i></span>
-                    <input type="text" class="form-control convention-field" id="nameField" placeholder="Name" aria-describedby="name-addon"/>
+                    <input type="text" class="form-control convention-field" id="nameField" placeholder="Name" aria-describedby="name-addon" {% if editCon %}value="{{convention}}"{% endif %}/>
                 </div>
             </div>
             <br/>
@@ -70,7 +159,7 @@
                 <label for="websiteField" class="required">Website</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="website-addon"><i class="fa fa-link fa-fw"></i></span>
-                    <input type="url" class="form-control convention-field" id="websiteField" placeholder="http://www.artistal.ly" aria-describedby="website-addon"/>
+                    <input type="url" class="form-control convention-field" id="websiteField" placeholder="http://www.artistal.ly" aria-describedby="website-addon" {% if editCon %}value="{{convention.website}}"{% endif %}/>
                 </div>
             </div>
             <br/>
@@ -86,7 +175,7 @@
             <br/>
             <sub class="required text-center">Required</sub>
             <br/>
-            <p class="text-center"><a onclick="makeConvention()" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
+            <p class="text-center"><a onclick="{% if editCon %}updateConvention(){% else %}makeConvention(){% endif %}" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
         </div>
     </div>
 {% endblock %}

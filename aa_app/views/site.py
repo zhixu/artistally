@@ -227,6 +227,24 @@ def addevent(request, conID):
     if context["convention"] == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
     return render_to_response("addevent.html", context)
+
+@login_required
+def editconvention(request, conID):
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
+    context["editCon"] = True
+    if context["convention"] == models.INV_CON:
+        raise Http404("Accessing the INV_CON is disallowed.")
+    return render_to_response("addconvention.html", context)
+
+@login_required
+def editevent(request, eventID):
+    u = request.user
+    context = RequestContext(request, {"currUser": u})
+    context["event"] = get_object_or_404(models.Event, ID = int(eventID))
+    context["editEvent"] = True
+    return render_to_response("addevent.html", context)
         
 def writeup(request, writeupID):
     writeupID = int(writeupID)

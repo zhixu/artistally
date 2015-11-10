@@ -220,7 +220,7 @@
                 <div class="containery">
                     <div class="centery">
                         {% if currUser %}
-                            <span><a href="#" class="btn btn-custom-blue">Edit Convention Info</a></span>
+                            <span><a href="/editconvention/{{convention.ID}}" class="btn btn-custom-blue">Edit Convention Info</a></span>
                         {% endif %}
                     </div>
                 </div>
@@ -246,9 +246,8 @@
     
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Events</h2>
-        
         {% if convention.events.count > 0 %}
-        There are {{ convention.events.count }} recorded events for {{convention}}. 
+        There {{convention.events.count|pluralize:"is,are"}} {{convention.events.count}} recorded event{{ convention.events.count|pluralize}} for {{convention}}. 
         <br/>
         <br/>
         Not seeing the right event on the list? <a href="/addevent/{{convention.ID}}">Add a new event.</a>
@@ -262,6 +261,7 @@
                 <th>End Date</th>
                 {% if currUser %}
                     <th>Add to My Convention</th>
+                    <th>Edit</th>
                 {% endif %}
             </thead>
             <tbody>
@@ -279,6 +279,7 @@
                                     <a onclick="unsetFavorite({{event.ID}})">Remove from my Conventions</a>
                                 {% endif %}
                             </td>
+                            <td><a href="/editevent/{{event.ID}}"><i class="fa fa-pencil-square-o" alt="edit"></i></a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -481,11 +482,12 @@
         </p>
     </div>
 -->
+    
     <div class="section-wrapper border-wrapper" id="add-review">
         <h2 class="title-wrapper">Write Review</h2>
         {% if currUser %}
-            <div class="review-entry">
-                <div class="side-entry">
+            <div class="row">
+                <div class="col-sm-2 text-center">
                     {% if currUser.image %}
                         <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
                     {% else %}
@@ -494,9 +496,9 @@
                     <br/>
                     <a href="/user/{{currUser}}">{{currUser}}</a>
                 </div>
-                <div class="main-entry">
+                <div class="col-sm-10">
                     <div class="row">
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-2">
                             <label for="star-rating" class="required">Rating:</label>
                             <br/>
                             <span class="star-rating form-control" id="star-rating">
@@ -529,6 +531,57 @@
             </p>
         {% endif %}
     </div>
+    
+<!--
+    <div class="section-wrapper border-wrapper" id="add-review">
+        <h2 class="title-wrapper">Write Review</h2>
+        {% if currUser %}
+            <div class="review-entry">
+                <div class="side-entry">
+                    {% if currUser.image %}
+                        <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
+                    {% else %}
+                        <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"/></a>
+                    {% endif %}
+                    <br/>
+                    <a href="/user/{{currUser}}">{{currUser}}</a>
+                </div>
+                <div class="main-entry">
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <label for="star-rating" class="required">Rating:</label>
+                            <br/>
+                            <span class="star-rating form-control" id="star-rating">
+                                <input type="radio" name="ratingField" value="1"/><i></i>
+                                <input type="radio" name="ratingField" value="2"/><i></i>
+                                <input type="radio" name="ratingField" value="3"/><i></i>
+                                <input type="radio" name="ratingField" value="4"/><i></i>
+                                <input type="radio" name="ratingField" value="5"/><i></i>
+                            </span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="event-list" class="required">Event:</label>
+                            <span>
+                                <select class="form-control" id="event-list">
+                                {% for event in convention.events.all %}
+                                    <option value="{{event.ID}}">{{convention}} {{event}}</option>
+                                {% endfor %}
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="6" id="reviewField"></textarea>
+                    </div>
+                </div>
+            </div>
+            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
+        {% else %}
+            <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
+            </p>
+        {% endif %}
+    </div>
+-->
     {% endif %}
 </div>
 {% endblock %}

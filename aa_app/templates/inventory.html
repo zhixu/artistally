@@ -13,6 +13,18 @@
 
     <script>
         $(function() {
+            $("#fandomField").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#fandomSubmit").click();
+                 }
+            });
+            
+            $("#kindField").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#kindSubmit").click();
+                 }
+            });
+            
             // add editable grid
             makeEditableGrid();
             // make new fandom and new kinds in add new form searchable
@@ -96,6 +108,7 @@
                         success: function(response) {
                             costGrid.append(response.miscCostID + "cost", {"cost name": jsonDict.name, "amount": jsonDict.amount}, true);
                             costGrid.refreshGrid();
+                            $("#" + response.miscCostID + "cost td:nth-child(3)").addClass("text-right");
                         },
                         error: function(response) {
                             try {
@@ -112,9 +125,7 @@
          
             function deleteMiscCost(costID) {
                 var jsonDict = new Object;
-                console.log("costID: " + costID);
                 jsonDict.miscCostID = costID.slice(0, -4);
-                console.log("actual ID " + jsonDict.miscCostID);
                 $.ajax({
                     url: "/api/miscCost/deleteMiscCost",
                     type: "POST",
@@ -180,6 +191,7 @@
                 var rowID = editableGrid.getRowId(cell.rowIndex);
                 cell.innerHTML = '<a data-toggle="tooltip" title="Duplicate" onclick="duplicateItem(' + rowID + ')" style="cursor:pointer"><i class="fa fa-clone"></i></a>';
                 cell.innerHTML += '&nbsp;<a data-toggle="tooltip" title="Delete" onclick="deleteItem(' + rowID + ')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
+                $('[data-toggle="tooltip"]').tooltip();
             }})); 
             
             editableGrid.attachToHTMLTable("inventory");
@@ -200,6 +212,7 @@
                 costGrid.setCellRenderer("action", new CellRenderer({render: function(cell, value) {
                     var rowID = costGrid.getRowId(cell.rowIndex);
                     cell.innerHTML = '<a data-toggle="tooltip" title="Delete" onclick="deleteMiscCost(\'' + rowID.toString() + '\')" style="cursor:pointer"><i class="fa fa-trash"></i></a>';
+                    $('[data-toggle="tooltip"]').tooltip();
                 }}));
              
                 costGrid.attachToHTMLTable("cost-chart");
@@ -436,6 +449,20 @@
                     break;
                 {% if not invEvent %}
                     case numSold:
+                        var diff = oldValue - newValue;
+                        //get the numLeft
+                        var old_numLeft = editableGrid.getValueAt(rowID, numLeft);
+                        var new_numLeft = old_numLeft + diff;
+                        console.log(new_numLeft);
+                        if (new_numLeft >= 0) {
+                            console.log("in here");
+                            updateItem(itemID, rowID, numLeft, new_numLeft, old_numLeft);
+                            editableGrid.setValueAt(rowID, numLeft, new_numLeft, true);
+                        } else {
+                            alert("Could not set number sold! You do not have enough of this item in stock.");
+                            editableGrid.setValueAt(rowID, colID, oldValue, true);
+                            break;
+                        }
                         jsonDict.numSold = newValue;
                         var ajaxObj = $.ajax({
                             url: "/api/item/setNumSold",
@@ -571,14 +598,6 @@
                     {% endif %}
                     <br/>
                     Please note that you are the only one who is allowed to view your inventory. All other ArtisTally users do not have permission to access your data.
-                    <br/>
-                    <br/>
-                    <h3 class="title-wrapper">Summary</h3>
-                    # types of items, # fandoms, # kinds
-                    {% if not invEvent%}
-                        <br/>
-                        At this convention you have # cost, # profit, # items sold
-                    {% endif %}
                 </div>
                 <div class="my-section-wrapper border-wrapper">
                     <h3 class="title-wrapper">Inventory <small>Click cell to edit.</small></h3>
@@ -590,84 +609,85 @@
                     {% endif %}
                         
                     <div id="item-form">
-                            <br/>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-name">Name:</label> 
-                                        <input type="text" class="form-control inventory-field" placeholder="Name" id="new-name" autocomplete="off">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-fandom">Fandom:</label> 
-                                        <a data-toggle="tooltip" title="The fandom your item is for. If original, just put in 'original'."><i class="fa fa-question-circle"></i></a>
-                                        <small class="hidden" id="add-new-fandom">&nbsp;&nbsp;&nbsp;Fandom not found. <a data-toggle="modal" data-target="#fandomModal" aria-label="Add New" style="cursor:pointer">Add new fandom?</a></small>
-                                        <input type="text" class="form-control inventory-field" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-kind">Kind:</label>
-                                        <a data-toggle="tooltip" title="The type of merchandise this item is."><i class="fa fa-question-circle"></i></a>
-                                        <small class="hidden" id="add-new-kind">&nbsp;&nbsp;&nbsp;Kind not found. <a data-toggle="modal" data-target="#kindModal" aria-label="Add New" style="cursor:pointer">Add new kind?</a></small>
-                                        <input type="text" class="form-control inventory-field" placeholder="Acrylic keychain, print, etc..." id="new-kind">
-                                        <div id="add-new-kind"></div>
-                                    </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label required" for="new-name">Name:</label> 
+                                    <input type="text" class="form-control inventory-field" placeholder="Name" id="new-name" autocomplete="off">
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-price">Price:</label> <a data-toggle="tooltip" title="The price at which you are selling this item"><i class="fa fa-question-circle"></i></a>
-                                        <input type="number" class="form-control inventory-field" placeholder="0" id="new-price">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-cost">Cost:</label> <a data-toggle="tooltip" title="The price at which the item cost you to make"><i class="fa fa-question-circle"></i></a>
-                                        <input type="number" class="form-control inventory-field" placeholder="0" id="new-cost" autocomplete="off">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label required" for="new-numLeft">In Stock:</label>
-                                        <input type="number" class="form-control inventory-field" placeholder="0" id="new-numLeft" autocomplete="off">
-                                    </div>
-                                    {% if not invEvent %}
-                                        <div class="form-group">
-                                            <label class="control-label required" for="new-numSold">Sold:</label>
-                                            <input type="number" class="form-control inventory-field" placeholder="0" id="new-numSold" autocomplete="off">
-                                        </div>
-                                    {% endif %}
+                                <div class="form-group">
+                                    <label class="control-label required" for="new-fandom">Fandom:</label> 
+                                    <a data-toggle="tooltip" title="The fandom your item is for. If original, just put in 'original'."><i class="fa fa-question-circle"></i></a>
+                                    <small class="hidden" id="add-new-fandom">&nbsp;&nbsp;&nbsp;Fandom not found. <a data-toggle="modal" data-target="#fandomModal" aria-label="Add New" style="cursor:pointer">Add new fandom?</a></small>
+                                    <input type="text" class="form-control inventory-field" placeholder="Pokemon, Hunter x Hunter, etc..." id="new-fandom">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label required" for="new-kind">Kind:</label>
+                                    <a data-toggle="tooltip" title="The type of merchandise this item is."><i class="fa fa-question-circle"></i></a>
+                                    <small class="hidden" id="add-new-kind">&nbsp;&nbsp;&nbsp;Kind not found. <a data-toggle="modal" data-target="#kindModal" aria-label="Add New" style="cursor:pointer">Add new kind?</a></small>
+                                    <input type="text" class="form-control inventory-field" placeholder="Acrylic keychain, print, etc..." id="new-kind">
+                                    <div id="add-new-kind"></div>
                                 </div>
                             </div>
-                            <p class="text-right"><a onclick="toggleItemForm()" class="btn btn-custom-blue">Cancel</a> <a onclick="makeNewItem()" class="btn btn-custom-blue" id="submitItemButton">Add Item</a></p> 
-                            <hr>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label required" for="new-price">Price:</label> <a data-toggle="tooltip" title="The price at which you are selling this item"><i class="fa fa-question-circle"></i></a>
+                                    <input type="number" class="form-control inventory-field" placeholder="0" id="new-price">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label required" for="new-cost">Cost:</label> <a data-toggle="tooltip" title="The price at which the item cost you to make"><i class="fa fa-question-circle"></i></a>
+                                    <input type="number" class="form-control inventory-field" placeholder="0" id="new-cost" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label required" for="new-numLeft">In Stock:</label>
+                                    <input type="number" class="form-control inventory-field" placeholder="0" id="new-numLeft" autocomplete="off">
+                                </div>
+                                {% if not invEvent %}
+                                    <div class="form-group">
+                                        <label class="control-label required" for="new-numSold">Sold:</label>
+                                        <input type="number" class="form-control inventory-field" placeholder="0" id="new-numSold" autocomplete="off">
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
-
-                    <table class="table table-hover" id="inventory">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Fandom</th>
-                                <th>Kind</th>
-                                <th>Price</th>
-                                <th>Cost</th>
-                                <th class="text-right">In Stock</th>
-                                {% if not invEvent %}
-                                    <th class="text-right">Sold</th>
-                                {% endif %}
-                                <th class="text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventory-body">
-                        {% for item in eventItems %}
-                            <tr id="{{item.ID}}">
-                                <td>{{item.name}}</td>
-                                <td>{{item.fandom}}</td>
-                                <td>{{item.kind}}</td>
-                                <td>{{item.price|floatformat:2}}</td>
-                                <td>{{item.cost|floatformat:2}}</td>
-                                <td class="text-right">{{item.numLeft}}</td>
-                                {% if not invEvent %}
-                                    <td class="text-right">{{item.numSold}}</td>
-                                {% endif %}
-                                <td class="text-right"></td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                        <p class="text-right"><a onclick="toggleItemForm()" class="btn btn-custom-blue">Cancel</a> <a onclick="makeNewItem()" class="btn btn-custom-blue" id="submitItemButton">Add Item</a></p> 
+                        <hr>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="inventory">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Fandom</th>
+                                    <th>Kind</th>
+                                    <th>Price</th>
+                                    <th>Cost</th>
+                                    <th class="text-right">In Stock</th>
+                                    {% if not invEvent %}
+                                        <th class="text-right">Sold</th>
+                                    {% endif %}
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-body">
+                            {% for item in eventItems %}
+                                <tr id="{{item.ID}}">
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.fandom}}</td>
+                                    <td>{{item.kind}}</td>
+                                    <td>{{item.price|floatformat:2}}</td>
+                                    <td>{{item.cost|floatformat:2}}</td>
+                                    <td class="text-right">{{item.numLeft}}</td>
+                                    {% if not invEvent %}
+                                        <td class="text-right">{{item.numSold}}</td>
+                                    {% endif %}
+                                    <td class="text-right"></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                     {% if not invEvent %}
                         <div class="my-section-wrapper border-wrapper">
@@ -691,19 +711,19 @@
                                         <div class="text-right"><a onclick="addMiscCost()" class="btn btn-custom-blue" id="submitCostButton">Add</a></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 table-responsive">
                                     <table class="table table-hover" id="cost-chart">
                                         <thead>
                                             <th>Cost Name</th>
                                             <th>Amount</th>
-                                            <th>Action</th>
+                                            <th class="text-right">Action</th>
                                         </thead>
                                         <tbody>
                                             {% for mc in miscCosts %}
                                                 <tr id="{{mc.ID}}cost">
                                                     <td>{{mc.name}}</td>
                                                     <td>{{mc.amount}}</td>
-                                                    <td></td>
+                                                    <td class="text-right"></td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>

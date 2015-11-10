@@ -1,7 +1,13 @@
 {% extends "includes/helper.html" %}
 
 {% block head %}
-    <title>Artistally Create Event for {{convention}}</title>
+    
+    {% if editEvent %}
+        <title>Artistally | Edit Event</title>
+    {% else %}
+        <title>Artistally | Create Event</title>
+    {% endif %}
+    
 
     <link rel="stylesheet" href="/static/jquery-ui.css"/>
     <script src="/static/js/jquery-ui.js"></script>
@@ -16,6 +22,22 @@
                     $("#submitButton").click();
                  }
             });
+            
+            {% if editEvent %}
+                $("#startDateField").datepicker("setDate", new Date({{event.startDate|date:'Y'}}, {{event.startDate|date:'m'}} - 1, {{event.startDate|date:'d'}}));
+                $("#endDateField").datepicker("setDate", new Date({{event.endDate|date:'Y'}}, {{event.endDate|date:'m'}} - 1, {{event.endDate|date:'d'}}));
+            
+                var eventName = "{{event}}";
+                var nameArray = eventName.split(/(\s+)/);
+                if (nameArray.length == 2) {
+                    $("input[name='seasonRadio'][value='yes']").prop("checked",true);
+                    $("#seasonField").val(nameArray[0]);
+                    $("#yearField").val(nameArray[1]);
+                } else {
+                    $("input[name='seasonRadio'][value='no']").prop("checked",true);
+                    $("#yearField").val({{event}});
+                }
+            {% endif %}
         });
         
         function toggleSeason() {
@@ -26,49 +48,188 @@
             }
         }
         
-        function makeEvent() {
-            $("#submitButton").attr("disabled", true);
-            var jsonDict = new Object();
-            jsonDict.conID = {{convention.ID}}
-        
-            if ($('input[name="seasonRadio"]:checked').val() == "yes") {
-                jsonDict.name = $("#seasonField").val() + " " + $("#yearField").val();
-            } else {
-                jsonDict.name = $("#yearField").val();
-            }
-            jsonDict.startDate = $("#startDateField").val();
-            jsonDict.endDate = $("#endDateField").val();
-            if ($("#numAttendersField").val()) {
-                jsonDict.numAttenders = $("#numAttendersField").val();
-            }
-            jsonDict.location = $("#locationField").val();
-            
-            $.ajax({
-                url: "/api/event/newEvent",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(jsonDict),
-                success: function(response) {
-                    window.location.href = "/event/" + response.eventID;
-                },
-                error: function(response) {
-                    try {
-                        alert("Could not add new event! \n Error - " + JSON.parse(response.responseText).error);
-                    } catch (e) {
-                        alert("Could not add new event! An unknown error has occurred.");
+        {% if editEvent %}
+            function updateEvent() {
+                var jsonDict = new Object();
+                jsonDict.eventID = {{event.ID}};
+                if ($('input[name="seasonRadio"]:checked').val() == "yes") {
+                    jsonDict.name = $("#seasonField").val() + " " + $("#yearField").val();
+                } else {
+                    jsonDict.name = $("#yearField").val();
+                }
+                jsonDict.startDate = $("#startDateField").val();
+                jsonDict.endDate = $("#endDateField").val();
+                if ($("#numAttendersField").val()) {
+                    jsonDict.numAttenders = $("#numAttendersField").val();
+                }
+                jsonDict.location = $("#locationField").val();
+         
+                if (jsonDict.name != "{{event}}") {
+                    var ajaxObj = $.ajax({
+                        url: "/api/event/setName",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{event.convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new name! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new name! An unknown error has occurred.");
+                            }
+                            $("#submitButton").attr("disabled", false);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
                     }
-                    $("#submitButton").attr("disabled", false);
-                },
-            });
-        }
+                }
+                if (jsonDict.startDate != $("#startDateField").prop("defaultValue")) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/event/setStartDate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{event.convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new starting date! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new starting date! An unknown error has occurred.");
+                            }
+                            $("#submitButton").attr("disabled", false);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.endDate != $("#endDateField").prop("defaultValue")) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/event/setEndDate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{event.convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new ending date! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new ending date! An unknown error has occurred.");
+                            }
+                            $("#submitButton").attr("disabled", false);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.numAttenders != $("#numAttendersField").prop("defaultValue")) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/event/setNumAttenders",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{event.convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new number of attendees! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new number of attendees! An unknown error has occurred.");
+                            }
+                            $("#submitButton").attr("disabled", false);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+                if (jsonDict.location != $("#locationField").prop("defaultValue")) {
+                    var ajaxObj = $.ajax({
+                        url: "/api/event/setLocation",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            window.location.href = "/convention/" + {{event.convention.ID}};
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not set new location! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not set new location! An unknown error has occurred.");
+                            }
+                            $("#submitButton").attr("disabled", false);
+                        },
+                    });
+                    if (ajaxObj.status != 200) {
+                        return false;
+                    }
+                }
+            }
+        {% else %}
+            function makeEvent() {
+                $("#submitButton").attr("disabled", true);
+                var jsonDict = new Object();
+                jsonDict.conID = {{convention.ID}}
+
+                if ($('input[name="seasonRadio"]:checked').val() == "yes") {
+                    jsonDict.name = $("#seasonField").val() + " " + $("#yearField").val();
+                } else {
+                    jsonDict.name = $("#yearField").val();
+                }
+                jsonDict.startDate = $("#startDateField").val();
+                jsonDict.endDate = $("#endDateField").val();
+                if ($("#numAttendersField").val()) {
+                    jsonDict.numAttenders = $("#numAttendersField").val();
+                }
+                jsonDict.location = $("#locationField").val();
+
+                $.ajax({
+                    url: "/api/event/newEvent",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        window.location.href = "/convention/" + {{convention.ID}};
+                    },
+                    error: function(response) {
+                        try {
+                            alert("Could not add new event! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not add new event! An unknown error has occurred.");
+                        }
+                        $("#submitButton").attr("disabled", false);
+                    },
+                });
+            }
+        {% endif %}
     </script>
 {% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="form-wrapper border-wrapper">
-            <h1 class="text-center">Add New Event</h1>
-            <p class="text-center">Please enter event info for this convention.
+            {% if editEvent %}
+                <h1 class="text-center">Edit Event</h1>
+            {% else %}
+                <h1 class="text-center">Add New Event for {{event.convention}}</h1>
+            {% endif %}
+            
+            <p class="text-center">
+                {% if editEvent %}
+                    Please enter information for <b>{{event.convention}} {{event}}</b>. 
+                {% else %}
+                    Please enter event information.
+                {% endif %}
             <br/>We will review and approve your information as soon as possible.</p>
             <br/>
             <br/>
@@ -104,7 +265,7 @@
                 <label for="numAttendersField">Number of Attendees</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="numAttenders-addon"><i class="fa fa-user fa-fw"></i></span>
-                    <input type="number" class="form-control event-field" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0"/>
+                    <input type="number" class="form-control event-field" id="numAttendersField" placeholder="0" aria-describedby="numAttenders-addon" min="0" {% if editEvent and event.numAttenders %}value="{{event.numAttenders}}"{% endif %}/>
                 </div>
             </div>
             <br/>
@@ -112,7 +273,7 @@
                 <label for="locationField" class="required">Location</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="location-addon"><i class="fa fa-map-marker fa-fw"></i></span>
-                    <input type="text" class="form-control event-field" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon"/>
+                    <input type="text" class="form-control event-field" id="locationField" placeholder="San Francisco, CA" aria-describedby="location-addon" {% if editEvent %}value="{{event.location}}"{% endif %}/>
                 </div>
             </div>
             <br/>
@@ -141,7 +302,7 @@
             <br/>
             <sub class="required text-center">Required</sub>
             <br/>
-            <p class="text-center"><a onclick="makeEvent()" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
+            <p class="text-center"><a onclick="{% if editEvent %}updateEvent(){% else %}makeEvent(){% endif %}" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
         </div>
     </div>
 {% endblock %}
