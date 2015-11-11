@@ -132,6 +132,34 @@ class Convention(ValidatedModel):
     def avgUserProfit(self):
         return statistics.mean(e.avgUserProfit for e in self.events.all())
 
+    @property
+    def itemsSoldTotal(self):
+        return sum(e.itemsSoldTotal for e in self.events.all())
+    
+    @property
+    def topKinds(self):
+        kindsCounter = collections.Counter()
+        for e in self.events.all():
+            for k in e.items.all():
+                if k.numSold:
+                    kindsCounter[k.kind] += k.numSold
+        if len(kindsCounter):
+            for k in kindsCounter:
+                kindsCounter[k] /= self.itemsSoldTotal
+        return sorted(kindsCounter.items(), key = operator.itemgetter(1), reverse = True)
+    
+    @property
+    def topFandoms(self):
+        fandomsCounter = collections.Counter()
+        for e in self.events.all():
+            for k in e.items.all():
+                if k.numSold:
+                    fandomsCounter[k.fandom] += k.numSold
+        if len(fandomsCounter):
+            for k in fandomsCounter:
+                fandomsCounter[k] /= self.itemsSoldTotal
+        return sorted(fandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
+
     # SETTERS
     def setName(self, newName):
         self.name = newName
@@ -232,8 +260,9 @@ class Event(ValidatedModel):
     def topKinds(self):
         kindsCounter = collections.Counter()
         for k in self.items.all():
-            kindsCounter[k.kind] += k.numSold
-        if self.itemsSoldTotal:
+            if k.numSold:
+                kindsCounter[k.kind] += k.numSold
+        if len(kindsCounter):
             for k in kindsCounter:
                 kindsCounter[k] /= self.itemsSoldTotal
         return sorted(kindsCounter.items(), key = operator.itemgetter(1), reverse = True)
@@ -242,8 +271,9 @@ class Event(ValidatedModel):
     def topFandoms(self):
         fandomsCounter = collections.Counter()
         for k in self.items.all():
-            fandomsCounter[k.fandom] += k.numSold
-        if self.itemsSoldTotal:
+            if k.numSold:
+                fandomsCounter[k.fandom] += k.numSold
+        if len(fandomsCounter):
             for k in fandomsCounter:
                 fandomsCounter[k] /= self.itemsSoldTotal
         return sorted(fandomsCounter.items(), key = operator.itemgetter(1), reverse = True)

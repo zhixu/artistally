@@ -70,6 +70,8 @@ def convention(request, conID):
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
+    context["topKinds"] = context["convention"].topKinds
+    context["topFandoms"] = context["convention"].topFandoms
     
     year = datetime.timedelta(days = 365, hours = 6)
     voteSum_1Y = collections.Counter()
@@ -126,22 +128,11 @@ def convention(request, conID):
             avgKindPrice_All[kind] = None
         else:
             avgKindPrice_All[kind] = valueSoldSum_All[kind] / numSoldSum_All[kind]
-        
-#    context["votedKinds"] = {}
-#    context["votedKindPrices"] = {}
-#    context["votedKinds"]["thisYear"] = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
-#    context["votedKindPrices"]["thisYear"] = [avgKindPrice_1Y[k] for k in context["votedKinds"]["thisYear"]]
-#    context["votedKinds"]["twoYears"] = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
-#    context["votedKindPrices"]["twoYears"] = [avgKindPrice_2Y[k] for k in context["votedKinds"]["twoYears"]]
-#    context["votedKinds"]["fiveYears"] = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
-#    context["votedKindPrices"]["fiveYears"] = [avgKindPrice_5Y[k] for k in context["votedKinds"]["fiveYears"]]
-#    context["votedKinds"]["all"] = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
-#    context["votedKindPrices"]["all"] = [avgKindPrice_All[k] for k in context["votedKinds"]["all"]]
  
-    votedKindsThisYear = [k[0] for k in sorted(voteSum_1Y.items(), key=operator.itemgetter(1), reverse = True)]
-    votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key=operator.itemgetter(1), reverse = True)]
-    votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key=operator.itemgetter(1), reverse = True)]
-    votedKindsAll = [k[0] for k in sorted(voteSum_All.items(), key=operator.itemgetter(1), reverse = True)]
+    votedKindsThisYear = [k[0] for k in sorted(voteSum_1Y.items(), key = operator.itemgetter(1), reverse = True)]
+    votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key = operator.itemgetter(1), reverse = True)]
+    votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key = operator.itemgetter(1), reverse = True)]
+    votedKindsAll = [k[0] for k in sorted(voteSum_All.items(), key = operator.itemgetter(1), reverse = True)]
     
     votedKindPricesThisYear = [avgKindPrice_1Y[k] for k in votedKindsThisYear]
     votedKindPricesTwoYears = [avgKindPrice_2Y[k] for k in votedKindsTwoYears]
