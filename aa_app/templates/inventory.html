@@ -48,7 +48,47 @@
         
         {% if invEvent %}
             function copyInventory() {
-                
+                var jsonDict = new Object();
+                jsonDict.eventID = $("#eventToMainEventList").val();
+                console.log(jsonDict.eventID);
+                var command = $('input[name="eventToMainOptRadio"]:checked').val();
+                if (command == "eventToMainSpill") {
+                    if (confirm("Are you sure? This will delete everything currently in your inventory.")) {
+                        $.ajax({
+                            url: "/api/event/respillInventory",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            success: function(response) {
+                                location.reload();
+                            },
+                            error: function(response) {
+                                try {
+                                    alert("Could not copy inventory! \n Error - " + JSON.parse(response.responseText).error);
+                                } catch (e) {
+                                    alert("Could not copy inventory! An unknown error has occurred.");
+                                }
+                            },
+                        });
+                    }
+                } else if (command == "eventToMainCopy") {
+                    $.ajax({
+                        url: "/api/event/recopyInventory",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            location.reload();
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not copy inventory! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not copy inventory! An unknown error has occurred.");
+                            }
+                        },
+                    });
+                }
             }
         {% else %}
         
@@ -151,21 +191,48 @@
             }
             
             function copyInventory() {
-                $("#copyInventoryButton").attr("disabled", true);
+                console.log("in function");
                 var jsonDict = new Object();
                 jsonDict.eventID = {{event.ID}};
-                $.ajax({
-                    url: "/api/event/copyInventory",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonDict),
-                    success: function(response) {
-                        location.reload();
-                    },
-                    error: function(response) {
-                        alert("Could not copy inventory! \n Error - " + JSON.parse(response.responseText).error);
-                    },
-                });
+                var command = $('input[name="mainToEventOptRadio"]:checked').val();
+                if (command == "mainToEventSpill") {
+                    if (confirm("Are you sure? This will delete everything currently in your inventory.")) {
+                        $.ajax({
+                            url: "/api/event/spillInventory",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            success: function(response) {
+                                location.reload();
+                            },
+                            error: function(response) {
+                                try {
+                                    alert("Could not copy inventory! \n Error - " + JSON.parse(response.responseText).error);
+                                } catch (e) {
+                                    alert("Could not copy inventory! An unknown error has occurred.");
+                                }
+                            },
+                        });
+                    }
+                } else if (command == "mainToEventCopy") {
+                    $.ajax({
+                        url: "/api/event/copyInventory",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            location.reload();
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not copy inventory! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not copy inventory! An unknown error has occurred.");
+                            }
+                        },
+                    });
+                }
+                
             }
         {% endif %}
         
@@ -549,6 +616,7 @@
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
                     fandomResults.push(jsonDict.name);
+                    $("#fandomField").val("");
                     $("#fandomModal").modal("hide");
                     $("#new-fandom").val(jsonDict.name);
                     $("#add-new-fandom").addClass("hidden");
@@ -574,6 +642,7 @@
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
                     kindResults.push(jsonDict.name);
+                    $("#kindField").val("");
                     $("#kindModal").modal("hide");
                     $("#new-kind").val(jsonDict.name);
                     $("#add-new-kind").addClass("hidden");

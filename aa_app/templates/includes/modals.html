@@ -58,19 +58,28 @@
                 <b class="required">What would you like to do?</b>
                 <div class="radio">
                     <label><input type="radio" name="eventToMainOptRadio" value="eventToMainSpill" checked> 
-                    Overwrite current inventory 
+                    Completely overwrite current inventory 
                     <a data-toggle="tooltip" title="Choosing this option completely deletes your current inventory and replaces it with the items in your main inventory."><i class="fa fa-question-circle"></i></a></label>
                 </div>
                 <div class="radio">
-                    <label><input type="radio" name="eventToMainOptRadio" value="eventToMainCopy"> Overwrite similar items <a data-toggle="tooltip" title="Choosing this option usually means you've copied over your inventory. It replaces the information of items already copied over without making changes to any new items you may have added to this inventory in particular."><i class="fa fa-question-circle"></i></a></label>
+                    <label><input type="radio" name="eventToMainOptRadio" value="eventToMainCopy"> Overwrite same items, keep new ones <a data-toggle="tooltip" title="Choosing this option usually means you've copied over your inventory. It replaces the information of items already copied over without making changes to any new items you may have added to this inventory in particular."><i class="fa fa-question-circle"></i></a></label>
                 </div>
                 <br/>
                 <br/>
-                Select convention.
+                <div class="form-group">
+                    <label for="event-list" class="required">Select Event:</label>
+                    <span>
+                        <select class="form-control" id="eventToMainEventList">
+                        {% for event in currUser.events.all %}
+                            <option value="{{event.ID}}">{{event.convention}} {{event}}</option>
+                        {% endfor %}
+                        </select>
+                    </span>
+                </div>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
-                <a class="btn btn-custom-blue" onclick="copyInventory()" id="kindSubmit">Submit</a>
+                <a class="btn btn-custom-blue" onclick="copyInventory()">Submit</a>
             </div>
         </div>
     </div>
@@ -87,17 +96,17 @@
             <div class="modal-body">
                 <b class="required">What would you like to do?</b>
                 <div class="radio">
-                    <label><input type="radio" name="mainToEventOptRadio" id="mainToEventSpill" checked> 
-                    Overwrite current inventory 
+                    <label><input type="radio" name="mainToEventOptRadio" value="mainToEventSpill" checked> 
+                    Completely overwrite current inventory 
                     <a data-toggle="tooltip" title="Choosing this option completely deletes your current inventory and replaces it with the items in your main inventory."><i class="fa fa-question-circle"></i></a></label>
                 </div>
                 <div class="radio">
-                    <label><input type="radio" name="mainToEventOptRadio" id="mainToEventCopy"> Overwrite similar items <a data-toggle="tooltip" title="Choosing this option usually means you've copied over your inventory. It replaces the information of items already copied over without making changes to any new items you may have added to this inventory in particular."><i class="fa fa-question-circle"></i></a></label>
+                    <label><input type="radio" name="mainToEventOptRadio" value="mainToEventCopy"> Overwrite same items, keep new ones <a data-toggle="tooltip" title="Choosing this option usually means you've copied over your inventory. It replaces the information of items already copied over without making changes to any new items you may have added to this inventory in particular."><i class="fa fa-question-circle"></i></a></label>
                 </div>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
-                <a class="btn btn-custom-blue" onclick="copyInventory()" id="kindSubmit">Submit</a>
+                <a class="btn btn-custom-blue" onclick="copyInventory()">Submit</a>
             </div>
         </div>
     </div>
