@@ -29,6 +29,12 @@
                 $("#average-rating").width(percent + "%");
             }
         {% endif %}
+        
+        function toggleWriteups(eventID) {
+            console.log(eventID);
+            $(".writeup-group").hide();
+            $("#" + eventID + "-writeups").show();
+        }
 
         function setKindsChart() {
             var kindsData = [
@@ -292,14 +298,12 @@
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Analytics</h2>
         <br/>
-
         <div class="chart-wrapper">
             <h3 class="title-wrapper">Profit Distribution</h3>
             <div class="chart-display">
                 <canvas id="profitsChart" width="150" height="150"></canvas>
             </div>
         </div>
-
         <div class="row">
             <div class="col-sm-4">
                 <div class="chart-wrapper">
@@ -347,39 +351,53 @@
     <!-- ========== Reviews ========== -->
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Reviews</h2>
-        {% for writeup in event.writeups.all|slice:":5" %}
-            <div class="review-entry">
-                <div class="side-entry">
-                    <a href="/user/{{writeup.user}}">
-                    {% if writeup.user.image %}
-                        <img src="{{writeup.user.image}}" class="user-icon-large">
-                    {% else %}
-                        <img src="/static/images/icon-default.png" class="user-icon-large">
-                    {% endif %}</a>
-                    <br/>
-                    <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
-                    <br/>
-                    {{writeup.editTime|date:"M d, Y"}}
-                    {% if writeup.user == currUser %}
+            <label for="event-list">Display Reviews for Event:</label>
+            <span>
+                <select class="form-control" id="writeup-selection" onchange="toggleWriteups(this.value)">
+<!--                    <option value="all">All</option>-->
+                    {% for event in convention.events.all %}
+                        <option value="{{event.ID}}">{{convention}} {{event}}</option>
+                    {% endfor %}
+                </select>
+            </span>
+        
+        {% for event in convention.events.all %}
+            <div id="{{event.ID}}-writeups" class="writeup-group">
+            {% for writeup in event.writeups.all|slice:":5" %}
+                <div class="review-entry">
+                    <div class="side-entry">
+                        <a href="/user/{{writeup.user}}">
+                        {% if writeup.user.image %}
+                            <img src="{{writeup.user.image}}" class="user-icon-large">
+                        {% else %}
+                            <img src="/static/images/icon-default.png" class="user-icon-large">
+                        {% endif %}</a>
                         <br/>
-                        <a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
-                    {% endif %}
-                </div>
-                <div class="main-entry">
-                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
-                    <div class="main-entry-text">
-                        {{writeup.review}}
+                        <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
+                        <br/>
+                        {{writeup.editTime|date:"M d, Y"}}
+                        {% if writeup.user == currUser %}
+                            <br/>
+                            <a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                        {% endif %}
                     </div>
-                    <br/>
+                    <div class="main-entry">
+                        <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                        <div class="main-entry-text">
+                            {{writeup.review}}
+                        </div>
+                        <br/>
+                    </div>
                 </div>
+                <hr/>
+                <p class="text-center">
+                    {{event.writeups.count}} review{{event.writeups.count|pluralize}} in total
+                    <br/><a href="/eventreviews/{{event.ID}}" class="btn btn-custom-blue">Read All Reviews</a>
+                </p>
+            {% empty %}
+                No one has reviewed this event yet.
+            {% endfor %}
             </div>
-            <hr/>
-            <p class="text-center">
-                {{event.writeups.count}} review{{event.writeups.count|pluralize}} in total
-                <br/><a href="/eventreviews/{{event.ID}}" class="btn btn-custom-blue">Read All Reviews</a>
-            </p>
-        {% empty %}
-            No one has reviewed this event yet.
         {% endfor %}
     </div>
     <div class="section-wrapper border-wrapper" id="add-review">
