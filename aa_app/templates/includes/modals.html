@@ -41,3 +41,65 @@
         </div>
     </div>
 </div>
+
+
+<!-- ============ Copying Inventories ============ -->
+
+{% if invEvent %}
+<!-- ============ Copy Inventory from Event to Main Modal ============-->
+<div class="modal fade" id="eventToMainInvCopyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Copy Inventory from Event</h4>
+            </div>
+            <div class="modal-body">
+                <b class="required">What would you like to do?</b>
+                <div class="radio">
+                    <label><input type="radio" name="eventToMainOptRadio" value="eventToMainSpill" checked> 
+                    Overwrite current inventory 
+                    <a data-toggle="tooltip" title="Choosing this option completely deletes your current inventory and replaces it with the items in your main inventory."><i class="fa fa-question-circle"></i></a></label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="eventToMainOptRadio" value="eventToMainCopy"> Overwrite similar items <a data-toggle="tooltip" title="Choosing this option usually means you've copied over your inventory. It replaces the information of items already copied over without making changes to any new items you may have added to this inventory in particular."><i class="fa fa-question-circle"></i></a></label>
+                </div>
+                <br/>
+                <br/>
+                Select convention.
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-custom-blue" onclick="copyInventory()" id="kindSubmit">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- ============ Copy Inventory from Main to Event Modal ============ -->
+<div class="modal fade" id="mainToEventInvCopyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Copy Inventory from Main</h4>
+            </div>
+            <div class="modal-body">
+                <b class="required">What would you like to do?</b>
+                <div class="radio">
+                    <label><input type="radio" name="mainToEventOptRadio" id="mainToEventSpill" checked> 
+                    Overwrite current inventory 
+                    <a data-toggle="tooltip" title="Choosing this option completely deletes your current inventory and replaces it with the items in your main inventory."><i class="fa fa-question-circle"></i></a></label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="mainToEventOptRadio" id="mainToEventCopy"> Overwrite similar items <a data-toggle="tooltip" title="Choosing this option usually means you've copied over your inventory. It replaces the information of items already copied over without making changes to any new items you may have added to this inventory in particular."><i class="fa fa-question-circle"></i></a></label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-custom-blue" onclick="copyInventory()" id="kindSubmit">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

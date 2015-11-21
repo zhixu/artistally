@@ -292,150 +292,54 @@
     {% if convention.events.count > 0 %}
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Analytics</h2>
-        <span>
-        <ul class="nav nav-tabs">
-            <li role="presentation" class="disabled"><a data-toggle="tab" href="#all-analytics">All</a></li>
-            <li role="presentation" class="disabled"><a data-toggle="tab" href="#5-year-analytics">Last 5 Years</a></li>
-            <li role="presentation" class="disabled"><a data-toggle="tab" href="#2-year-analytics">Last 2 Years</a></li>
-            <li role="presentation" class="active"><a data-toggle="tab" href="#this-year-analytics">This Year</a></li>
-        </ul>
-        </span>
         <br/>
-        <div class="tab-content">
-            <!--------------------------- ALL --------------------------->
-            <div id="all-analytics" class="row tab-pane fade in active">
-                <div class="col-sm-6">
-                    <div class="chart-wrapper">
-                        <h3 class="title-wrapper">Popular Merchandise</h3>
-                        <div class="chart-display">
-                            <canvas id="kindsChart" width="150" height="150"></canvas>
-                        </div>
-                        <div class="chart-legend" id="kindsLegend"></div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="chart-wrapper">
-                        <h3 class="title-wrapper">Popular Fandoms</h3>
-                        <div class="chart-display">
-                            <canvas id="fandomsChart" width="150" height="150"></canvas>
-                        </div>
-                        <div class="chart-legend" id="fandomsLegend"></div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Profit Distribution</h3>
+        <div id="all-analytics" class="row tab-pane fade in active">
+            <div class="col-sm-6">
+                <div class="chart-wrapper">
+                    <h3 class="title-wrapper">Popular Merchandise</h3>
                     <div class="chart-display">
-                        <canvas id="profitsChart" width="150" height="150"></canvas>
+                        <canvas id="kindsChart" width="150" height="150"></canvas>
                     </div>
-                </div>
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Average Price</h3>
-                    <table class="table table-hover">
-                        <thead>
-                            <th>Merch Kind</th>
-                            <th>Price</th>
-                        </thead>
-                        <tbody>
-                            {% for kind, price in votedKinds.all|slice:":5" %}
-                            <tr>
-                                <td>{{kind}}</td>
-                                <td>${{price}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {{votedKinds.all}}
-                    {% if votedKinds.all.count > 5 %}
-                        <p class="text-right"><a href="#">See all...</a></p>
-                    {% endif %}
+                    <div class="chart-legend" id="kindsLegend"></div>
                 </div>
             </div>
-            
-            <!--------------------------- LAST 5 YEARS --------------------------->
-            <div id="5-year-analytics" class="row tab-pane fade">
-                5 years
-                <br/>
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Average Price</h3>
-                    <table class="table table-hover">
-                        <thead>
-                            <th>Merch Kind</th>
-                            <th>Price</th>
-                        </thead>
-                        <tbody>
-                            {% for kind, price in votedKinds.all|slice:":5" %}
-                            <tr>
-                                <td>{{kind}}</td>
-                                <td>${{price}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {{votedKinds.all}}
-                    {% if votedKinds.all.count > 5 %}
-                        <p class="text-right"><a href="#">See all...</a></p>
-                    {% endif %}
+            <div class="col-sm-6">
+                <div class="chart-wrapper">
+                    <h3 class="title-wrapper">Popular Fandoms</h3>
+                    <div class="chart-display">
+                        <canvas id="fandomsChart" width="150" height="150"></canvas>
+                    </div>
+                    <div class="chart-legend" id="fandomsLegend"></div>
                 </div>
             </div>
-            
-            <!--------------------------- LAST 2 YEARS --------------------------->
-            <div id="2-year-analytics" class="row tab-pane fade">
-                2 years
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Average Price</h3>
-                    <table class="table table-hover">
-                        <thead>
-                            <th>Merch Kind</th>
-                            <th>Price</th>
-                        </thead>
-                        <tbody>
-                            {% for kind, price in votedKinds.all|slice:":5" %}
-                            <tr>
-                                <td>{{kind}}</td>
-                                <td>${{price}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {{votedKinds.all}}
-                    {% if votedKinds.all.count > 5 %}
-                        <p class="text-right"><a href="#">See all...</a></p>
-                    {% endif %}
+            <div class="col-sm-6">
+                <h3 class="title-wrapper">Profit Distribution</h3>
+                <div class="chart-display">
+                    <canvas id="profitsChart" width="150" height="150"></canvas>
                 </div>
             </div>
-            
-            <!--------------------------- THIS YEAR --------------------------->
-            <div id="this-year-analytics" class="row tab-pane fade">
-                this year
-                <div class="col-sm-6">
-                    <h3 class="title-wrapper">Average Price</h3>
-                    <table class="table table-hover">
-                        <thead>
-                            <th>Merch Kind</th>
-                            <th>Price</th>
-                        </thead>
-                        <tbody>
-                            {% for kind, price in votedKinds.thisYear|slice:":5" %}
-                            <tr>
-                                <td>{{kind}}</td>
-                                <td>${{price}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {{votedKinds.all}}
-                    {% if votedKinds.all.count > 5 %}
-                        <p class="text-right"><a href="#">See all...</a></p>
-                    {% endif %}
-                </div>
+            <div class="col-sm-6">
+                <h3 class="title-wrapper">Average Price</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <th>Merch Kind</th>
+                        <th>Price</th>
+                    </thead>
+                    <tbody>
+                        {% for kind, price in votedKinds.all|slice:":5" %}
+                        <tr>
+                            <td>{{kind}}</td>
+                            <td>${{price}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {{votedKinds.all}}
+                {% if votedKinds.all.count > 5 %}
+                    <p class="text-right"><a href="#">See all...</a></p>
+                {% endif %}
             </div>
-            
         </div>
-        <!-- check date, if hasn't happened yet then there's no data -->
-        <!-- price of most popular items -->
-        <br/>
-        <br/>
-        
     </div>
 <!--
     <div class="section-wrapper border-wrapper">

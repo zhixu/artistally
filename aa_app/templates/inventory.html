@@ -46,7 +46,12 @@
             {% endif %}
         });
         
-        {% if not invEvent %}
+        {% if invEvent %}
+            function copyInventory() {
+                
+            }
+        {% else %}
+        
             function updateMiscCost(itemID, rowID, colID, newValue, oldValue) {
                 var jsonDict = new Object();
                 jsonDict.miscCostID = itemID.slice(0, -4);
@@ -397,38 +402,48 @@
                     });
                     break;
                 case price:
-                    jsonDict.price = newValue;
-                    var ajaxObj = $.ajax({
-                        url: "/api/item/setPrice",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        error: function(response) {
-                            try {
-                                alert("Could not set new price! \n Error - " + JSON.parse(response.responseText).error);
-                            } catch (e) {
-                                alert("Could not set new price! An unknown error has occurred.");
-                            }
-                            editableGrid.setValueAt(rowID, colID, oldValue, true);
-                        },
-                    });
+                    var priceConfirm = confirm("Are you sure you want to change the price? This affects the way we calculate your profit for all past items sold. If you're decreasing the item price for future sales, consider making a new item.");
+                    if (priceConfirm == true) {
+                        jsonDict.price = newValue;
+                        var ajaxObj = $.ajax({
+                            url: "/api/item/setPrice",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            error: function(response) {
+                                try {
+                                    alert("Could not set new price! \n Error - " + JSON.parse(response.responseText).error);
+                                } catch (e) {
+                                    alert("Could not set new price! An unknown error has occurred.");
+                                }
+                                editableGrid.setValueAt(rowID, colID, oldValue, true);
+                            },
+                        });
+                    } else {
+                        editableGrid.setValueAt(rowID, colID, oldValue, true);
+                    }
                     break;
                 case cost:
-                    jsonDict.cost = newValue;
-                    var ajaxObj = $.ajax({
-                        url: "/api/item/setCost",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(jsonDict),
-                        error: function(response) {
-                            try {
-                                alert("Could not set new cost! \n Error - " + JSON.parse(response.responseText).error);
-                            } catch (e) {
-                                alert("Could not set new cost! An unknown error has occurred.");
-                            }
-                            editableGrid.setValueAt(rowID, colID, oldValue, true);
-                        },
-                    });
+                    var costConfirm = confirm("Are you sure you want to change the cost? This affects the way we calculate your profit for all past items sold. If you're decreasing the item price for future sales, consider making a new item.");
+                    if (costConfirm == true) {
+                        jsonDict.cost = newValue;
+                        var ajaxObj = $.ajax({
+                            url: "/api/item/setCost",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(jsonDict),
+                            error: function(response) {
+                                try {
+                                    alert("Could not set new cost! \n Error - " + JSON.parse(response.responseText).error);
+                                } catch (e) {
+                                    alert("Could not set new cost! An unknown error has occurred.");
+                                }
+                                editableGrid.setValueAt(rowID, colID, oldValue, true);
+                            },
+                        });
+                    } else {
+                        editableGrid.setValueAt(rowID, colID, oldValue, true);
+                    }
                     break;
                 case numLeft:
                     jsonDict.numLeft = newValue;
@@ -601,11 +616,11 @@
                 </div>
                 <div class="my-section-wrapper border-wrapper">
                     <h3 class="title-wrapper">Inventory <small>Click cell to edit.</small></h3>
-                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a> 
-                    <a onclick="" class="btn btn-custom-blue">Copy Convention Inventory</a>
-                    {% if not invEvent %}
-                        
-                        <a onclick="copyInventory()" id="copyInventoryButton" class="btn btn-custom-blue">Copy Main Inventory</a>
+                    <a onclick="toggleItemForm()" class="btn btn-custom-blue"><i class="fa fa-plus-circle fa-1x"></i> Add Item</a>
+                    {% if invEvent %}
+                        <a data-toggle="modal" data-target="#eventToMainInvCopyModal" aria-label="Add New" class="btn btn-custom-blue">Copy Convention Inventory</a>
+                    {% else %}
+                        <a data-toggle="modal" data-target="#mainToEventInvCopyModal" aria-label="Add New" class="btn btn-custom-blue">Copy Main Inventory</a>
                     {% endif %}
                         
                     <div id="item-form">
@@ -636,16 +651,16 @@
                                     <input type="number" class="form-control inventory-field" placeholder="0" id="new-price">
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label required" for="new-cost">Cost:</label> <a data-toggle="tooltip" title="The price at which the item cost you to make"><i class="fa fa-question-circle"></i></a>
+                                    <label class="control-label required" for="new-cost">Cost of Production:</label> <a data-toggle="tooltip" title="The price at which the item cost you to make"><i class="fa fa-question-circle"></i></a>
                                     <input type="number" class="form-control inventory-field" placeholder="0" id="new-cost" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label required" for="new-numLeft">In Stock:</label>
+                                    <label class="control-label required" for="new-numLeft">Amount in Stock:</label>
                                     <input type="number" class="form-control inventory-field" placeholder="0" id="new-numLeft" autocomplete="off">
                                 </div>
                                 {% if not invEvent %}
                                     <div class="form-group">
-                                        <label class="control-label required" for="new-numSold">Sold:</label>
+                                        <label class="control-label required" for="new-numSold">Amount Sold:</label>
                                         <input type="number" class="form-control inventory-field" placeholder="0" id="new-numSold" autocomplete="off">
                                     </div>
                                 {% endif %}
