@@ -52,14 +52,14 @@ def setReview(request):
     return JsonResponse({})
 
 @login_required
-def deleteReview(request):
+def deleteWriteup(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
     try:
-        i = models.Writeup.objects.get(ID = int(d["writeupID"]))
-        if i.user != u:
-            return JsonResponse({"error": "not your review"}, status = 400)
-        i.delete()
+        w = models.Writeup.objects.get(ID = int(d["writeupID"]))
+        if w.user != u:
+            return JsonResponse({"error": "not your writeup"}, status = 400)
+        w.delete()
     except models.Item.DoesNotExist as ex:
-        return JsonResponse({"error": "couldn't find the review"}, status = 400)
+        return JsonResponse({"error": "couldn't find the writeup"}, status = 400)
     return JsonResponse({})

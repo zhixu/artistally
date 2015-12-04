@@ -51,7 +51,7 @@ urlpatterns = [
     url(r"^api/writeup/newWriteup$", "aa_app.views.api.writeup.newWriteup"),
     url(r"^api/writeup/setRating$", "aa_app.views.api.writeup.setRating"),
     url(r"^api/writeup/setReview$", "aa_app.views.api.writeup.setReview"),
-    url(r"^api/writeup/deleteReview$", "aa_app.views.api.writeup.deleteReview"),
+    url(r"^api/writeup/deleteWriteup$", "aa_app.views.api.writeup.deleteWriteup"),
     url(r"^api/miscCost/newMiscCost$", "aa_app.views.api.miscCost.newMiscCost"),
     url(r"^api/miscCost/deleteMiscCost$", "aa_app.views.api.miscCost.deleteMiscCost"),
     url(r"^api/miscCost/setName$", "aa_app.views.api.miscCost.setName"),

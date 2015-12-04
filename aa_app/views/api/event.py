@@ -112,7 +112,7 @@ def copyInventory(request):
                 nI.setPrice(i.price)
                 nI.setCost(i.cost)
                 nI.setNumSold(i.numSold)
-                #nI.setNumleft(i.numLeft)
+                #nI.setNumLeft(i.numLeft)
                 nI.setImage(i.image)
             else:
                 nI = models.newItem(u, e, i.name, i.fandom, i.kind, i.price, i.cost, i.numSold, i.numLeft)

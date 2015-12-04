@@ -173,7 +173,7 @@
                     var jsonDict = new Object();
                     jsonDict.writeupID = writeupID;
                     $.ajax({
-                        url: "/api/writeup/deleteReview",
+                        url: "/api/writeup/deleteWriteup",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(jsonDict),
