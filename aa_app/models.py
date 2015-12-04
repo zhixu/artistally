@@ -39,6 +39,7 @@ class User(AbstractBaseUser):
     website1 = models.URLField(max_length = 200, blank = True, default = "")
     website2 = models.URLField(max_length = 200, blank = True, default = "")
     website3 = models.URLField(max_length = 200, blank = True, default = "")
+    resetToken = models.UUIDField(blank = True, null = True, default = None)
     
     @property
     def profit(self):    # does NOT include cost of items that weren't so
@@ -83,6 +84,10 @@ class User(AbstractBaseUser):
         
     def setWebsite3(self, newWebsite3):
         self.website3 = newWebsite3
+        self.save()
+        
+    def setResetToken(self, newResetToken):
+        self.resetToken = newResetToken
         self.save()
         
     # UTIL

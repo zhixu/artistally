@@ -1,0 +1,102 @@
+{% extends "includes/helper.html" %}
+
+{% block head %}
+    <title>Artistally Forgot your stuff</title>
+    <script>
+        $(function() {
+            $(".reset-field").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#resetButton").click();
+                 }
+            });
+            $("#tokenField").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#tokenButton").click();
+                 }
+            });
+        });
+
+        function requestReset() {
+            $("#resetButton").attr("disabled", true);
+            var jsonDict = new Object();
+            jsonDict.email = $("#emailField").val();
+            $.ajax({
+                url: "/api/user/requestReset",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    console.log("unhide token entering part");
+                },
+                error: function(response) {
+                    try {
+                        alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Login failed! An unknown error has occurred.");
+                    }
+                    $("#resetButton").attr("disabled", false);
+                },
+            });
+        }
+        
+        function checkToken() {
+            $("#tokenButton").attr("disabled", true);
+            var jsonDict = new Object();
+            jsonDict.token = $("#tokenField").val();
+            jsonDict.email = $("#emailField").val();
+            $.ajax({
+                url: "/api/user/checkToken",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    console.log("show a success message.");
+                    console.log("your password is now set to the reset token, please change it asap");
+                },
+                error: function(response) {
+                    try {
+                        alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Login failed! An unknown error has occurred.");
+                    }
+                    $("#tokenButton").attr("disabled", false);
+                },
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="alert alert-danger hidden" role="alert" id="error-message">Broke, maybe wrong email?</div>
+    <div class="form-wrapper reg-form-wrapper border-wrapper">
+        <p class="text-center"><sup><a href="/">&laquo; Go back home</a></sup></p>
+        <br/>
+        <h3 class="text-center">Reset your account</h3>
+        <br/>
+        <div class="form-group">
+            <label for="emailField" class="required">Email Address</label>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="email-addon"><i class="fa fa-envelope fa-fw"></i></span>
+                <input type="email" class="form-control reset-field" id="emailField"/>
+            </div>
+        </div>
+        <p class="text-center">
+            <br/>
+            <br/><a onclick="requestReset()" id="resetButton" class="btn btn-custom-blue wide">Reset</a>
+            <br/>
+            <br/><sub><a href="/signup">Create a new account</a></sub>
+        </p>
+    </div>
+
+    Part 2 - should be hidden until success of the reset() post
+    <br/>
+    Check token
+    <br/>
+    <input type="text" id="tokenField" placeholder="token goes here" spellcheck=false/>
+    <br/>
+    <p class="text-center">
+        <br/>
+        <br/><a onclick="checkToken()" id="tokenButton" class="btn btn-custom-blue wide">check it</a>
+    </p>
+
+{% endblock %}

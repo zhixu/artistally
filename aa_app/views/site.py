@@ -55,6 +55,15 @@ def user(request, username):
     context["pageUser"] = get_object_or_404(models.User, username = username)
     return render_to_response("user.html", context)
 
+def forgot(request):
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        resp = HttpResponse(status = 307)
+        resp["Location"] = "/"
+        return resp
+    else:
+        return render_to_response("forgot.html", context)
+
 @login_required
 def edituser(request):
     context = RequestContext(request)
@@ -128,7 +137,7 @@ def convention(request, conID):
             avgKindPrice_All[kind] = None
         else:
             avgKindPrice_All[kind] = valueSoldSum_All[kind] / numSoldSum_All[kind]
- 
+
 #    votedKindsThisYear = [k[0] for k in sorted(voteSum_1Y.items(), key = operator.itemgetter(1), reverse = True)]
 #    votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key = operator.itemgetter(1), reverse = True)]
 #    votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key = operator.itemgetter(1), reverse = True)]
@@ -138,7 +147,7 @@ def convention(request, conID):
 #    votedKindPricesTwoYears = [avgKindPrice_2Y[k] for k in votedKindsTwoYears]
 #    votedKindPricesFiveYears = [avgKindPrice_5Y[k] for k in votedKindsFiveYears]
     votedKindPricesAll = [avgKindPrice_All[k] for k in votedKindsAll]
-    
+
     context["votedKinds"] = {}
     if (len(votedKindsAll) > 5):
         context["votedKindsMoreThan5"] = True

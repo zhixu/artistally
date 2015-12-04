@@ -27,3 +27,4 @@ def findKind(request):
     d = json.loads(bytes.decode(request.body))
     ks = models.Kind.objects.filter(name__icontains = (d["query"])).annotate(Count("items")).order_by("-items__count")
     return JsonResponse({"results": [k.name for k in ks[:10]]})
+    

@@ -1,47 +1,74 @@
 Artistally app instructions.
 
-Venv is provided, activate with:
+Prerequisites.
+1. Venv is provided, activate with:
     source venv/bin/activate
-
-If heroku is not installed:
+2. If heroku is not installed:
     wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
     heroku login
     
-If postgres is not installed:
+Preparing the local environment.
+1. If postgres is not installed:
     sudo apt-get install postgresql
     sudo -u postgres createuser $(whoami)
-    
-To initialize for local, first create a file .env containing:
+2. Environment variables must be specified. Create a file .env containing:
     DEBUG = True
     DATABASE_URL = postgres:///postgres
-    SECRET_KEY = YOUR_RANDOM_KEY_GOES_HERE
-( use this website to generate a secret key: miniwebtool.com/django-secret-key-generator )
-Then do:
+    SECRET_KEY = 
+    EMAIL_USE_TLS = 
+    EMAIL_HOST = 
+    EMAIL_PORT = 
+    EMAIL_HOST_USER = 
+    EMAIL_HOST_PASSWORD = 
+3. Fill in the blank fields:
+    Use this website to generate a secret key: miniwebtool.com/django-secret-key-generator
+    The email settings will depend on your preferred SMTP server.
+    For example, Gmail uses EMAIL_USE_TLS = True, EMAIL_HOST = smtp.gmail.com, and EMAIL_PORT = 587.
+    EMAIL_HOST_USER and EMAIL_HOST_PASSWORD should be your username and password for the SMTP server.
+5. Prepare the Django project for first run:
     heroku local:run python manage.py migrate
     heroku local:run python manage.py createsuperuser
     heroku local:run python manage.py collectstatic
+    ( this last command is optional if you set DEBUG to True )
     
-If you have added new files to /aa_app/static, re-run:
+Changed the model? You need to update it with the database.
+1. Create and apply the migrations:
+    heroku local:run python manage.py makemigrations
+    heroku local:run python manage.py migrate
+    
+Running locally.
+1. If you have added new files to /aa_app/static since the last time you ran this command, re-run:
     heroku local:run python manage.py collectstatic
-( do NOT put files yourself into /staticfiles! they will get overwritten! )
-
-To run locally, do:
+    ( do NOT put files yourself into /staticfiles! they will get overwritten! )
+    ( this is optional if you set DEBUG to True )
+2. Start the server:
     heroku local
     
-To clear local database, do:
+Clearing the local database.
+1. Drop and recreate the database:
     sudo -u postgres dropdb postgres
     sudo -u postgres createdb postgres
     
-To initialize for heroku cloud, do:
+Preparing to run on heroku.
+1. Create the heroku app:
     heroku create
+2. Set environment variables in a similar way as to the local .env file:
     heroku config:set DEBUG=False
     heroku config:set SECRET_KEY='YOUR_RANDOM_KEY_GOES_HERE'
-( again, use this website to generate a secret key: miniwebtool.com/django-secret-key-generator )
-( put it in single quotes or bash will complain )
+    ...
+    heroku config:set EMAIL_HOST_PASSWORD='PASSWORD_GOES_HERE'
+    ( if your strings contain strange characters, put it in quotes or bash will complain )
+3. Push to heroku:
     git push heroku master
+4. Prepare the django project for first run:
     heroku run python manage.py migrate
     heroku run python manage.py createsuperuser
     heroku ps:restart
     
-To clear heroku cloud database, do:
+Created migrations locally? You need to apply them on heroku as well.
+1. (Assuming you committed and pushed it to Heroku) Apply the migrations:
+    heroku run python manage.py migrate
+    
+Clearing the heroku database.
+1. Run this command (yes, exactly as is, don't fill in DATABASE_URL)
     heroku pg:reset DATABASE_URL
