@@ -67,7 +67,7 @@
         </div>
         <div class="form-wrapper border-wrapper">
             {% if currUser and currUser == writeup.user %}
-                <p class="text-center"><sub><a href="/event/{{writeup.event.ID}}">&laquo; Return to {{writeup.event.convention}} {{writeup.event}} Overview</a></sub></p>
+                <p class="text-center"><sub><a href="/convention/{{writeup.event.convention.ID}}">&laquo; Return to {{writeup.event.convention}} Overview</a></sub></p>
                 <br/>
                 <h1 class="text-center title-wrapper">Edit your review for <b>{{writeup.event.convention}} {{writeup.event}}</b></h1>
                 <div class="review-entry">

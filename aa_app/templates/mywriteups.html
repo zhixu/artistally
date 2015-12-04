@@ -2,6 +2,30 @@
 
 {% block head %}
     <title>ArtisTally | My Reviews</title>
+    <script>
+        function deleteWriteup(writeupID) {
+            if (confirm("Are you sure you want to delete this?")) {
+                var jsonDict = new Object();
+                jsonDict.writeupID = writeupID;
+                $.ajax({
+                    url: "/api/writeup/deleteReview",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(response) {
+                        try {
+                            alert("Could not delete review! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not delete review! An unknown error has occurred.");
+                        }
+                    },
+                });
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -28,7 +52,8 @@
                                     {{writeup.review}}
                                 </div>
                                 <br/>
-                                <div class="text-center"><a href="/writeup/{{writeup.ID}}" class="btn btn-custom-blue">Edit Review</a></div>
+                                <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
+                                <a href="#" onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
                                 <br/>
                                 <hr/>
                             </div>
