@@ -1,4 +1,4 @@
-#!/home/repaxan/Desktop/artistally/venv/bin/python
+#!/usr/bin/env python
 # See http://cens.ioc.ee/projects/f2py2e/
 import os
 import sys

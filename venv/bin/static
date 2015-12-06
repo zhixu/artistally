@@ -1,4 +1,4 @@
-#!/home/repaxan/Desktop/artistally/venv/bin/python
+#!/usr/bin/env python
 # EASY-INSTALL-ENTRY-SCRIPT: 'static3==0.6.1','console_scripts','static'
 __requires__ = 'static3==0.6.1'
 import sys
