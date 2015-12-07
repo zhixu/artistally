@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 
 from aa_app import models
@@ -8,6 +8,7 @@ from aa_app import models
 import json, datetime
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def newConvention(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -20,6 +21,7 @@ def newConvention(request):
     return JsonResponse({"conID": c.ID})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setName(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -33,6 +35,7 @@ def setName(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setWebsite(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -46,6 +49,7 @@ def setWebsite(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setImage(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user

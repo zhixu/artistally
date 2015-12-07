@@ -1,0 +1,82 @@
+{% extends "includes/helper.html" %}
+
+{% block head %}
+    <title>Artistally Confirm Email</title>
+    <script>
+        $(function() {
+            $("#tokenField").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#tokenButton").click();
+                 }
+            });
+        });
+
+        function resend() {
+            var jsonDict = new Object();
+            $.ajax({
+                url: "/api/user/resendConfirmEmail",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    console.log("resend()");
+                },
+                error: function(response) {
+                    try {
+                        alert("Confirm resend failed! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Confirm resend failed! An unknown error has occurred.");
+                    }
+                },
+            });
+        }
+        
+        function checkToken() {
+            $("#tokenButton").attr("disabled", true);
+            var jsonDict = new Object();
+            jsonDict.token = $("#tokenField").val();
+            $.ajax({
+                url: "/api/user/checkConfirmToken",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(jsonDict),
+                success: function(response) {
+                    console.log("yay it worked.");
+                },
+                error: function(response) {
+                    try {
+                        alert("Confirm token check failed! \n Error - " + JSON.parse(response.responseText).error);
+                    } catch (e) {
+                        alert("Confirm token check failed! An unknown error has occurred.");
+                    }
+                    $("#tokenButton").attr("disabled", false);
+                },
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="alert alert-danger hidden" role="alert" id="error-message">bla bla bla?</div>
+    <div class="form-wrapper reg-form-wrapper border-wrapper">
+        <p class="text-center"><sup><a href="/">&laquo; Go back home</a></sup></p>
+        <br/>
+        <h3 class="text-center">Confirm your email</h3>
+        <br/>
+        <p class="text-center">
+            <br/>
+            <br/><a onclick="resend()" id="resendButton" class="btn btn-custom-blue wide">Resend the email</a>
+            <br/>
+        </p>
+    </div>
+
+    <br/>
+    Check token
+    <br/>
+    <input type="text" id="tokenField" placeholder="token goes here" spellcheck=false/>
+    <br/>
+    <p class="text-center">
+        <br/>
+        <br/><a onclick="checkToken()" id="tokenButton" class="btn btn-custom-blue wide">check it</a>
+    </p>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
@@ -9,6 +9,7 @@ from aa_app import models
 import json, datetime, uuid
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def newEvent(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -24,6 +25,7 @@ def newEvent(request):
     return JsonResponse({"eventID": e.ID})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setName(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -37,6 +39,7 @@ def setName(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setNumAttenders(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -50,6 +53,7 @@ def setNumAttenders(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setLocation(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -63,6 +67,7 @@ def setLocation(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setStartDate(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -76,6 +81,7 @@ def setStartDate(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setEndDate(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -89,6 +95,7 @@ def setEndDate(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def copyInventory(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -124,6 +131,7 @@ def copyInventory(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def recopyInventory(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -159,6 +167,7 @@ def recopyInventory(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def spillInventory(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -183,6 +192,7 @@ def spillInventory(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def respillInventory(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -207,6 +217,7 @@ def respillInventory(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setUser(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -220,6 +231,7 @@ def setUser(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def unsetUser(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user

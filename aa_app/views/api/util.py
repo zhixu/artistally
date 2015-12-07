@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 
 from aa_app import models
@@ -10,6 +10,7 @@ import base64, json
 import requests # python-requests.org
 
 @login_required
+#@user_passes_test(lambda u: not u.confirmToken)
 def uploadFile(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user

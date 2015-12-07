@@ -30,22 +30,22 @@
                 },
                 error: function(response) {
                     try {
-                        alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                        alert("Reset request failed! \n Error - " + JSON.parse(response.responseText).error);
                     } catch (e) {
-                        alert("Login failed! An unknown error has occurred.");
+                        alert("Reset request failed! An unknown error has occurred.");
                     }
                     $("#resetButton").attr("disabled", false);
                 },
             });
         }
         
-        function checkToken() {
+        function checkResetToken() {
             $("#tokenButton").attr("disabled", true);
             var jsonDict = new Object();
             jsonDict.token = $("#tokenField").val();
             jsonDict.email = $("#emailField").val();
             $.ajax({
-                url: "/api/user/checkToken",
+                url: "/api/user/checkResetToken",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
@@ -55,9 +55,9 @@
                 },
                 error: function(response) {
                     try {
-                        alert("Login failed! \n Error - " + JSON.parse(response.responseText).error);
+                        alert("Reset token check failed! \n Error - " + JSON.parse(response.responseText).error);
                     } catch (e) {
-                        alert("Login failed! An unknown error has occurred.");
+                        alert("Reset token check failed! An unknown error has occurred.");
                     }
                     $("#tokenButton").attr("disabled", false);
                 },
@@ -84,7 +84,6 @@
             <br/>
             <br/><a onclick="requestReset()" id="resetButton" class="btn btn-custom-blue wide">Reset</a>
             <br/>
-            <br/><sub><a href="/signup">Create a new account</a></sub>
         </p>
     </div>
 
@@ -96,7 +95,6 @@
     <br/>
     <p class="text-center">
         <br/>
-        <br/><a onclick="checkToken()" id="tokenButton" class="btn btn-custom-blue wide">check it</a>
+        <br/><a onclick="checkResetToken()" id="tokenButton" class="btn btn-custom-blue wide">check it</a>
     </p>
-
 {% endblock %}

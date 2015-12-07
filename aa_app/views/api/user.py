@@ -3,10 +3,8 @@ from django.shortcuts import render
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
 
 from aa_app import models
-from artistally.settings import EMAIL_HOST_USER
 
 import json, uuid
 
@@ -27,6 +25,7 @@ def newUser(request):
             u.setWebsite2(d["website2"])
         if "website3" in d:
             u.setWebsite3(d["website3"])
+        u.sendConfirmEmail()
     except ValidationError as ex:
         return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
@@ -45,25 +44,46 @@ def logout(request):
     auth.logout(request)
     return JsonResponse({})
 
+@user_passes_test(lambda u: u.confirmToken)
+@login_required
+def resendConfirmEmail(request):
+    d = json.loads(bytes.decode(request.body))
+    try:
+        u = request.user
+        u.sendConfirmEmail()
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    return JsonResponse({})
+
+@login_required
+@user_passes_test(lambda u: u.confirmToken)
+def checkConfirmToken(request):
+    d = json.loads(bytes.decode(request.body))
+    try:
+        u = request.user
+        if u.confirmToken != uuid.UUID(d["token"]):
+            return JsonResponse({"error": "wrong token"}, status = 400)
+        u.setConfirmToken(None)
+    except ValueError as ex:    # raised by uuid.UUID() conversion of string
+        return JsonResponse({"error": "wrong token"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    return JsonResponse({})
+
 @user_passes_test(lambda u: u.is_anonymous())
 def requestReset(request):
     d = json.loads(bytes.decode(request.body))
     try:
         u = models.User.objects.get(email = d["email"])
-        if not u.resetToken:
-            u.setResetToken(uuid.uuid4())
-        msg = "Your account reset request was received.\n" + \
-            "Here is your username and reset token. Enter it to continue.\n\n" + \
-            "Username: " + u.username + "\n" + \
-            "Token: " + str(u.resetToken) + "\n\n" + \
-            "If you did not submit such a request, feel free to ignore this email."
-        send_mail("ArtistAlly Reset Request", msg, EMAIL_HOST_USER, [d["email"]])
+        u.sendResetEmail()
     except models.User.DoesNotExist as ex:
         return JsonResponse({"error": "no user with that email"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @user_passes_test(lambda u: u.is_anonymous())
-def checkToken(request):
+def checkResetToken(request):
     d = json.loads(bytes.decode(request.body))
     try:
         u = models.User.objects.get(email = d["email"])
@@ -71,8 +91,12 @@ def checkToken(request):
             return JsonResponse({"error": "wrong token"}, status = 400)
         u.setPassword(d["token"])
         u.setResetToken(None)
+    except ValueError as ex:    # raised by uuid.UUID() conversion of string
+        return JsonResponse({"error": "wrong token"}, status = 400)
     except models.User.DoesNotExist as ex:
         return JsonResponse({"error": "no user with that email"}, status = 400)
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
     return JsonResponse({})
 
 @login_required

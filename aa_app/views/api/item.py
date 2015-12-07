@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 
 from aa_app import models
@@ -9,6 +9,7 @@ from decimal import Decimal
 import json
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def newItem(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -30,6 +31,7 @@ def newItem(request):
     return JsonResponse({"itemID": i.ID})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def deleteItem(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -43,6 +45,7 @@ def deleteItem(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setNumSold(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -58,6 +61,7 @@ def setNumSold(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setNumLeft(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -73,6 +77,7 @@ def setNumLeft(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setName(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -88,6 +93,7 @@ def setName(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setImage(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -103,6 +109,7 @@ def setImage(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setPrice(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -118,6 +125,7 @@ def setPrice(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setCost(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -133,6 +141,7 @@ def setCost(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setFandom(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -150,6 +159,7 @@ def setFandom(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setKind(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user

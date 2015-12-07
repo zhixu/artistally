@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 
 from aa_app import models
@@ -9,6 +9,7 @@ from decimal import Decimal
 import json
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def newWriteup(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -22,6 +23,7 @@ def newWriteup(request):
     return JsonResponse({"writeupID": w.ID})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setRating(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -37,6 +39,7 @@ def setRating(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def setReview(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
@@ -52,6 +55,7 @@ def setReview(request):
     return JsonResponse({})
 
 @login_required
+@user_passes_test(lambda u: not u.confirmToken)
 def deleteWriteup(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user

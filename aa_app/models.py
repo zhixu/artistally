@@ -4,9 +4,11 @@ from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ValidationError, ImproperlyConfigured, AppRegistryNotReady
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.mail import send_mail
 
-import datetime, random, statistics, collections, operator
+from artistally.settings import EMAIL_HOST_USER
 
+import datetime, random, statistics, collections, operator, uuid
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password):
@@ -28,7 +30,7 @@ class ValidatedModel(models.Model):
         self.full_clean()
         super().save(args, kwargs)
 
-        
+
 class User(AbstractBaseUser):
     username = models.SlugField(primary_key = True, max_length = 50)
     email = models.EmailField(unique = True, max_length = 254)
@@ -39,8 +41,9 @@ class User(AbstractBaseUser):
     website1 = models.URLField(max_length = 200, blank = True, default = "")
     website2 = models.URLField(max_length = 200, blank = True, default = "")
     website3 = models.URLField(max_length = 200, blank = True, default = "")
+    confirmToken = models.UUIDField(blank = True, null = True, default = None)
     resetToken = models.UUIDField(blank = True, null = True, default = None)
-    
+
     @property
     def profit(self):    # does NOT include cost of items that weren't so
         profit = -(self.miscCosts.aggregate(Sum("amount"))["amount__sum"] or 0)
@@ -73,23 +76,48 @@ class User(AbstractBaseUser):
     def setDescription(self, newDescription):
         self.description = newDescription
         self.save()
-        
+
     def setWebsite1(self, newWebsite1):
         self.website1 = newWebsite1
         self.save()
-        
+
     def setWebsite2(self, newWebsite2):
         self.website2 = newWebsite2
         self.save()
-        
+
     def setWebsite3(self, newWebsite3):
         self.website3 = newWebsite3
         self.save()
-        
+
+    def setConfirmToken(self, newConfirmToken):
+        self.confirmToken = newConfirmToken
+        self.save()
+
     def setResetToken(self, newResetToken):
         self.resetToken = newResetToken
         self.save()
+    
+    # METHODS
+    def sendConfirmEmail(self):
+        if not self.confirmToken:
+            self.setConfirmToken(uuid.uuid4())
+        msg = "You just created your Artistally account.\n" + \
+            "Here is your username and confirmation token. Enter it to continue.\n\n" + \
+            "Username: " + self.username + "\n" + \
+            "Token: " + str(self.confirmToken) + "\n\n" + \
+            "If you did not submit such a request, feel free to ignore this email."
+        send_mail("ArtistAlly Confirmation Request", msg, EMAIL_HOST_USER, [self.email])
         
+    def sendResetEmail(self):
+        if not self.resetToken:
+            self.setResetToken(uuid.uuid4())
+        msg = "Your account reset request was received.\n" + \
+            "Here is your username and reset token. Enter it to continue.\n\n" + \
+            "Username: " + self.username + "\n" + \
+            "Token: " + str(self.resetToken) + "\n\n" + \
+            "If you did not submit such a request, feel free to ignore this email."
+        send_mail("ArtistAlly Reset Request", msg, EMAIL_HOST_USER, [self.email])
+
     # UTIL
     objects = UserManager()
     USERNAME_FIELD = "username"
