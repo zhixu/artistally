@@ -258,14 +258,14 @@ class Event(ValidatedModel):
     def kindValueSold(self):
         kindPrices = collections.Counter()
         for item in self.items.all():
-            kindPrices[item] += item.price * item.numSold
+            kindPrices[item.kind] += item.price * item.numSold
         return kindPrices
 
     @property
     def kindNumSold(self):
         kindNumSolds = collections.Counter()
         for item in self.items.all():
-            kindNumSolds[item] += item.numSold
+            kindNumSolds[item.kind] += item.numSold
         return kindNumSolds
     
     @property

@@ -114,24 +114,24 @@ def convention(request, conID):
         valueSoldSum_All += event.kindValueSold
         numSoldSum_All += event.kindNumSold
         
-    avgKindPrice_1Y = collections.Counter()
-    for kind in valueSoldSum_1Y:
-        if numSoldSum_1Y[kind] == 0:
-            avgKindPrice_1Y[kind] = None
-        else:
-            avgKindPrice_1Y[kind] = valueSoldSum_1Y[kind] / numSoldSum_1Y[kind]
-    avgKindPrice_2Y = collections.Counter()
-    for kind in valueSoldSum_2Y:
-        if numSoldSum_2Y[kind] == 0:
-            avgKindPrice_2Y[kind] = None
-        else:
-            avgKindPrice_2Y[kind] = valueSoldSum_2Y[kind] / numSoldSum_2Y[kind]
-    avgKindPrice_5Y = collections.Counter()
-    for kind in valueSoldSum_5Y:
-        if numSoldSum_5Y[kind] == 0:
-            avgKindPrice_5Y[kind] = None
-        else:
-            avgKindPrice_5Y[kind] = valueSoldSum_5Y[kind] / numSoldSum_5Y[kind]
+#    avgKindPrice_1Y = collections.Counter()
+#    for kind in valueSoldSum_1Y:
+#        if numSoldSum_1Y[kind] == 0:
+#            avgKindPrice_1Y[kind] = None
+#        else:
+#            avgKindPrice_1Y[kind] = valueSoldSum_1Y[kind] / numSoldSum_1Y[kind]
+#    avgKindPrice_2Y = collections.Counter()
+#    for kind in valueSoldSum_2Y:
+#        if numSoldSum_2Y[kind] == 0:
+#            avgKindPrice_2Y[kind] = None
+#        else:
+#            avgKindPrice_2Y[kind] = valueSoldSum_2Y[kind] / numSoldSum_2Y[kind]
+#    avgKindPrice_5Y = collections.Counter()
+#    for kind in valueSoldSum_5Y:
+#        if numSoldSum_5Y[kind] == 0:
+#            avgKindPrice_5Y[kind] = None
+#        else:
+#            avgKindPrice_5Y[kind] = valueSoldSum_5Y[kind] / numSoldSum_5Y[kind]
     avgKindPrice_All = collections.Counter()
     for kind in valueSoldSum_1Y:
         if numSoldSum_All[kind] == 0:
