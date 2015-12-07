@@ -148,24 +148,29 @@
             function makeWriteup() {
                 var jsonDict = new Object();
                 jsonDict.rating = $('input[name="ratingField"]:checked').val();
-                jsonDict.eventID = $("#event-list").val();
-                jsonDict.review = $("#reviewField").val();
-                $.ajax({
-                    url: "/api/writeup/newWriteup",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonDict),
-                    success: function(response) {
-                        location.reload();
-                    },
-                    error: function(response) {
-                        try {
-                            alert("Could not add new review! \n Error - " + JSON.parse(response.responseText).error);
-                        } catch (e) {
-                            alert("Could not add new review! An unknown error has occurred.");
-                        }
-                    },
-                });
+                if (!jsonDict.rating) {
+                    alert("Please select a rating!");
+                } else {
+                    jsonDict.eventID = $("#event-list").val();
+                    jsonDict.review = $("#reviewField").val();
+                    $.ajax({
+                        url: "/api/writeup/newWriteup",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(jsonDict),
+                        success: function(response) {
+                            console.log("asdf");
+                            location.reload();
+                        },
+                        error: function(response) {
+                            try {
+                                alert("Could not add new review! \n Error - " + JSON.parse(response.responseText).error);
+                            } catch (e) {
+                                alert("Could not add new review! An unknown error has occurred.");
+                            }
+                        },
+                    });
+                }
             }
          
             function deleteWriteup(writeupID) {
@@ -293,7 +298,7 @@
             <tbody>
                 {% for event in convention.events.all %}
                     <tr>
-                        <td><a href="/event/{{event.ID}}">{{convention}} {{event}}</a></td>
+                        <td>{{convention}} {{event}}</td>
                         <td>{{event.location}}</td>
                         <td>{{event.startDate}}</td>
                         <td>{{event.endDate}}</td>
@@ -338,7 +343,6 @@
                     </div>
                     <div class="chart-legend" id="kindsLegend"></div>
                 </div>
-                This is a distribution of the top five merchandise at {{convention}}. For the whole list, click here.
             </div>
             <div class="col-sm-4">
                 <div class="chart-wrapper">
@@ -348,8 +352,8 @@
                     </div>
                     <div class="chart-legend" id="fandomsLegend"></div>
                 </div>
-                This is a distribution of the top five fandoms at {{convention}}. For the whole list, click here.
             </div>
+            
             <div class="col-sm-4">
                 <h3 class="title-wrapper">Average Prices</h3>
                 <table class="table table-hover">
@@ -361,7 +365,7 @@
                         {% for kind, price in votedKinds.all|slice:":2" %}
                         <tr>
                             <td>{{kind}}</td>
-                            <td>${{price}}</td>
+                            <td>${{price|floatformat:2}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -392,8 +396,8 @@
         {% for event in convention.events.all %}
             <div id="{{event.ID}}-writeups" class="writeup-group">
             {% for writeup in event.writeups.all|slice:":5" %}
-                <div class="review-entry">
-                    <div class="side-entry">
+                <div class="row">
+                    <div class="col-sm-2">
                         <a href="/user/{{writeup.user}}">
                         {% if writeup.user.image %}
                             <img src="{{writeup.user.image}}" class="user-icon-large">
@@ -402,19 +406,18 @@
                         {% endif %}</a>
                         <br/>
                         <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
-                        <br/>
-                        {{writeup.editTime|date:"M d, Y"}}
                         {% if writeup.user == currUser %}
                             <br/>
                             <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
                             <a onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
                         {% endif %}
                     </div>
-                    <div class="main-entry">
+                    <div class="col-sm-10">
                         <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
                         <div class="main-entry-text">
                             {{writeup.review|linebreaks}}
                         </div>
+                        <small>Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}}</small>
                         <br/>
                     </div>
                 </div>
@@ -438,7 +441,7 @@
         <h2 class="title-wrapper">Write Review</h2>
         {% if currUser %}
             <div class="row">
-                <div class="col-sm-2 text-center">
+                <div class="col-sm-2">
                     {% if currUser.image %}
                         <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
                     {% else %}
@@ -476,63 +479,12 @@
                     </div>
                 </div>
             </div>
-            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
+            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue">Submit</a></p>
         {% else %}
             <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
             </p>
         {% endif %}
     </div>
-    
-<!--
-    <div class="section-wrapper border-wrapper" id="add-review">
-        <h2 class="title-wrapper">Write Review</h2>
-        {% if currUser %}
-            <div class="review-entry">
-                <div class="side-entry">
-                    {% if currUser.image %}
-                        <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
-                    {% else %}
-                        <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"/></a>
-                    {% endif %}
-                    <br/>
-                    <a href="/user/{{currUser}}">{{currUser}}</a>
-                </div>
-                <div class="main-entry">
-                    <div class="row">
-                        <div class="form-group col-sm-2">
-                            <label for="star-rating" class="required">Rating:</label>
-                            <br/>
-                            <span class="star-rating form-control" id="star-rating">
-                                <input type="radio" name="ratingField" value="1"/><i></i>
-                                <input type="radio" name="ratingField" value="2"/><i></i>
-                                <input type="radio" name="ratingField" value="3"/><i></i>
-                                <input type="radio" name="ratingField" value="4"/><i></i>
-                                <input type="radio" name="ratingField" value="5"/><i></i>
-                            </span>
-                        </div>
-                        <div class="form-group col-sm-6">
-                            <label for="event-list" class="required">Event:</label>
-                            <span>
-                                <select class="form-control" id="event-list">
-                                {% for event in convention.events.all %}
-                                    <option value="{{event.ID}}">{{convention}} {{event}}</option>
-                                {% endfor %}
-                                </select>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" rows="6" id="reviewField"></textarea>
-                    </div>
-                </div>
-            </div>
-            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue" href="#">Submit</a></p>
-        {% else %}
-            <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
-            </p>
-        {% endif %}
-    </div>
--->
     {% endif %}
 </div>
 {% endblock %}

@@ -39,23 +39,29 @@
             <div class="col-md-10">
                 <div class="my-section-wrapper border-wrapper">
                     <h1 class="title-wrapper">My Reviews</h1>
-                    
-                    This is a list of reviews you have written for conventions on this website.
-                    <br/>
                     {% if currUser.writeups.exists %}
                         {% for writeup in currUser.writeups.all %}
-                            <div class="review-entry">
-                                <small>Review for <a href="/event/{{writeup.event.ID}}">{{writeup.event.convention}} {{writeup.event}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry edited: {{writeup.editTime|date:"M d, Y"}}</small>
-                                <br/>
-                                <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
-                                <div class="main-entry-text">
-                                    {{writeup.review}}
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    {% if currUser.image %}
+                                        <a href="/user/{{currUser}}"><img src="{{currUser.image}}" class="user-icon-large"/></a>
+                                    {% else %}
+                                        <a href="/user/{{currUser}}"><img src="/static/images/icon-default.png" class="user-icon-large"/></a>
+                                    {% endif %}
+                                    <br/>
+                                    <a href="/user/{{currUser}}">{{currUser}}</a>
+                                    <br/>
+                                    <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
+                                    <a onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
                                 </div>
-                                <br/>
-                                <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
-                                <a href="#" onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
-                                <br/>
-                                <hr/>
+                                <div class="col-sm-10">
+                                    <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                                    <div class="main-entry-text">
+                                        {{writeup.review|linebreaks}}
+                                    </div>
+                                    <small>Review for <a href="/event/{{writeup.event.ID}}">{{writeup.event.convention}} {{writeup.event}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}}</small>
+                                    <br/>
+                                </div>
                             </div>
                         {% endfor %}
                     {% else %}
