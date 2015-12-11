@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext, loader
+from django.shortcuts import render, get_object_or_404
+from django.template import loader
 from django.db.models import Sum, Q
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -14,66 +14,66 @@ from aa_app import models
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def root(request):
-    context = RequestContext(request)
+    context = {}
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
         context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
-    return render_to_response("root.html", context)
+    return render(request, "root.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def about(request):
-    context = RequestContext(request)
+    context = {}
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
-    return render_to_response("about.html", context)
+    return render(request, "about.html", context)
 
 @ensure_csrf_cookie
 @user_passes_test(lambda u: u.is_anonymous(), login_url = "/")
 def signup(request):
-    context = RequestContext(request)
-    return render_to_response("signup.html", context)
+    context = {}
+    return render(request, "signup.html", context)
     
 @ensure_csrf_cookie
 @user_passes_test(lambda u: u.is_anonymous(), login_url = "/")
 def login(request):
-    context = RequestContext(request)
-    return render_to_response("login.html", context)
+    context = {}
+    return render(request, "login.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def user(request, username):
-    context = RequestContext(request)
+    context = {}
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
     context["pageUser"] = get_object_or_404(models.User, username = username)
-    return render_to_response("user.html", context)
+    return render(request, "user.html", context)
 
 @ensure_csrf_cookie
 @user_passes_test(lambda u: u.is_anonymous(), login_url = "/")
 def forgot(request):
-    context = RequestContext(request)
-    return render_to_response("forgot.html", context)
+    context = {}
+    return render(request, "forgot.html", context)
 
 @login_required
 @user_passes_test(lambda u: u.confirmToken, login_url = "/")
 def confirm(request):
-    context = RequestContext(request)
+    context = {}
     u = request.user
     context["currUser"] = u
-    return render_to_response("confirm.html", context)
+    return render(request, "confirm.html", context)
 
 @login_required
 def edituser(request):
-    context = RequestContext(request)
+    context = {}
     u = request.user
     context["currUser"] = u
-    return render_to_response("edituser.html", context)
+    return render(request, "edituser.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def convention(request, conID):
-    context = RequestContext(request)
+    context = {}
     context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
     if context["convention"] == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
@@ -161,11 +161,11 @@ def convention(request, conID):
 #    context["votedKinds"]["twoYears"] = zip(votedKindsTwoYears, votedKindPricesTwoYears)
 #    context["votedKinds"]["fiveYears"] = zip(votedKindsFiveYears, votedKindPricesFiveYears)
 
-    return render_to_response("convention.html", context)
+    return render(request, "convention.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def event(request, eventID):
-    context = RequestContext(request)
+    context = {}
     context["event"] = get_object_or_404(models.Event, ID = int(eventID))
     if context["event"] == models.INV_EVENT:
         raise Http404("Accessing the INV_EVENT is disallowed.")
@@ -183,22 +183,22 @@ def event(request, eventID):
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def eventreviews(request, eventID):
+    context = {}
     context["event"] = get_object_or_404(models.Event, ID = int(eventID))
     if context["event"] == models.INV_EVENT:
         raise Http404("Accessing the INV_EVENT is disallowed.")
-    context = RequestContext(request)
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
         if u.writeups.filter(event = context["event"]).exists():
             context["currUserEventWriteup"] = u.writeups.get(event = context["event"])
-    return render_to_response("eventreviews.html", context)
+    return render(request, "eventreviews.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def inventory(request, eventID = None):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     if eventID != None and get_object_or_404(models.Event, ID = int(eventID)) != models.INV_EVENT:
         eventID = int(eventID)
         context["event"] = get_object_or_404(models.Event, ID = int(eventID))
@@ -209,28 +209,28 @@ def inventory(request, eventID = None):
     context["kinds"] = list(models.Kind.objects.all())
     context["fandoms"] = list(models.Fandom.objects.all())
     context["eventItems"] = u.items.filter(event = context["event"])
-    return render_to_response("inventory.html", context)
+    return render(request, "inventory.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def myconventions(request):
     u = request.user
     context = RequestContext(request, {"currUser": u})
-    return render_to_response("myconventions.html", context)
+    return render(request, "myconventions.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def mywriteups(request):
     u = request.user
     context = RequestContext(request, {"currUser": u})
-    return render_to_response("mywriteups.html", context)
+    return render(request, "mywriteups.html", context)
     
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def addconvention(request):
     u = request.user
     context = RequestContext(request, {"currUser": u})
-    return render_to_response("addconvention.html", context)
+    return render(request, "addconvention.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
@@ -240,7 +240,7 @@ def addevent(request, conID):
     context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
     if context["convention"] == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
-    return render_to_response("addevent.html", context)
+    return render(request, "addevent.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
@@ -251,7 +251,7 @@ def editconvention(request, conID):
     context["editCon"] = True
     if context["convention"] == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
-    return render_to_response("addconvention.html", context)
+    return render(request, "addconvention.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
@@ -260,21 +260,21 @@ def editevent(request, eventID):
     context = RequestContext(request, {"currUser": u})
     context["event"] = get_object_or_404(models.Event, ID = int(eventID))
     context["editEvent"] = True
-    return render_to_response("addevent.html", context)
+    return render(request, "addevent.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def writeup(request, writeupID):
     writeupID = int(writeupID)
-    context = RequestContext(request)
+    context = {}
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
     context["writeup"] = get_object_or_404(models.Writeup, ID = writeupID)
-    return render_to_response("writeup.html", context)
+    return render(request, "writeup.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def search(request, query = None):
-    context = RequestContext(request)
+    context = {}
     if request.user.is_authenticated():
         u = request.user
         context["currUser"] = u
@@ -282,4 +282,4 @@ def search(request, query = None):
         query = ""
     context["query"] = query
     context["cons"] = models.Convention.objects.filter(Q(name__icontains = query) | Q(website__icontains = query)).exclude(ID = models.INV_CON.ID).distinct()
-    return render_to_response("search.html", context)
+    return render(request, "search.html", context)
