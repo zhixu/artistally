@@ -215,28 +215,28 @@ def inventory(request, eventID = None):
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def myconventions(request):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     return render(request, "myconventions.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def mywriteups(request):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     return render(request, "mywriteups.html", context)
     
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def addconvention(request):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     return render(request, "addconvention.html", context)
 
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def addevent(request, conID):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
     if context["convention"] == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
@@ -246,7 +246,7 @@ def addevent(request, conID):
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def editconvention(request, conID):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
     context["editCon"] = True
     if context["convention"] == models.INV_CON:
@@ -257,7 +257,7 @@ def editconvention(request, conID):
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def editevent(request, eventID):
     u = request.user
-    context = RequestContext(request, {"currUser": u})
+    context = {"currUser": u}
     context["event"] = get_object_or_404(models.Event, ID = int(eventID))
     context["editEvent"] = True
     return render(request, "addevent.html", context)
