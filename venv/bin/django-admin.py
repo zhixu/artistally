@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/home/repaxan/Desktop/artistally/venv/bin/python3
 from django.core import management
 
 if __name__ == "__main__":

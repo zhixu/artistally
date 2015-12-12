@@ -1,12 +1,18 @@
-Artistally app instructions.
+Artistally app instructions
 
 Prerequisites.
-1. Venv is provided, activate with:
+0. Be inside the top-level directory of the project.
+1. Create and prepare a virtual environment.
+    virtualenv --no-site-packages --always-copy -p python3 venv
     source venv/bin/activate
+    pip install -U pip
+    pip install -r requirements.txt
 2. If heroku is not installed:
     wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
     heroku login
-    
+
+Virtualenv must be reactivated every time you close and reopen the terminal.
+
 Preparing the local environment.
 1. If postgres is not installed:
     sudo apt-get install postgresql
