@@ -16,8 +16,7 @@ from aa_app import models
 def root(request):
     context = {}
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
+        u = context["currUser"] = request.user
         context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
     return render(request, "root.html", context)
 
@@ -25,8 +24,7 @@ def root(request):
 def about(request):
     context = {}
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
+        u = context["currUser"] = request.user
     return render(request, "about.html", context)
 
 @ensure_csrf_cookie
@@ -45,8 +43,7 @@ def login(request):
 def user(request, username):
     context = {}
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
+        u = context["currUser"] = request.user
     context["pageUser"] = get_object_or_404(models.User, username = username)
     return render(request, "user.html", context)
 
@@ -60,28 +57,26 @@ def forgot(request):
 @user_passes_test(lambda u: u.confirmToken, login_url = "/")
 def confirm(request):
     context = {}
-    u = request.user
-    context["currUser"] = u
+    u = context["currUser"] = request.user
     return render(request, "confirm.html", context)
 
 @login_required
 def edituser(request):
     context = {}
-    u = request.user
-    context["currUser"] = u
+    u = context["currUser"] = request.user
     return render(request, "edituser.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def convention(request, conID):
     context = {}
-    context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
-    if context["convention"] == models.INV_CON:
+    c = context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
+    if c == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
-    context["topKinds"] = context["convention"].topKinds
-    context["topFandoms"] = context["convention"].topFandoms
+        u = context["currUser"] = request.user
+    context["topKinds"] = c.topKinds
+    context["topFandoms"] = c.topFandoms
+    context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([c.userProfit(u) for u in c.itemUsers], dtype = "float"), bins = max(1, min(10, c.itemUsers.count())))
     
     year = datetime.timedelta(days = 365, hours = 6)
     voteSum_1Y = collections.Counter()
@@ -97,7 +92,7 @@ def convention(request, conID):
     numSoldSum_5Y = collections.Counter()
     numSoldSum_All = collections.Counter()
     
-    for event in context["convention"].events.all():
+    for event in c.events.all():
         if datetime.date.today() - event.endDate <= year:
             voteSum_1Y += event.kindUserVotes
             valueSoldSum_1Y += event.kindValueSold
@@ -113,7 +108,7 @@ def convention(request, conID):
         voteSum_All += event.kindUserVotes
         valueSoldSum_All += event.kindValueSold
         numSoldSum_All += event.kindNumSold
-        
+
 #    avgKindPrice_1Y = collections.Counter()
 #    for kind in valueSoldSum_1Y:
 #        if numSoldSum_1Y[kind] == 0:
@@ -132,6 +127,7 @@ def convention(request, conID):
 #            avgKindPrice_5Y[kind] = None
 #        else:
 #            avgKindPrice_5Y[kind] = valueSoldSum_5Y[kind] / numSoldSum_5Y[kind]
+
     avgKindPrice_All = collections.Counter()
     for kind in valueSoldSum_1Y:
         if numSoldSum_All[kind] == 0:
@@ -166,32 +162,30 @@ def convention(request, conID):
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def event(request, eventID):
     context = {}
-    context["event"] = get_object_or_404(models.Event, ID = int(eventID))
-    if context["event"] == models.INV_EVENT:
+    e = context["event"] = get_object_or_404(models.Event, ID = int(eventID))
+    if e == models.INV_EVENT:
         raise Http404("Accessing the INV_EVENT is disallowed.")
-    context["topKinds"] = context["event"].topKinds
-    context["topFandoms"] = context["event"].topFandoms
-    context["votedKinds"] = [k[0] for k in sorted(context["event"].kindUserVotes.items(), key=operator.itemgetter(1), reverse = True)]
-    context["votedKindPrices"] = [context["event"].avgKindPrice[k] for k in context["votedKinds"]]
-    context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([context["event"].userProfit(u) for u in context["event"].itemUsers], dtype = "float"), bins = max(1, min(10, context["event"].itemUsers.count())))
+    context["topKinds"] = e.topKinds
+    context["topFandoms"] = e.topFandoms
+    context["votedKinds"] = [k[0] for k in sorted(e.kindUserVotes.items(), key = operator.itemgetter(1), reverse = True)]
+    context["votedKindPrices"] = [e.avgKindPrice[k] for k in context["votedKinds"]]
+    context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([e.userProfit(u) for u in e.itemUsers], dtype = "float"), bins = max(1, min(10, e.itemUsers.count())))
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
-        if u.writeups.filter(event = context["event"]).exists():
-            context["currUserEventWriteup"] = u.writeups.get(event = context["event"])
+        u = context["currUser"] = request.user
+        if u.writeups.filter(event = e).exists():
+            context["currUserEventWriteup"] = u.writeups.get(event = e)
     return render_to_response("event.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def eventreviews(request, eventID):
     context = {}
-    context["event"] = get_object_or_404(models.Event, ID = int(eventID))
-    if context["event"] == models.INV_EVENT:
+    e = context["event"] = get_object_or_404(models.Event, ID = int(eventID))
+    if e == models.INV_EVENT:
         raise Http404("Accessing the INV_EVENT is disallowed.")
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
-        if u.writeups.filter(event = context["event"]).exists():
-            context["currUserEventWriteup"] = u.writeups.get(event = context["event"])
+        u = context["currUser"] = request.user
+        if u.writeups.filter(event = e).exists():
+            context["currUserEventWriteup"] = u.writeups.get(event = e)
     return render(request, "eventreviews.html", context)
 
 @login_required
@@ -237,8 +231,8 @@ def addconvention(request):
 def addevent(request, conID):
     u = request.user
     context = {"currUser": u}
-    context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
-    if context["convention"] == models.INV_CON:
+    c = context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
+    if c == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
     return render(request, "addevent.html", context)
 
@@ -247,10 +241,10 @@ def addevent(request, conID):
 def editconvention(request, conID):
     u = request.user
     context = {"currUser": u}
-    context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
-    context["editCon"] = True
-    if context["convention"] == models.INV_CON:
+    c = context["convention"] = get_object_or_404(models.Convention, ID = int(conID))
+    if c == models.INV_CON:
         raise Http404("Accessing the INV_CON is disallowed.")
+    context["editCon"] = True
     return render(request, "addconvention.html", context)
 
 @login_required
@@ -258,7 +252,9 @@ def editconvention(request, conID):
 def editevent(request, eventID):
     u = request.user
     context = {"currUser": u}
-    context["event"] = get_object_or_404(models.Event, ID = int(eventID))
+    e = context["event"] = get_object_or_404(models.Event, ID = int(eventID))
+    if e == models.INV_EVENT:
+        raise Http404("Accessing the INV_EVENT is disallowed.")
     context["editEvent"] = True
     return render(request, "addevent.html", context)
 
@@ -267,17 +263,15 @@ def writeup(request, writeupID):
     writeupID = int(writeupID)
     context = {}
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
-    context["writeup"] = get_object_or_404(models.Writeup, ID = writeupID)
+        u = context["currUser"] = request.user
+    w = context["writeup"] = get_object_or_404(models.Writeup, ID = writeupID)
     return render(request, "writeup.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
 def search(request, query = None):
     context = {}
     if request.user.is_authenticated():
-        u = request.user
-        context["currUser"] = u
+        u = context["currUser"] = request.user
     if query is None:
         query = ""
     context["query"] = query

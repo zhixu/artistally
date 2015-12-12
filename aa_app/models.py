@@ -157,6 +157,13 @@ class Convention(ValidatedModel):
     website = models.URLField(max_length = 200)
     image = models.URLField(max_length = 200, blank = True, default = "")
 
+    def userProfit(self, u):
+        return sum(e.userProfit(u) for e in self.events.all())
+
+    @property
+    def itemUsers(self):
+        return User.objects.filter(items__event__in = self.events.all()).distinct()
+
     @property
     def avgRating(self):
         return statistics.mean(e.avgRating for e in self.events.all())
