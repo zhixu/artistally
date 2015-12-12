@@ -3,7 +3,8 @@ Artistally app instructions
 Prerequisites.
 0. Be inside the top-level directory of the project.
 1. Create and prepare a virtual environment.
-    virtualenv --no-site-packages --always-copy -p python3 venv
+    sudo apt-get install python3-venv
+    pyvenv --no-site-packages -p python3 venv
     source venv/bin/activate
     pip install -U pip
     pip install -r requirements.txt
