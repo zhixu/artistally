@@ -170,7 +170,10 @@ class Convention(ValidatedModel):
 
     @property
     def avgUserProfit(self):
-        return statistics.mean(e.avgUserProfit for e in self.events.all())
+        if self.events.exists():
+            return statistics.mean(e.avgUserProfit for e in self.events.all())
+        else:
+            return 0
 
     @property
     def itemsSoldTotal(self):
@@ -239,7 +242,7 @@ class Event(ValidatedModel):
     def userProfit(self, u):
         expr = ExpressionWrapper((F("price") - F("cost")) * F("numSold"), output_field = models.DecimalField())
         agg = self.items.filter(user = u).annotate(profit = expr).aggregate(Sum("profit"))
-        return agg["profit__sum"]
+        return agg["profit__sum"]or 0
 
     @property
     def itemUsers(self):
@@ -255,7 +258,10 @@ class Event(ValidatedModel):
         for item in self.items.all():
             profit += item.price * item.numSold
             profit -= item.cost * item.numSold
-        return profit / self.itemUsers.count()
+        if self.itemUsers.count() > 0:
+            return profit / self.itemUsers.count()
+        else:
+            return 0
 
     @property
     def itemsSoldTotal(self):

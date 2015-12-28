@@ -4,7 +4,7 @@ Prerequisites.
 0. Be inside the top-level directory of the project.
 1. Create and prepare a virtual environment.
     sudo apt-get install python3-venv
-    pyvenv --no-site-packages -p python3 venv
+    pyvenv venv
     source venv/bin/activate
     pip install -U pip
     pip install -r requirements.txt

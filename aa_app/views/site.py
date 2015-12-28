@@ -77,6 +77,11 @@ def convention(request, conID):
     context["topKinds"] = c.topKinds
     context["topFandoms"] = c.topFandoms
     context["profitCounts"], context["profitBins"] = numpy.histogram(numpy.asarray([c.userProfit(u) for u in c.itemUsers], dtype = "float"), bins = max(1, min(10, c.itemUsers.count())))
+
+    if (min(len(context["topKinds"]), len(context["topFandoms"]), len(context["profitCounts"]), len(context["profitBins"])) is 0):
+        context["hasConData"] = False
+    else:
+        context["hasConData"] = True
     
     year = datetime.timedelta(days = 365, hours = 6)
     voteSum_1Y = collections.Counter()
@@ -91,7 +96,7 @@ def convention(request, conID):
     numSoldSum_2Y = collections.Counter()
     numSoldSum_5Y = collections.Counter()
     numSoldSum_All = collections.Counter()
-    
+
     for event in c.events.all():
         if datetime.date.today() - event.endDate <= year:
             voteSum_1Y += event.kindUserVotes
@@ -135,14 +140,7 @@ def convention(request, conID):
         else:
             avgKindPrice_All[kind] = valueSoldSum_All[kind] / numSoldSum_All[kind]
 
-#    votedKindsThisYear = [k[0] for k in sorted(voteSum_1Y.items(), key = operator.itemgetter(1), reverse = True)]
-#    votedKindsTwoYears = [k[0] for k in sorted(voteSum_2Y.items(), key = operator.itemgetter(1), reverse = True)]
-#    votedKindsFiveYears = [k[0] for k in sorted(voteSum_5Y.items(), key = operator.itemgetter(1), reverse = True)]
     votedKindsAll = [k[0] for k in sorted(voteSum_All.items(), key = operator.itemgetter(1), reverse = True)]
-    
-#    votedKindPricesThisYear = [avgKindPrice_1Y[k] for k in votedKindsThisYear]
-#    votedKindPricesTwoYears = [avgKindPrice_2Y[k] for k in votedKindsTwoYears]
-#    votedKindPricesFiveYears = [avgKindPrice_5Y[k] for k in votedKindsFiveYears]
     votedKindPricesAll = [avgKindPrice_All[k] for k in votedKindsAll]
 
     context["votedKinds"] = {}
@@ -152,10 +150,11 @@ def convention(request, conID):
     else:
         context["votedKindsMoreThan5"] = False
         context["votedKinds"]["all"] = zip(votedKindsAll, votedKindPricesAll)
-
-#    context["votedKinds"]["thisYear"] = zip(votedKindsThisYear, votedKindPricesThisYear)
-#    context["votedKinds"]["twoYears"] = zip(votedKindsTwoYears, votedKindPricesTwoYears)
-#    context["votedKinds"]["fiveYears"] = zip(votedKindsFiveYears, votedKindPricesFiveYears)
+    
+    context["eventsWithUserWriteups"] = {}
+    for writeup in u.writeups.all():
+        if writeup.event.convention.ID == int(conID):
+            context["eventsWithUserWriteups"][writeup.event.ID] = writeup.ID
 
     return render(request, "convention.html", context)
 

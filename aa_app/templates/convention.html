@@ -18,10 +18,13 @@
             {% if topKinds and topFandoms %}
                 setKindsChart();
                 setFandomsChart();
-                //setProfitChart();
+                setProfitsChart();
             {% endif %}
             
             toggleWriteups($("#writeup-selection").val());
+            {% if currUser %}
+                hasAlreadyReviewed();
+            {% endif %}
         });
                        
         {% if convention.avgRating != None %}
@@ -33,6 +36,7 @@
         {% endif %}
         
         function toggleWriteups(eventID) {
+            console.log("toggling writeups");
             $(".writeup-group").hide();
             $("#" + eventID + "-writeups").show();
             $("#reviewEventName").text($("#writeup-selection option[value='" + eventID +"']").text());
@@ -76,7 +80,6 @@
                   kindsChart.draw();
               });
               $("#kindsChart")[0].parentNode.parentNode.appendChild(legendHolder.firstChild);
-
 
               kindsChart.generateLegend();
               $("#kindsLegend").innerHTML = kindsChart.generateLegend();
@@ -127,21 +130,23 @@
         
         function setProfitsChart() {
             var data = {
-                labels: ["0-49", "50-99", "100-199", "200-399", "300-499", "500-899", "900+"],
+                labels: [{% for bin in profitBins%} {{bin}},{% endfor %}],
                 datasets: [
                     {
-                        label: "My Second dataset",
+                        label: "Profit Distribution",
                         fillColor: "rgba(151,187,205,0.5)",
                         strokeColor: "rgba(151,187,205,0.8)",
                         highlightFill: "rgba(151,187,205,0.75)",
                         highlightStroke: "rgba(151,187,205,1)",
-                        data: [28, 48, 40, 68, 86, 48, 4]
+                        data: [{% for profit in profitCounts %} {{profit}},{% endfor %}]
                     }
                 ]
             };
-            
+            var profitsOptions = {
+                responsive: true
+            };
             var profitsCanvas = $("#profitsChart")[0].getContext("2d");
-            var profitsBarChart = new Chart(profitsCanvas).Bar(data, options);
+            var profitsBarChart = new Chart(profitsCanvas).Bar(data, profitsOptions);
         }
              
         {% if currUser %}
@@ -196,6 +201,26 @@
                 }
             }
          
+            var alreadyReviewedList = [];
+            {% if eventsWithUserWriteups %}
+                {% for eventID, writeupID in eventsWithUserWriteups.items %}
+                    alreadyReviewedList[{{eventID}}] = {{writeupID}};
+                {% endfor %}
+            {% endif %}
+                
+            function hasAlreadyReviewed() {
+                var eventID = $("#event-list").val()
+                if (alreadyReviewedList[eventID]) {
+                    var selectedEvent = $("#event-list option:selected").text();
+                    $("#reviewWarning").html("You currently have a review written for " + selectedEvent + "! <br/> Edit it <a href='/writeup/" + alreadyReviewedList[eventID] + "'>here</a>.");
+                    $("#reviewWarning").show();
+                    $(".editable-review-element").hide();
+                } else {
+                    $("#reviewWarning").hide();
+                    $(".editable-review-element").show();   
+                }
+            };
+         
             function setFavorite(eventID) {
                 var jsonDict = new Object();
                 jsonDict.eventID = eventID;
@@ -205,7 +230,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
                     success: function(response) {
-                        $("#fav-" + eventID).html('<a onclick="unsetFavorite(' + eventID + ')">Remove from my Conventions</a>');
+                        $("#fav-" + eventID).html('<a onclick="unsetFavorite(' + eventID + ')">Remove</a>');
                     },
                     error: function(response) {
                         try {
@@ -226,7 +251,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(jsonDict),
                     success: function(response) {
-                        $("#fav-" + eventID).html('<a onclick="setFavorite(' + eventID + ')">Add to my Conventions</a>');
+                        $("#fav-" + eventID).html('<a onclick="setFavorite(' + eventID + ')">Add</a>');
                     },
                     error: function(response) {
                         try {
@@ -249,6 +274,13 @@
             <h1>{{convention}}</h1>
             <a href="{{convention.website}}">{{convention.website}}</a>
         </div>
+        <div class="cell text-center">
+            <div class="containery">
+                <div class="centery">
+                    <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:0%"></span></div>
+                </div>
+            </div>
+        </div>
         {% if currUser %}
             <div class="cell text-center">
                 <div class="containery">
@@ -263,16 +295,32 @@
     </div>
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Overview</h2>
-        {% if convention.users.count %}
-        <br/>We have data from a total of {{convention.users.count}} people from the latest event.
-        {% endif %}
-        {% if convention.avgUserProfit != None %}
-            <br/>
-            On average, each artist makes a total of ${{convention.avgUserProfit|floatformat:2}}. This is averaged between all of the events and data we have for this convention.
-        {% endif %}
-        {% if topKinds != None %}
-            There's currently no merchandise data for this event! Help us by adding this event to your list and adding your inventory data.       
-        {% endif %}
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="stat-box text-center">
+                    <h3>{{convention.users.count}} ???</h3>
+                    artists
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="stat-box text-center">
+                    <h3>${{convention.avgUserProfit|floatformat:2}}</h3>
+                    average profit
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="stat-box text-center">
+                    <h3>???</h3>
+                    ???
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="stat-box text-center">
+                    <h3>???</h3>
+                    ???
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="section-wrapper border-wrapper">
@@ -291,7 +339,7 @@
                 <th>Start Date</th>
                 <th>End Date</th>
                 {% if currUser %}
-                    <th>Add to My Convention</th>
+                    <th>Add to My Events</th>
                     <th>Edit</th>
                 {% endif %}
             </thead>
@@ -305,9 +353,9 @@
                         {% if currUser %}
                             <td id="fav-{{event.ID}}">
                                 {% if currUser not in event.users.all %}
-                                    <a onclick="setFavorite({{event.ID}})" style="cursor:pointer">Add to my Conventions</a>
+                                    <a onclick="setFavorite({{event.ID}})" style="cursor:pointer">Add</a>
                                 {% else %}
-                                    <a onclick="unsetFavorite({{event.ID}})" style="cursor:pointer">Remove from my Conventions</a>
+                                    <a onclick="unsetFavorite({{event.ID}})" style="cursor:pointer">Remove</a>
                                 {% endif %}
                             </td>
                             <td><a href="/editevent/{{event.ID}}"><i class="fa fa-pencil-square-o" alt="edit"></i></a></td>
@@ -323,15 +371,16 @@
     
     
     
-    {% if convention.events.count > 0 %}
+    
     <!-- ========== Analytics ========== -->
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Analytics</h2>
         <br/>
+        {% if hasConData %}
         <div class="chart-wrapper">
             <h3 class="title-wrapper">Profit Distribution</h3>
             <div class="chart-display">
-                <canvas id="profitsChart" width="150" height="150"></canvas>
+                <canvas id="profitsChart" width="818" height="300"></canvas>
             </div>
         </div>
         <div class="row">
@@ -375,12 +424,16 @@
                 {% endif %}
             </div>
         </div>
+        {% else %}
+            Looks like we don't have enough data! Please help by adding your own.
+        {% endif %}
     </div>
     
     <!-- ========== Reviews ========== -->
     <div class="section-wrapper border-wrapper">
         <div class="row">
-            <h2 class="title-wrapper col-sm-9">Reviews for <span id="reviewEventName"></span></h2>
+            <h2 class="title-wrapper col-sm-9">Reviews {% if convention.events.count > 0 %}for <span id="reviewEventName"></span>{% endif %}</h2>
+            {% if convention.events.count > 0 %}
             <div class="col-sm-3">
                 <span>
                     <select class="form-control" id="writeup-selection" onchange="toggleWriteups(this.value)">
@@ -391,52 +444,60 @@
                     </select>
                 </span>
             </div>
+            {% endif %}
         </div>
         
-        {% for event in convention.events.all %}
-            <div id="{{event.ID}}-writeups" class="writeup-group">
-            {% for writeup in event.writeups.all|slice:":5" %}
-                <div class="row">
-                    <div class="col-sm-2">
-                        <a href="/user/{{writeup.user}}">
-                        {% if writeup.user.image %}
-                            <img src="{{writeup.user.image}}" class="user-icon-large">
-                        {% else %}
-                            <img src="/static/images/icon-default.png" class="user-icon-large">
-                        {% endif %}</a>
-                        <br/>
-                        <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
-                        {% if writeup.user == currUser %}
+        {% if convention.events.count > 0 %}
+            {% for event in convention.events.all %}
+                <div id="{{event.ID}}-writeups" class="writeup-group">
+                {% for writeup in event.writeups.all|slice:":5" %}
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <a href="/user/{{writeup.user}}">
+                            {% if writeup.user.image %}
+                                <img src="{{writeup.user.image}}" class="user-icon-large">
+                            {% else %}
+                                <img src="/static/images/icon-default.png" class="user-icon-large">
+                            {% endif %}</a>
                             <br/>
-                            <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
-                            <a onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
-                        {% endif %}
-                    </div>
-                    <div class="col-sm-10">
-                        <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
-                        <div class="main-entry-text">
-                            {{writeup.review|linebreaks}}
+                            <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
+                            {% if writeup.user == currUser %}
+                                <br/>
+                                <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
+                                <a onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
+                            {% endif %}
                         </div>
-                        <small>Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}}</small>
-                        <br/>
+                        <div class="col-sm-10">
+                            <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
+                            <div class="main-entry-text">
+                                {{writeup.review|linebreaks}}
+                            </div>
+                            <small>Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}} | <a href="/writeup/{{writeup.ID}}">Permalink</a></small>
+                            <br/>
+                        </div>
                     </div>
+                    <br/>
+                    <br/>
+                {% empty %}
+                    No one has reviewed this event yet.
+                {% endfor %}
+                <hr/>
+                <p class="text-center">
+                    {% if event.writeups.count > 5 %}
+                        Showing 5 out of {{event.writeups.count}} review{{event.writeups.count|pluralize}} in total.
+                        <br/><a href="/eventreviews/{{event.ID}}" class="btn btn-custom-blue">Read All Reviews</a>
+                    {% else %}
+                        Showing {{event.writeups.count}} out of {{event.writeups.count}} review{{event.writeups.count|pluralize}} in total.
+                    {% endif %}
+                </p>
                 </div>
-                
-            {% empty %}
-                No one has reviewed this event yet.
             {% endfor %}
-            <hr/>
-            <p class="text-center">
-                {% if event.writeups.count > 5 %}
-                    Showing 5 out of {{event.writeups.count}} review{{event.writeups.count|pluralize}} in total.
-                    <br/><a href="/eventreviews/{{event.ID}}" class="btn btn-custom-blue">Read All Reviews</a>
-                {% else %}
-                    Showing {{event.writeups.count}} out of {{event.writeups.count}} review{{event.writeups.count|pluralize}} in total.
-                {% endif %}
-            </p>
-            </div>
-        {% endfor %}
+        {% else %}
+            There are currently no reviews for this convention!
+        {% endif %}
     </div>
+    
+    {% if convention.events.count > 0 %}
     <div class="section-wrapper border-wrapper" id="add-review">
         <h2 class="title-wrapper">Write Review</h2>
         {% if currUser %}
@@ -452,10 +513,10 @@
                 </div>
                 <div class="col-sm-10">
                     <div class="row">
-                        <div class="form-group col-sm-2">
+                        <div class="form-group col-sm-3 editable-review-element">
                             <label for="star-rating" class="required">Rating:</label>
                             <br/>
-                            <span class="star-rating form-control" id="star-rating">
+                            <span class="star-rating" id ="star-rating">
                                 <input type="radio" name="ratingField" value="1"/><i></i>
                                 <input type="radio" name="ratingField" value="2"/><i></i>
                                 <input type="radio" name="ratingField" value="3"/><i></i>
@@ -466,7 +527,7 @@
                         <div class="form-group col-sm-6">
                             <label for="event-list" class="required">Event:</label>
                             <span>
-                                <select class="form-control" id="event-list">
+                                <select class="form-control" id="event-list" onchange="hasAlreadyReviewed()">
                                 {% for event in convention.events.all %}
                                     <option value="{{event.ID}}">{{convention}} {{event}}</option>
                                 {% endfor %}
@@ -474,17 +535,19 @@
                             </span>
                         </div>
                     </div>
+                    <div id="reviewWarning"></div>
                     <div class="form-group">
-                        <textarea class="form-control" rows="6" id="reviewField"></textarea>
+                        <textarea class="form-control editable-review-element" rows="6" id="reviewField"></textarea>
                     </div>
                 </div>
             </div>
-            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue">Submit</a></p>
+            <p class="text-right"><a onclick="makeWriteup()" class="btn btn-custom-blue editable-review-element">Submit</a></p>
         {% else %}
             <p class="text-center"><a href="/login" class="btn btn-custom-blue">Login</a> or <a href="/signup" class="btn btn-custom-blue">Register</a>
             </p>
         {% endif %}
     </div>
     {% endif %}
+    
 </div>
 {% endblock %}

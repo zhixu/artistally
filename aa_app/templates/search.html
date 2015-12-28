@@ -2,6 +2,30 @@
 
 {% block head %}
     <title>ArtisTally | Search Conventions</title>
+    <script src="/static/js/editablegrid/all_min.js"></script>
+    <script>
+        $(function() {
+            makeEditableGrid();
+        });
+          
+        function makeEditableGrid() {
+            editableGrid = new EditableGrid("InventoryEditableGrid", 
+                { sortIconUp: "/static/images/up.png", 
+                sortIconDown: "/static/images/down.png"
+                });
+
+            editableGrid.load({ metadata: [
+                { name: "convention", datatype: "html", editable: false },
+                { name: "website", datatype: "website", editable: false },
+                { name: "location", datatype: "string", editable: false },
+                { name: "rating", datatype: "html", editable: false }
+            ]});
+            
+            editableGrid.attachToHTMLTable("conventionTable");
+            editableGrid.renderGrid();
+        }
+
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -12,10 +36,26 @@
             {% else %}
                 <h2 class="title-wrapper">All Conventions</h2>
             {% endif %}
-            {% for con in cons %}
-                <a href="/convention/{{con.ID}}">{{con}}</a>
-                <br/>
-            {% endfor %}
+            
+            <table class="table table-hover" id="conventionTable">
+            <thead>
+                <th>Convention</th>
+                <th>Website</th>
+                <th>Location</th>
+                <th>Average Rating</th>
+            </thead>
+            <tbody>
+                {% for con in cons %}
+                    <tr>
+                        <td><a href="/convention/{{con.ID}}">{{con}}</a></td>
+                        <td>{{con.website}}</td>
+                        <td>Location</td>
+                        <td><div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:50%"></span></div></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            
             <br/>
             Couldn't find the convention you were looking for?
             <br/><a href="/addconvention">Add a new one!</a>
