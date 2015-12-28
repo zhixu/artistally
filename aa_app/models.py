@@ -117,6 +117,9 @@ class User(AbstractBaseUser):
             "Token: " + str(self.resetToken) + "\n\n" + \
             "If you did not submit such a request, feel free to ignore this email."
         send_mail("ArtistAlly Reset Request", msg, EMAIL_HOST_USER, [self.email])
+        
+    def sendFeedback(self, subject, body):
+        send_mail(subject + "\n\n Sent by " + self.username, body, EMAIL_HOST_USER, [EMAIL_HOST_USER])
 
     # UTIL
     objects = UserManager()

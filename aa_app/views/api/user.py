@@ -48,8 +48,8 @@ def logout(request):
 @login_required
 def resendConfirmEmail(request):
     d = json.loads(bytes.decode(request.body))
+    u = request.user
     try:
-        u = request.user
         u.sendConfirmEmail()
     except ValidationError as ex:
         return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
@@ -59,8 +59,8 @@ def resendConfirmEmail(request):
 @user_passes_test(lambda u: u.confirmToken)
 def checkConfirmToken(request):
     d = json.loads(bytes.decode(request.body))
+    u = request.user
     try:
-        u = request.user
         if u.confirmToken != uuid.UUID(d["token"]):
             return JsonResponse({"error": "wrong token"}, status = 400)
         u.setConfirmToken(None)

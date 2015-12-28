@@ -97,4 +97,5 @@ urlpatterns = [
     url(r"^api/util/uploadFile$", aa_app.views.api.util.uploadFile),
     url(r"^api/util/findFandom$", aa_app.views.api.util.findFandom),
     url(r"^api/util/findKind$", aa_app.views.api.util.findKind),
+    url(r"^api/util/contactUs$", aa_app.views.api.util.contactUs),
 ]

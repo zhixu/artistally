@@ -28,4 +28,14 @@ def findKind(request):
     d = json.loads(bytes.decode(request.body))
     ks = models.Kind.objects.filter(name__icontains = (d["query"])).annotate(Count("items")).order_by("-items__count")
     return JsonResponse({"results": [k.name for k in ks[:10]]})
-    
+
+@login_required
+#@user_passes_test(lambda u: not u.confirmToken)
+def contactUs(request):
+    d = json.loads(bytes.decode(request.body))
+    u = request.user
+    try:
+        u.sendFeedback(d["subject"], d["body"])
+    except ValidationError as ex:
+        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    return JsonResponse({})
