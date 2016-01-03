@@ -73,7 +73,7 @@
         <div class="con-header">
             <div class="main-info">
                 <h2>{{event.convention}} {{event}}</h2>
-                {{event.location}} | {{event.startDate}} - {{event.endDate}} | <a href="{{convention.website}}">{{event.convention.website}}</a>
+                {{event.location}} | {{event.startDate}} - {{event.endDate}}</a>
             </div>
             {% if currUser %}
                 <div class="cell text-center">
@@ -114,9 +114,9 @@
         
         <div class="section-wrapper border-wrapper">
             <h2 class="title-wrapper">Reviews</h2>
-            {% for writeup in event.convention.writeups.all %}
-                <div class="review-entry">
-                    <div class="side-entry">
+            {% for writeup in event.writeups.all %}
+                <div class="row">
+                    <div class="col-sm-2">
                         <a href="/user/{{writeup.user}}">
                         {% if writeup.user.image %}
                             <img src="{{writeup.user.image}}" class="user-icon-large">
@@ -125,21 +125,23 @@
                         {% endif %}</a>
                         <br/>
                         <a href="/user/{{writeup.user}}"><b>{{writeup.user}}</b></a>
-                        <br/>
-                        {{writeup.editTime|date:"M d, Y"}}
                         {% if writeup.user == currUser %}
                             <br/>
-                            <a href="/writeup/{{currUserEventWriteup.ID}}" class="btn btn-custom-blue">Edit Review</a>
+                            <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
+                            <a onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
                         {% endif %}
                     </div>
-                    <div class="main-entry">
+                    <div class="col-sm-10">
                         <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
                         <div class="main-entry-text">
-                            {{writeup.review}}
+                            {{writeup.review|linebreaks}}
                         </div>
+                        <small>Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}} | <a href="/writeup/{{writeup.ID}}">Permalink</a></small>
+                        <br/>
                     </div>
                 </div>
-                <hr>
+                <br/>
+                <br/>
             {% empty %}
                 No one has reviewed this event yet.
             {% endfor %}

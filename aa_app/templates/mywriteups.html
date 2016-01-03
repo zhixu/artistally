@@ -51,18 +51,20 @@
                                     <br/>
                                     <a href="/user/{{currUser}}">{{currUser}}</a>
                                     <br/>
-                                    <a href="/writeup/{{writeup.ID}}" class="edit">Edit</a>
-                                    <a onclick="deleteWriteup({{writeup.ID}})" class="delete">Delete</a>
+                                    <a href="/writeup/{{writeup.ID}}" class="editReview">Edit</a>
+                                    <a href="#" onclick="deleteWriteup({{writeup.ID}})" class="deleteReview">Delete</a>
                                 </div>
                                 <div class="col-sm-10">
                                     <div class="star-ratings-outer"><span id="{{writeup.user}}-rating" class="star-ratings-inner" style="width:{{writeup.rating|add:writeup.rating}}0%"></span></div>
                                     <div class="main-entry-text">
                                         {{writeup.review|linebreaks}}
                                     </div>
-                                    <small>Review for <a href="/event/{{writeup.event.ID}}">{{writeup.event.convention}} {{writeup.event}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}}</small>
+                                    <small>Review for <a href="/convention/{{writeup.event.convention.ID}}">{{writeup.event.convention}} {{writeup.event}}</a> | Entry created: {{writeup.writeTime|date:"M d, Y"}} | Entry last edited: {{writeup.editTime|date:"M d, Y"}}</small>
                                     <br/>
                                 </div>
                             </div>
+                            <br/>
+                            <br/>
                         {% endfor %}
                     {% else %}
                         No reviews to display.

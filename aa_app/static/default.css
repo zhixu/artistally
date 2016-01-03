@@ -31,12 +31,12 @@ a:hover {
     text-decoration: none;
 }
 
-a.edit:link {
-    color: green;   
+a.editReview {
+    color: #a4bd8c;
 }
 
-a.delete:link {
-    color: red;   
+a.deleteReview {
+    color: #d48469;
 }
 
 h3.lowercase {
@@ -45,7 +45,7 @@ h3.lowercase {
 }
 
 footer {
-    background-color: #9ccceb;
+    background-color: #605063;
     color: white;
     text-align: center;
     width: 100%;
@@ -398,8 +398,10 @@ th, td {
     -webkit-border-radius: 10px; 
 }
 
-.btn .wide {
-    width: 100%;
+.btn-wide {
+    padding: 25px;
+    font-weight: 700;
+    font-size: 150%;
 }
 
 /* ------------------------------------------------- */
@@ -417,11 +419,10 @@ th, td {
 }
 
 .jumbotron-signup {
-    position: relative;
-    background: #4fb5b9 url("/static/images/assembled.png") center center;
+    background: url("/static/images/assembled.png");
     width: 100%;
-    height: 560px;
-    background-size: cover;
+    height: 360px;
+    background-size: 100% auto;
     overflow: hidden;
     color: #FFFFFF;
     margin: 0;
@@ -580,17 +581,17 @@ th, td {
 .star-ratings-outer {
   background: url("/static/images/stars.png") repeat-x;
   font-size: 0;
-  height: 34px;
+  height: 23px;
   line-height: 0;
   overflow: hidden;
   text-indent: -999em;
-  width: 190px;
+  width: 125px;
 }
 .star-ratings-inner {
     background: url("/static/images/stars.png") repeat-x;
     background-position: 0 100%;
     float: left;
-    height: 34px;
+    height: 24px;
     display:block;
 }
 
@@ -598,8 +599,8 @@ th, td {
   font-size: 0;
   white-space: nowrap;
   display: inline-block;
-  width: 190px;
-  height: 34px;
+  width: 125px;
+  height: 23px;
   overflow: hidden;
   position: relative;
   background: url("/static/images/stars.png");
@@ -735,14 +736,30 @@ th, td {
     -webkit-border-radius: 2px;
 }
 
+/*
 .chart-wrapper {
     min-width: 300px;
     height: 250px;
 }
+*/
+
+/*
+.chart-wrapper {
+    width: 100%;
+}
+*/
 
 .chart-display {
     float: left;
     margin-right: 10px;
+}
+
+/* ----------------------------------------------- */
+/* --------------- CONVENTION PAGE --------------- */
+/* ----------------------------------------------- */
+#conventionTable {
+cursor: pointer;
+    
 }
 
 /* ----------------------------------------------- */
@@ -956,6 +973,10 @@ th, td {
     #menu-large {
         height: 0px;
         overflow: hidden;
+    }
+    
+    #feedback {
+        visibility: hidden;
     }
 }
 

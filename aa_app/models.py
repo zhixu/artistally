@@ -169,12 +169,17 @@ class Convention(ValidatedModel):
 
     @property
     def avgRating(self):
-        return statistics.mean(e.avgRating for e in self.events.all())
+        avgs = tuple(e.avgRating for e in self.events.all() if e.avgRating != 0)
+        if len(avgs) > 0:
+            return statistics.mean(avgs)
+        else:
+            return 0
 
     @property
     def avgUserProfit(self):
-        if self.events.exists():
-            return statistics.mean(e.avgUserProfit for e in self.events.all())
+        avgs = tuple(e.avgUserProfit for e in self.events.all() if e.avgRating != 0)
+        if len(avgs):
+            return statistics.mean(avgs)
         else:
             return 0
 
@@ -253,7 +258,7 @@ class Event(ValidatedModel):
 
     @property
     def avgRating(self):
-        return self.writeups.aggregate(Avg("rating"))["rating__avg"]
+        return self.writeups.aggregate(Avg("rating"))["rating__avg"] or 0
 
     @property
     def avgUserProfit(self):    # does NOT include cost of items that weren't sold

@@ -15,7 +15,7 @@
         
         $(function() {
             $(".date-picker").datepicker();
-            $(".date-picker").datepicker("option", "dateFormat", "yy-mm-dd");
+            $(".date-picker").datepicker("option", "dateFormat", "mm-dd-yy");
             
             $(".event-field").keydown(function(event) {
                 if (event.keyCode == 13) {
@@ -39,6 +39,12 @@
                 }
             {% endif %}
         });
+             
+        // mm-dd-yy to yy-mm-dd
+        function reformatDate(date) {
+            var parts = date.split("-");
+            return parts[2] + '-' + parts[0] + '-' + parts[1];
+        }
         
         function toggleSeason() {
             if ($('input[name="seasonRadio"]:checked').val() == "yes") {
@@ -87,6 +93,7 @@
                     }
                 }
                 if (jsonDict.startDate != $("#startDateField").prop("defaultValue")) {
+                    jsonDict.startDate = reformatDate($("#startDateField").val());
                     var ajaxObj = $.ajax({
                         url: "/api/event/setStartDate",
                         type: "POST",
@@ -109,6 +116,7 @@
                     }
                 }
                 if (jsonDict.endDate != $("#endDateField").prop("defaultValue")) {
+                    jsonDict.endDate = reformatDate($("#endDateField").val());
                     var ajaxObj = $.ajax({
                         url: "/api/event/setEndDate",
                         type: "POST",
@@ -179,15 +187,16 @@
             function makeEvent() {
                 $("#submitButton").attr("disabled", true);
                 var jsonDict = new Object();
-                jsonDict.conID = {{convention.ID}}
+                jsonDict.conID = {{convention.ID}};
 
                 if ($('input[name="seasonRadio"]:checked').val() == "yes") {
                     jsonDict.name = $("#seasonField").val() + " " + $("#yearField").val();
                 } else {
                     jsonDict.name = $("#yearField").val();
                 }
-                jsonDict.startDate = $("#startDateField").val();
-                jsonDict.endDate = $("#endDateField").val();
+                jsonDict.startDate = reformatDate($("#startDateField").val());
+                jsonDict.endDate = reformatDate($("#endDateField").val());
+         
                 if ($("#numAttendersField").val()) {
                     jsonDict.numAttenders = $("#numAttendersField").val();
                 }
@@ -221,7 +230,7 @@
             {% if editEvent %}
                 <h1 class="text-center">Edit Event</h1>
             {% else %}
-                <h1 class="text-center">Add New Event for {{event.convention}}</h1>
+                <h1 class="text-center">Add New Event for {{convention}}</h1>
             {% endif %}
             
             <p class="text-center">
@@ -230,7 +239,7 @@
                 {% else %}
                     Please enter event information.
                 {% endif %}
-            <br/>We will review and approve your information as soon as possible.</p>
+<!--            <br/>We will review and approve your information as soon as possible.</p>-->
             <br/>
             <br/>
             <div class="form-group">
@@ -283,7 +292,7 @@
                         <label for="startDateField" class="required">Start Date</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="startDate-addon"><i class="fa fa-calendar fa-fw"></i></span>
-                            <input type="text" class="form-control date-picker event-field" id="startDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="startDate-addon"/>
+                            <input type="text" class="form-control date-picker event-field" id="startDateField" placeholder="{% now "m-d-Y" %}" min="01-01-1980" aria-describedby="startDate-addon"/>
                         </div>
                     </div>
                 </div>
@@ -292,7 +301,7 @@
                         <label for="endDateField" class="required">End Date</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="endDate-addon"><i class="fa fa-calendar fa-fw"></i></span>
-                            <input type="text" class="form-control date-picker event-field" id="endDateField" placeholder="2000-01-01" min="1980-01-01" aria-describedby="endDate-addon"/>
+                            <input type="text" class="form-control date-picker event-field" id="endDateField" placeholder="{% now "m-d-Y" %}" min="01-01-1980" aria-describedby="endDate-addon"/>
                         </div>
                     </div>
                 </div>
@@ -302,7 +311,7 @@
             <br/>
             <sub class="required text-center">Required</sub>
             <br/>
-            <p class="text-center"><a onclick="{% if editEvent %}updateEvent(){% else %}makeEvent(){% endif %}" id="submitButton" class="btn btn-custom-blue">Submit</a></p>
+            <p class="text-center"><a onclick="{% if editEvent %}updateEvent(){% else %}makeEvent(){% endif %}" id="submitButton" class="btn btn-custom-blue">Submit</a> <a href="/convention/{% if editEvent %}{{event.convention.ID}}{% else %}{{convention.ID}}{% endif %}" class="btn btn-custom-blue">Cancel</a></p>
         </div>
     </div>
 {% endblock %}

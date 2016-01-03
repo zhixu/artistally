@@ -44,6 +44,26 @@
         }
         
         {% if currUser %}
+            function submitContact() {
+                var jsonDict = new Object();
+                jsonDict.subject = $("#contactSubjectField").val();
+                jsonDict.body = $("#contactMessageField").val();
+                $.ajax({
+                    url: "/api/util/contactUs",
+                    type: "POST",
+                    success: function(response) {
+                        alert("Thank you! Your message has been sent.");
+                    },
+                    error: function(response) {
+                        try {
+                            alert("Could not send message! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not send message! An unknown error has occurred.");
+                        }
+                    },
+                });
+            }
+    
             function logout() {
                 $.ajax({
                     url: "/api/user/logout",
@@ -52,7 +72,11 @@
                         window.location.href = "/";
                     },
                     error: function(response) {
-                        alert("Could not log out! \n Error - " + JSON.parse(response.responseText).error);
+                        try {
+                            alert("Could not log out! \n Error - " + JSON.parse(response.responseText).error);
+                        } catch (e) {
+                            alert("Could not log out! An unknown error has occurred.");
+                        }
                     },
                 });
             }
@@ -116,42 +140,46 @@
     </header>
     
     <body>
-        <div id="feedback">
-			<a data-toggle="modal" data-target="#contactModal" aria-label="Add New" style="cursor:pointer"></a>
-		</div>
+        {% if currUser %}
+            <div id="feedback">
+                <a data-toggle="modal" data-target="#contactModal" aria-label="Add New" style="cursor:pointer"></a>
+            </div>
+        {% endif %}
         {% block body %}
         {% endblock %}
-        <!-- ============ Contact Modal ============-->
-        <div class="modal fade" id="contactModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Contact Us</h4>
-                    </div>
-                    <div class="modal-body">
-                        <label for="event-list" class="required">Subject</label>
-                        <span>
-                            <select class="form-control" id="event-list" onchange="hasAlreadyReviewed()">
-                                <option value="#">I have a suggestion</option>
-                                <option value="#">I have a question</option>
-                                <option value="#">I'm reporting a bug</option>
-                                <option value="#">Other</option>
-                            </select>
-                        </span>
-                        <br/>
-                        <div class="form-group">
-                            <label class="control-label required" for="contactMessageField">Message</label>
-                            <textarea class="form-control editable-review-element" rows="6" id="contactMessageField"></textarea>
+        {% if currUser %}
+            <!-- ============ Contact Modal ============-->
+            <div class="modal fade" id="contactModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Contact Us</h4>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
-                        <a class="btn btn-custom-blue" id="contactSubmit">Submit</a>
+                        <div class="modal-body">
+                            <label for="event-list" class="required">Subject</label>
+                            <span>
+                                <select class="form-control" id="contactSubjectField">
+                                    <option value="I have a suggestion" selected="selected">I have a suggestion</option>
+                                    <option value="I have a question">I have a question</option>
+                                    <option value="I'm reporting a bug">I'm reporting a bug</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </span>
+                            <br/>
+                            <div class="form-group">
+                                <label class="control-label required" for="contactMessageField">Message</label>
+                                <textarea class="form-control editable-review-element" rows="6" id="contactMessageField"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-custom-blue" data-dismiss="modal">Cancel</a>
+                            <a class="btn btn-custom-blue" onclick="submitContact()">Submit</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </body>
     <footer>
         <div class="container">

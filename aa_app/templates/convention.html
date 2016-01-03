@@ -7,15 +7,12 @@
         var highlights = new Array("#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774");
         
         $(function() {
-            {% if convention.avgRating != None %}
-                setStars();
-            {% endif %}
-
             {% if convention.image %}
                 $(".jumbotron-convention").css("background-image", "url({{convention.image}})");
             {% endif %}
 
             {% if topKinds and topFandoms %}
+                Chart.defaults.global.responsive = true;
                 setKindsChart();
                 setFandomsChart();
                 setProfitsChart();
@@ -26,14 +23,6 @@
                 hasAlreadyReviewed();
             {% endif %}
         });
-                       
-        {% if convention.avgRating != None %}
-            function setStars() {
-                var rating = {{convention.avgRating}};
-                var percent = (rating/5)*100;
-                $("#average-rating").width(percent + "%");
-            }
-        {% endif %}
         
         function toggleWriteups(eventID) {
             console.log("toggling writeups");
@@ -274,25 +263,29 @@
             <h1>{{convention}}</h1>
             <a href="{{convention.website}}">{{convention.website}}</a>
         </div>
-        <div class="cell text-center">
-            <div class="containery">
-                <div class="centery">
-                    <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:0%"></span></div>
-                </div>
-            </div>
-        </div>
+        
         {% if currUser %}
             <div class="cell text-center">
                 <div class="containery">
                     <div class="centery">
                         {% if currUser %}
-                            <span><a href="/editconvention/{{convention.ID}}" class="btn btn-custom-blue">Edit Convention Info</a></span>
+<!--                            <span><a href="/editconvention/{{convention.ID}}" class="btn btn-custom-blue">Edit Convention Info</a></span>-->
+                        <span><a href="#add-review" class="btn btn-custom-blue">Write Review</a></span>
                         {% endif %}
                     </div>
                 </div>
             </div>
         {% endif %}
+        <div class="cell text-center">
+            <div class="containery">
+                <div class="centery">
+                    <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:{{convention.avgRating|add:convention.avgRating}}0%"></span></div>
+                    {{convention.avgRating}} out of 5
+                </div>
+            </div>
+        </div>
     </div>
+<!--
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Overview</h2>
         <div class="row">
@@ -322,48 +315,56 @@
             </div>
         </div>
     </div>
+-->
     
     <div class="section-wrapper border-wrapper">
-        <h2 class="title-wrapper">Events</h2>
+        <div class="row">
+            <div class="col-sm-6">
+                <h2 class="title-wrapper">Events</h2>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-right"><a href="/addevent/{{convention.ID}}" class="btn btn-custom-blue">New Event</a></p>
+            </div>
+        </div>
+        
         {% if convention.events.count > 0 %}
         There {{convention.events.count|pluralize:"is,are"}} {{convention.events.count}} recorded event{{ convention.events.count|pluralize}} for {{convention}}. 
         <br/>
         <br/>
-        Not seeing the right event on the list? <a href="/addevent/{{convention.ID}}">Add a new event.</a>
-        <br/>
-        <br/>
-        <table class="table table-hover" id="cost-chart">
-            <thead>
-                <th>Event Name</th>
-                <th>Location</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                {% if currUser %}
-                    <th>Add to My Events</th>
-                    <th>Edit</th>
-                {% endif %}
-            </thead>
-            <tbody>
-                {% for event in convention.events.all %}
-                    <tr>
-                        <td>{{convention}} {{event}}</td>
-                        <td>{{event.location}}</td>
-                        <td>{{event.startDate}}</td>
-                        <td>{{event.endDate}}</td>
-                        {% if currUser %}
-                            <td id="fav-{{event.ID}}">
-                                {% if currUser not in event.users.all %}
-                                    <a onclick="setFavorite({{event.ID}})" style="cursor:pointer">Add</a>
-                                {% else %}
-                                    <a onclick="unsetFavorite({{event.ID}})" style="cursor:pointer">Remove</a>
-                                {% endif %}
-                            </td>
-                            <td><a href="/editevent/{{event.ID}}"><i class="fa fa-pencil-square-o" alt="edit"></i></a></td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-hover" id="cost-chart">
+                <thead>
+                    <th>Event Name</th>
+                    <th>Location</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    {% if currUser %}
+                        <th>Add to My Events</th>
+                        <th>Edit</th>
+                    {% endif %}
+                </thead>
+                <tbody>
+                    {% for event in convention.events.all %}
+                        <tr>
+                            <td>{{convention}} {{event}}</td>
+                            <td>{{event.location}}</td>
+                            <td>{{event.startDate}}</td>
+                            <td>{{event.endDate}}</td>
+                            {% if currUser %}
+                                <td id="fav-{{event.ID}}">
+                                    {% if currUser not in event.users.all %}
+                                        <a onclick="setFavorite({{event.ID}})" style="cursor:pointer">Add</a>
+                                    {% else %}
+                                        <a onclick="unsetFavorite({{event.ID}})" style="cursor:pointer">Remove</a>
+                                    {% endif %}
+                                </td>
+                                <td><a href="/editevent/{{event.ID}}"><i class="fa fa-pencil-square-o" alt="edit"></i></a></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
             There are currently no events listed for {{convention}}. <a href="/addevent/{{convention.ID}}">Add a new event here.</a>
         {% endif %}
@@ -377,33 +378,16 @@
         <h2 class="title-wrapper">Analytics</h2>
         <br/>
         {% if hasConData %}
-        <div class="chart-wrapper">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="chart-wrapper">
             <h3 class="title-wrapper">Profit Distribution</h3>
             <div class="chart-display">
-                <canvas id="profitsChart" width="818" height="300"></canvas>
+                <canvas id="profitsChart" height="200"></canvas>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="chart-wrapper">
-                    <h3 class="title-wrapper">Top Merchandise</h3>
-                    <div class="chart-display">
-                        <canvas id="kindsChart" width="150" height="150"></canvas>
-                    </div>
-                    <div class="chart-legend" id="kindsLegend"></div>
-                </div>
             </div>
-            <div class="col-sm-4">
-                <div class="chart-wrapper">
-                    <h3 class="title-wrapper">Top Fandoms</h3>
-                    <div class="chart-display">
-                        <canvas id="fandomsChart" width="150" height="150"></canvas>
-                    </div>
-                    <div class="chart-legend" id="fandomsLegend"></div>
-                </div>
-            </div>
-            
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <h3 class="title-wrapper">Average Prices</h3>
                 <table class="table table-hover">
                     <thead>
@@ -423,6 +407,26 @@
                     <p class="text-right"><a href="#">See all...</a></p>
                 {% endif %}
             </div>
+            <div class="col-sm-6">
+                <div class="chart-wrapper">
+                    <h3 class="title-wrapper">Top Merchandise</h3>
+                    <div class="chart-display">
+                        <canvas id="kindsChart" width="200" height="150"></canvas>
+                    </div>
+                    <div class="chart-legend" id="kindsLegend"></div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="chart-wrapper">
+                    <h3 class="title-wrapper">Top Fandoms</h3>
+                    <div class="chart-display">
+                        <canvas id="fandomsChart" width="200" height="150"></canvas>
+                    </div>
+                    <div class="chart-legend" id="fandomsLegend"></div>
+                </div>
+            </div>
+            
+            
         </div>
         {% else %}
             Looks like we don't have enough data! Please help by adding your own.
