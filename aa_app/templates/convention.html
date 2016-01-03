@@ -280,43 +280,11 @@
             <div class="containery">
                 <div class="centery">
                     <div class="star-ratings-outer"><span id="average-rating" class="star-ratings-inner" style="width:{{convention.avgRating|add:convention.avgRating}}0%"></span></div>
-                    {{convention.avgRating}} out of 5
+                    {{convention.events.count}} event{{convention.events.count|pluralize}}
                 </div>
             </div>
         </div>
     </div>
-<!--
-    <div class="section-wrapper border-wrapper">
-        <h2 class="title-wrapper">Overview</h2>
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="stat-box text-center">
-                    <h3>{{convention.users.count}} ???</h3>
-                    artists
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="stat-box text-center">
-                    <h3>${{convention.avgUserProfit|floatformat:2}}</h3>
-                    average profit
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="stat-box text-center">
-                    <h3>???</h3>
-                    ???
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="stat-box text-center">
-                    <h3>???</h3>
-                    ???
-                </div>
-            </div>
-        </div>
-    </div>
--->
-    
     <div class="section-wrapper border-wrapper">
         <div class="row">
             <div class="col-sm-6">
@@ -370,9 +338,6 @@
         {% endif %}
     </div>
     
-    
-    
-    
     <!-- ========== Analytics ========== -->
     <div class="section-wrapper border-wrapper">
         <h2 class="title-wrapper">Analytics</h2>
@@ -404,7 +369,7 @@
                     </tbody>
                 </table>
                 {% if votedKindsMoreThan5 %}
-                    <p class="text-right"><a href="#">See all...</a></p>
+<!--                    <p class="text-right"><a href="#">See all...</a></p>-->
                 {% endif %}
             </div>
             <div class="col-sm-6">
@@ -415,6 +380,7 @@
                     </div>
                     <div class="chart-legend" id="kindsLegend"></div>
                 </div>
+<!--                <p class="text-right"><a href="#">See all...</a></p>-->
             </div>
             <div class="col-sm-6">
                 <div class="chart-wrapper">
@@ -424,6 +390,7 @@
                     </div>
                     <div class="chart-legend" id="fandomsLegend"></div>
                 </div>
+<!--                <p class="text-right"><a href="#">See all...</a></p>-->
             </div>
             
             

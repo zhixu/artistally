@@ -51,8 +51,11 @@
                 $.ajax({
                     url: "/api/util/contactUs",
                     type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonDict),
                     success: function(response) {
                         alert("Thank you! Your message has been sent.");
+                        $("#contactModal").modal('hide');
                     },
                     error: function(response) {
                         try {

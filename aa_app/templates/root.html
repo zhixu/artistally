@@ -75,11 +75,12 @@
                     </div>
                     <div class="my-section-wrapper border-wrapper">
                         <h1 class="title-wrapper">Announcements</h1>
-                        Website launched! Please bear with us, we still have some bugs to squash and features to implement. If you have any suggestions, concerns or errors to report, feel free to contact us using the tab on the left!
-                        <br/>
-                        Yours sincerely,
-                        <br/>
-                        Kat and Ronald
+                        
+                        {% for annoucement in announcements %}
+                            <b>{{annoucement.date}}</b>
+                            <br/>
+                            {{annoucement.message}}
+                        {% endfor %}
                     </div>
     <!--
                         <div class="row">

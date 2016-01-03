@@ -11,7 +11,8 @@
         function makeEditableGrid() {
             editableGrid = new EditableGrid("SearchEditableGrid", 
                 { sortIconUp: "/static/images/up.png", 
-                sortIconDown: "/static/images/down.png"
+                sortIconDown: "/static/images/down.png",
+//                dateFormat: "US"
                 });
 
             editableGrid.load({ metadata: [
@@ -24,6 +25,9 @@
             
             editableGrid.attachToHTMLTable("conventionTable");
             editableGrid.renderGrid();
+            editableGrid.rowSelected = function(oldRowIndex, newRowIndex) { 
+                window.location.href = "/convention/" + this.getRowId(newRowIndex);
+            };
         }
 
     </script>
@@ -53,7 +57,7 @@
                     </thead>
                     <tbody>
                         {% for con in cons %}
-                            <tr>
+                            <tr id="{{con.ID}}">
                                 <td>{{con}}</td>
                                 {% with con.events.all.reverse.0 as event %}<td>{% if event.startDate %}{{ event.startDate|date:"d/m/Y" }}{% else %}--{% endif %}</td>
                                 <td>{% if event.endDate %}{{ event.endDate|date:"d/m/Y" }}{% else %}--{% endif %}</td>

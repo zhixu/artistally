@@ -34,8 +34,5 @@ def findKind(request):
 def contactUs(request):
     d = json.loads(bytes.decode(request.body))
     u = request.user
-    try:
-        u.sendFeedback(d["subject"], d["body"])
-    except ValidationError as ex:
-        return JsonResponse({"error": "invalid: %s" % ", ".join(ex.message_dict.keys())}, status = 400)
+    u.sendFeedback(d["subject"], d["body"])
     return JsonResponse({})

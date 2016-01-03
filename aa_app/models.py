@@ -119,7 +119,7 @@ class User(AbstractBaseUser):
         send_mail("ArtistAlly Reset Request", msg, EMAIL_HOST_USER, [self.email])
         
     def sendFeedback(self, subject, body):
-        send_mail(subject + "\n\n Sent by " + self.username, body, EMAIL_HOST_USER, [EMAIL_HOST_USER])
+        send_mail(subject, body + "\n\n Sent by " + self.username, EMAIL_HOST_USER, [EMAIL_HOST_USER])
 
     # UTIL
     objects = UserManager()
@@ -521,6 +521,14 @@ class MiscCost(ValidatedModel):
     
     def __str__(self):
         return "%s spent %s for %s at %s %s" % (self.user, self.amount, self.name, self.event.convention, self.event)
+    
+class Announcement(ValidatedModel):
+    ID = models.AutoField(primary_key = True)
+    date = models.DateField()
+    message = models.TextField()
+
+    def __str__(self):
+        return "announcement at %s" % (self.date)
 
 def newUser(username, password, email):
     return User.objects.create_user(username = username, password = password, email = email)
@@ -559,6 +567,11 @@ def newEvent(convention, name, startDate, endDate, location):
     k = Event(convention = convention, name = name, startDate = startDate, endDate = endDate, location = location)
     k.save()
     return k
+
+#def newAnnouncement(date, message):
+#    k = Announcement(date = date, message = message)
+#    k.save()
+#    return k
 
 
 INV_CON = None

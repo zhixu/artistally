@@ -18,6 +18,7 @@ def root(request):
     if request.user.is_authenticated():
         u = context["currUser"] = request.user
         context["currUserItemsSold"] = u.items.aggregate(Sum("numSold"))["numSold__sum"] or 0
+        context["announcements"] = models.Announcement.objects.all()
     return render(request, "root.html", context)
 
 @user_passes_test(lambda u: u.is_anonymous() or not u.confirmToken, login_url = "/confirm")
