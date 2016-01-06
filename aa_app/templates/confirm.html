@@ -57,26 +57,29 @@
 {% endblock %}
 
 {% block body %}
-    <div class="alert alert-danger hidden" role="alert" id="error-message">bla bla bla?</div>
     <div class="form-wrapper reg-form-wrapper border-wrapper">
         <p class="text-center"><sup><a href="/">&laquo; Go back home</a></sup></p>
         <br/>
         <h3 class="text-center">Confirm your email</h3>
         <br/>
+        <div class="form-group text-center">
+            <label for="tokenField">Confirm Token:</label>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="tokenField-addon"><i class="fa fa-dot-circle-o fa-fw"></i></span>
+                <input type="text" class="form-control" spellcheck=false id="tokenField"/>
+            </div>
+        </div>
+        <br/>
         <p class="text-center">
+            <a onclick="checkToken()" id="tokenButton" class="btn btn-custom-blue">Submit</a>
             <br/>
-            <br/><a onclick="resend()" id="resendButton" class="btn btn-custom-blue wide">Resend the email</a>
+            <br/>
+            <br/>
+            Didn't receive an email?
+            <br/><a href="#" onclick="resend()">Click here to resend it to {{user.email}}.</a>
             <br/>
         </p>
     </div>
 
-    <br/>
-    Check token
-    <br/>
-    <input type="text" id="tokenField" placeholder="token goes here" spellcheck=false/>
-    <br/>
-    <p class="text-center">
-        <br/>
-        <br/><a onclick="checkToken()" id="tokenButton" class="btn btn-custom-blue wide">check it</a>
-    </p>
+    
 {% endblock %}

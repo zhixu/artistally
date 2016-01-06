@@ -521,7 +521,7 @@ class MiscCost(ValidatedModel):
     
     def __str__(self):
         return "%s spent %s for %s at %s %s" % (self.user, self.amount, self.name, self.event.convention, self.event)
-    
+
 class Announcement(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     date = models.DateField()
