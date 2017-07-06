@@ -16,7 +16,7 @@ Virtualenv must be reactivated every time you close and reopen the terminal.
 
 Preparing the local environment.
 1. If postgres is not installed:
-    sudo apt-get install postgresql
+    sudo apt-get install postgresql python-psycopg2 libpq-dev
     sudo -u postgres createuser $(whoami)
 2. Environment variables must be specified. Create a file .env containing:
     DEBUG = True
