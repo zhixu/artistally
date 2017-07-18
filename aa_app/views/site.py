@@ -33,7 +33,7 @@ def about(request):
 def signup(request):
     context = {}
     return render(request, "signup.html", context)
-    
+
 @ensure_csrf_cookie
 @user_passes_test(lambda u: u.is_anonymous(), login_url = "/")
 def login(request):
@@ -83,7 +83,7 @@ def convention(request, conID):
         context["hasConData"] = False
     else:
         context["hasConData"] = True
-    
+
     year = datetime.timedelta(days = 365, hours = 6)
     voteSum_1Y = collections.Counter()
     voteSum_2Y = collections.Counter()
@@ -151,11 +151,11 @@ def convention(request, conID):
     else:
         context["votedKindsMoreThan5"] = False
         context["votedKinds"]["all"] = zip(votedKindsAll, votedKindPricesAll)
-    
+
     context["eventsWithUserWriteups"] = {}
-    for writeup in u.writeups.all():
-        if writeup.event.convention.ID == int(conID):
-            context["eventsWithUserWriteups"][writeup.event.ID] = writeup.ID
+    # for writeup in u.writeups.all():
+    #     if writeup.event.convention.ID == int(conID):
+    #         context["eventsWithUserWriteups"][writeup.event.ID] = writeup.ID
 
     return render(request, "convention.html", context)
 
@@ -218,7 +218,7 @@ def mywriteups(request):
     u = request.user
     context = {"currUser": u}
     return render(request, "mywriteups.html", context)
-    
+
 @login_required
 @user_passes_test(lambda u: not u.confirmToken, login_url = "/confirm")
 def addconvention(request):

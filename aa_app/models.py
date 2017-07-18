@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
         u = User(username = username, email = self.normalize_email(email))
         u.setPassword(password)
         return u
-        
+
     def create_superuser(self, username, email, password):
         u = self.create_user(username, email, password)
         u.setSuperuser(True)
@@ -96,7 +96,7 @@ class User(AbstractBaseUser):
     def setResetToken(self, newResetToken):
         self.resetToken = newResetToken
         self.save()
-    
+
     # METHODS
     def sendConfirmEmail(self):
         if not self.confirmToken:
@@ -107,7 +107,7 @@ class User(AbstractBaseUser):
             "Token: " + str(self.confirmToken) + "\n\n" + \
             "If you did not submit such a request, feel free to ignore this email."
         send_mail("ArtistAlly Confirmation Request", msg, EMAIL_HOST_USER, [self.email])
-        
+
     def sendResetEmail(self):
         if not self.resetToken:
             self.setResetToken(uuid.uuid4())
@@ -117,7 +117,7 @@ class User(AbstractBaseUser):
             "Token: " + str(self.resetToken) + "\n\n" + \
             "If you did not submit such a request, feel free to ignore this email."
         send_mail("ArtistAlly Reset Request", msg, EMAIL_HOST_USER, [self.email])
-        
+
     def sendFeedback(self, subject, body):
         send_mail(subject, body + "\n\n Sent by " + self.username, EMAIL_HOST_USER, [EMAIL_HOST_USER])
 
@@ -125,32 +125,32 @@ class User(AbstractBaseUser):
     objects = UserManager()
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
-    
+
     def get_full_name(self):
         return self.username
-    
+
     def get_short_name(self):
         return self.username
-    
+
     def is_staff(self):
         return self.superuser
-    
+
     def is_active(self):
         return True
-    
+
     def has_perm(self, perm, obj = None):
         return self.superuser
-    
+
     def has_module_perms(self, app_label):
         return self.superuser
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(args, kwargs)
-        
+
     class Meta(ValidatedModel.Meta):
         pass
-    
+
     def __str__(self):
         return self.username
 
@@ -186,7 +186,7 @@ class Convention(ValidatedModel):
     @property
     def itemsSoldTotal(self):
         return sum(e.itemsSoldTotal for e in self.events.all())
-    
+
     @property
     def topKinds(self):
         kindsCounter = collections.Counter()
@@ -198,7 +198,7 @@ class Convention(ValidatedModel):
             for k in kindsCounter:
                 kindsCounter[k] /= self.itemsSoldTotal
         return sorted(kindsCounter.items(), key = operator.itemgetter(1), reverse = True)
-    
+
     @property
     def topFandoms(self):
         fandomsCounter = collections.Counter()
@@ -236,7 +236,7 @@ class Convention(ValidatedModel):
 
     def __str__(self):
         return self.name
-    
+
 class Event(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     convention = models.ForeignKey(Convention, related_name = "events")
@@ -246,7 +246,7 @@ class Event(ValidatedModel):
     numAttenders = models.PositiveIntegerField(blank = True, null = True, default = None)
     users = models.ManyToManyField(User, related_name = "events", blank = True)
     location = models.CharField(max_length = 50)
-    
+
     def userProfit(self, u):
         expr = ExpressionWrapper((F("price") - F("cost")) * F("numSold"), output_field = models.DecimalField())
         agg = self.items.filter(user = u).annotate(profit = expr).aggregate(Sum("profit"))
@@ -288,7 +288,7 @@ class Event(ValidatedModel):
         for item in self.items.all():
             kindNumSolds[item.kind] += item.numSold
         return kindNumSolds
-    
+
     @property
     def avgKindPrice(self):
         result = self.kindValueSold
@@ -298,7 +298,7 @@ class Event(ValidatedModel):
             else:
                 result[k] /= self.kindNumSold[k]
         return result
-    
+
     @property
     def kindUserVotes(self):
         kindUsers = collections.Counter()
@@ -309,7 +309,7 @@ class Event(ValidatedModel):
         for kind in kindUsers:
             kindUsers[kind] = len(kindUsers[kind])
         return kindUsers
-    
+
     @property
     def topKinds(self):
         kindsCounter = collections.Counter()
@@ -320,7 +320,7 @@ class Event(ValidatedModel):
             for k in kindsCounter:
                 kindsCounter[k] /= self.itemsSoldTotal
         return sorted(kindsCounter.items(), key = operator.itemgetter(1), reverse = True)
-    
+
     @property
     def topFandoms(self):
         fandomsCounter = collections.Counter()
@@ -331,7 +331,7 @@ class Event(ValidatedModel):
             for k in fandomsCounter:
                 fandomsCounter[k] /= self.itemsSoldTotal
         return sorted(fandomsCounter.items(), key = operator.itemgetter(1), reverse = True)
-    
+
     # SETTERS
     def setName(self, newName):
         self.name = newName
@@ -348,19 +348,19 @@ class Event(ValidatedModel):
     def setNumAttenders(self, newNumAttenders):
         self.numAttenders = newNumAttenders
         self.save()
-        
+
     def setLocation(self, newLocation):
         self.location = newLocation
         self.save()
-        
+
     def setUser(self, newUser):
         self.users.add(newUser)
         self.save()
-            
+
     def unsetUser(self, newUser):
         self.users.remove(newUser)
         self.save()
-    
+
     # UTIL
     class Meta(ValidatedModel.Meta):
         ordering = ["startDate"]
@@ -377,7 +377,7 @@ class Event(ValidatedModel):
         #filtered = self.convention.events.filter(name = self.name)
         #if filtered.exists() and filtered.get().ID is not self.ID:
         #    raise ValidationError({"name": ["there is already an event in this convention with that name"]})
-            
+
     def __str__(self):
         return self.name
 
@@ -398,7 +398,7 @@ class Writeup(ValidatedModel):
     def setReview(self, newReview):
         self.review = newReview
         self.save()
-    
+
     # UTIL
     def clean(self):
         super().clean()
@@ -419,7 +419,7 @@ class Fandom(ValidatedModel):
     def setName(self, name):
         self.name = name
         self.save()
-        
+
     # UTIL
     def __str__(self):
         return self.name
@@ -467,27 +467,27 @@ class Item(ValidatedModel):
     def setImage(self, newImage):
         self.image = newImage
         self.save()
-        
+
     def setPrice(self, newPrice):
         self.price = newPrice
         self.save()
-    
+
     def setCost(self, newCost):
         self.cost = newCost
         self.save()
-    
+
     def setFandom(self, newFandom):
         self.fandom = newFandom
         self.save()
-    
+
     def setKind(self, newKind):
         self.kind = newKind
         self.save()
-        
+
     def setTag(self, newTag):
         self.tag = newTag
         self.save()
-    
+
     # UTIL
     def clean(self):
         super().clean()
@@ -496,19 +496,19 @@ class Item(ValidatedModel):
 
     def __str__(self):
         return self.name
-        
+
 class MiscCost(ValidatedModel):
     ID = models.AutoField(primary_key = True)
     user = models.ForeignKey(User, related_name = "miscCosts")
     event = models.ForeignKey(Event, related_name = "miscCosts")
     amount = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(0)])
     name = models.CharField(max_length = 50)
-    
+
     # SETTERS
     def setAmount(self, newAmount):
         self.amount = newAmount
         self.save()
-        
+
     def setName(self, newName):
         self.name = newName
         self.save()
@@ -518,7 +518,7 @@ class MiscCost(ValidatedModel):
         super().clean()
         if self.event == INV_EVENT:
             raise ValidationError({"convention": ["you can't make a miscCost for the INV_EVENT"]})
-    
+
     def __str__(self):
         return "%s spent %s for %s at %s %s" % (self.user, self.amount, self.name, self.event.convention, self.event)
 

@@ -30,7 +30,7 @@
                 },
             });
         }
-        
+
         function checkToken() {
             $("#tokenButton").attr("disabled", true);
             var jsonDict = new Object();
@@ -41,7 +41,7 @@
                 contentType: "application/json",
                 data: JSON.stringify(jsonDict),
                 success: function(response) {
-                    console.log("yay it worked.");
+                    window.location.href = "/";
                 },
                 error: function(response) {
                     try {
@@ -79,5 +79,5 @@
         </p>
     </div>
 
-    
+
 {% endblock %}
