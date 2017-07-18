@@ -1,7 +1,9 @@
 # Artistally app instructions
 
 ## Prerequisites.
-0. Be inside the top-level directory of the project._
+
+0. Be inside the top-level directory of the project.
+
 1. Create and prepare a virtual environment.
     ```vim
     sudo apt-get install python3-venv
@@ -16,7 +18,7 @@
     heroku login
     ```
 
-Virtualenv must be reactivated every time you close and reopen the terminal._
+Virtualenv must be reactivated every time you close and reopen the terminal.
 
 ## Preparing the local environment.
 1. If postgres is not installed:
@@ -36,10 +38,15 @@ Virtualenv must be reactivated every time you close and reopen the terminal._
     EMAIL_HOST_PASSWORD =
     ```
 3. Fill in the blank fields:_
-    <a href="miniwebtool.com/django-secret-key-generator">Use this website to generate a secret key</a>_
-    The email settings will depend on your preferred SMTP server._
-    For example, Gmail uses EMAIL_USE_TLS = True, EMAIL_HOST = smtp.gmail.com, and EMAIL_PORT = 587._
-    EMAIL_HOST_USER and EMAIL_HOST_PASSWORD should be your username and password for the SMTP server._
+
+    <a href="miniwebtool.com/django-secret-key-generator">Use this website to generate a secret key</a>
+
+    The email settings will depend on your preferred SMTP server.
+
+    For example, Gmail uses EMAIL_USE_TLS = True, EMAIL_HOST = smtp.gmail.com, and EMAIL_PORT = 587.
+
+    EMAIL_HOST_USER and EMAIL_HOST_PASSWORD should be your username and password for the SMTP server.
+
 5. Prepare the Django project for first run:
     ```vim
     heroku local:run python manage.py migrate
@@ -50,7 +57,8 @@ Virtualenv must be reactivated every time you close and reopen the terminal._
     The last command is optional if you set DEBUG to True.
 
 ## Updating Database
-Changed the model? You need to update it with the database._
+Changed the model? You need to update it with the database.
+
 1. Create and apply the migrations:
     ```vim
     heroku local:run python manage.py makemigrations
@@ -63,8 +71,9 @@ Changed the model? You need to update it with the database._
     heroku local:run python manage.py collectstatic
     ```
 
-    Do NOT put files yourself into /staticfiles! They will get overwritten!_
-    ( this is optional if you set DEBUG to True )_
+    Do NOT put files yourself into /staticfiles! They will get overwritten!
+
+    ( this is optional if you set DEBUG to True )
 
 2. Start the server:
     ```vim
@@ -92,6 +101,7 @@ Changed the model? You need to update it with the database._
     heroku config:set EMAIL_HOST_PASSWORD='PASSWORD_GOES_HERE'
     ```
     ( if your strings contain strange characters, put it in quotes or bash will complain )
+    
 3. Push to heroku:
     ```vim
     git push heroku master
